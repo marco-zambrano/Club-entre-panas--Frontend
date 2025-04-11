@@ -1,27 +1,27 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', () => {
     // functionality show / hide contacts in mobile
     document.querySelector('.toggle-contacts').addEventListener('click', function() {
         document.querySelector('.contacts-list').classList.toggle('show');
     });
 
     // functionality to select the contact
-    document.querySelectorAll('.contact').forEach(contact => {
-        contact.addEventListener('click', function() {
-            // Actualizar contacto activo
-            document.querySelectorAll('.contact').forEach(c => {
-                c.classList.remove('active');
-            });
-            this.classList.add('active');
-            
-            // Actualizar título del chat
-            const contactName = this.querySelector('.contact-name').textContent;
-            document.querySelector('.chat-title').textContent = contactName;
-            
-            // En móvil, cerrar el panel de contactos al seleccionar uno
-            if (window.innerWidth <= 768) {
-                document.querySelector('.contacts-list').classList.remove('show');
-            }
-        });
+    document.querySelector('.contacts-list').addEventListener('click', (e) => {
+        // Verificar si el click fue en un elemento .contact o en sus hijos
+        const contactElement = e.target.closest('.contact');
+        if (!contactElement) return // return in case a contact is not clicked
+
+        // Actualizar contacto activo
+        document.querySelectorAll('.contact.active').forEach(c => c.classList.remove('active'));
+        contactElement.classList.add('active');
+        
+        // Actualizar título del chat
+        const contactName = contactElement.querySelector('.contact-name').textContent;
+        document.querySelector('.chat-title').textContent = contactName;
+        
+        // En móvil, cerrar el panel de contactos al seleccionar uno
+        if (window.matchMedia('(max-width: 768px)').matches) {
+            document.querySelector('.contacts-list').classList.remove('show');
+        }
     });
 
     // Funcionalidad para filtrar contactos por plataforma
