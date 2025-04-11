@@ -4,52 +4,62 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelector('.contacts-list').classList.toggle('show');
     });
 
-    // functionality to select the contact
+    // Changes the title of te current chat
+    const changeChatTitle = (text) => document.querySelector('.chat-title').textContent = text;
+
+    // select the contact using event delegation 
     document.querySelector('.contacts-list').addEventListener('click', (e) => {
-        // Verificar si el click fue en un elemento .contact o en sus hijos
+        // verify if any child was clicked
         const contactElement = e.target.closest('.contact');
         if (!contactElement) return // return in case a contact is not clicked
 
-        // Actualizar contacto activo
+        // update the active contact
         document.querySelectorAll('.contact.active').forEach(c => c.classList.remove('active'));
         contactElement.classList.add('active');
         
-        // Actualizar título del chat
+        // update de chat title
         const contactName = contactElement.querySelector('.contact-name').textContent;
-        document.querySelector('.chat-title').textContent = contactName;
+        changeChatTitle(contactName);
+        checkIndividualToggle()
         
-        // En móvil, cerrar el panel de contactos al seleccionar uno
+        // in mobile, it closes the contact panel in case you click one
         if (window.matchMedia('(max-width: 768px)').matches) {
             document.querySelector('.contacts-list').classList.remove('show');
         }
     });
 
-    // Funcionalidad para filtrar contactos por plataforma
+    // filter contacts for each platform 
     document.querySelectorAll('.platform-toggle').forEach(toggle => {
         toggle.addEventListener('change', function() {
             const platform = this.getAttribute('data-platform');
             const isChecked = this.checked;
             
-            // Mostrar u ocultar contactos según el filtro
+            // show or hide the contacts based on the filter
             document.querySelectorAll(`.contact[data-platform="${platform}"]`).forEach(contact => {
                 if (isChecked) {
                     contact.classList.remove('hidden');
                 } else {
                     contact.classList.add('hidden');
                     
-                    // Si el contacto activo se oculta, seleccionar otro visible
+                    // if the contact is hidden by the filter, then find another contact and add it the class active
                     if (contact.classList.contains('active')) {
-                        const firstVisibleContact = document.querySelector('.contact:not(.hidden):not(.empty)');
+                        const firstVisibleContact = document.querySelector('.contact:not(.hidden)');
                         if (firstVisibleContact) {
-                            firstVisibleContact.click();
+                            firstVisibleContact.classList.add('active');
+                            const contactName = firstVisibleContact.querySelector('.contact-name').textContent;
+                            changeChatTitle(contactName);
+                        } else {
+                            // In case there is no contact visible, set an adverstiment
+                            document.querySelector('.chat-title').textContent = 'Selecciona un contacto';
+                            document.querySelector('.messages').innerHTML = '';
                         }
                     }
                 }
             });
         });
     });
-
-    // Funcionalidad para sincronizar el toggle maestro de bots con los individuales
+    
+    // functionality to sync the master toggle with the individual bot toggles 
     const masterBotToggle = document.getElementById('master-bot-toggle');
     const individualBotToggles = document.querySelectorAll('.individual-bot-toggle');
     
