@@ -1,4 +1,683 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
 body {
-    background-color: #555;
-    color: #fff;
+    background-color: #121212;
+    color: #ffffff;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.chat-container {
+    width: 90%;
+    max-width: 1200px;
+    height: 80vh;
+    background-color: #121212;
+    border-radius: 10px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Filtros superiores */
+.filters {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px 20px;
+    border-bottom: 1px solid #333;
+}
+
+.platform-filters {
+    display: flex;
+    gap: 20px;
+}
+
+.filter {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.bot-toggle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Toggle switch */
+.toggle {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+}
+
+.toggle input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #333;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #4CAF50;
+}
+
+input:checked + .facebook-slider {
+    background-color: #1877F2;
+}
+
+input:checked + .instagram-slider {
+    background-color: #E1306C;
+}
+
+input:checked + .whatsapp-slider {
+    background-color: #25D366;
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+/* Contenido principal */
+.main-content {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+/* Lista de contactos */
+.contacts-list {
+    width: 30%;
+    border-right: 1px solid #333;
+    overflow-y: auto;
+}
+
+.contact {
+    padding: 15px;
+    border-bottom: 1px solid #333;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.contact:hover {
+    background-color: #1e1e1e;
+}
+
+.contact.active {
+    background-color: #1e1e1e;
+}
+
+.contact-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.platform {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.9em;
+}
+
+.facebook-icon {
+    color: #1877F2;
+}
+
+.instagram-icon {
+    color: #E1306C;
+}
+
+.whatsapp-icon {
+    color: #25D366;
+}
+
+.contact.empty {
+    height: 50px;
+}
+
+/* Área de chat */
+.chat-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+}
+
+.chat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #333;
+}
+
+.chat-title {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.bot-toggle.small .toggle {
+    width: 40px;
+    height: 20px;
+}
+
+.bot-toggle.small .slider:before {
+    height: 14px;
+    width: 14px;
+    left: 3px;
+    bottom: 3px;
+}
+
+.bot-toggle.small input:checked + .slider:before {
+    transform: translateX(20px);
+}
+
+/* Mensajes */
+.messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 15px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.message {
+    max-width: 80%;
+    align-self: flex-start;
+}
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background-color: #121212;
+    color: #ffffff;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.chat-container {
+    width: 95%;
+    max-width: 1200px;
+    height: 90vh;
+    background-color: #121212;
+    border-radius: 10px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+/* Filtros superiores */
+.filters {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px 20px;
+    border-bottom: 1px solid #333;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.platform-filters {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.filter {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.bot-toggle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Toggle switch */
+.toggle {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+}
+
+.toggle input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #333;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #4CAF50;
+}
+
+input:checked + .facebook-slider {
+    background-color: #1877F2;
+}
+
+input:checked + .instagram-slider {
+    background-color: #E1306C;
+}
+
+input:checked + .whatsapp-slider {
+    background-color: #25D366;
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+/* Contenido principal */
+.main-content {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+/* Lista de contactos */
+.contacts-list {
+    width: 30%;
+    border-right: 1px solid #333;
+    overflow-y: auto;
+    transition: transform 0.3s ease;
+}
+
+.contact {
+    padding: 15px;
+    border-bottom: 1px solid #333;
+    cursor: pointer;
+    transition: background-color 0.3s, opacity 0.3s;
+}
+
+.contact:hover {
+    background-color: #1e1e1e;
+}
+
+.contact.active {
+    background-color: #1e1e1e;
+}
+
+.contact.hidden {
+    display: none;
+}
+
+.contact-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.platform {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.9em;
+}
+
+.facebook-icon {
+    color: #1877F2;
+}
+
+.instagram-icon {
+    color: #E1306C;
+}
+
+.whatsapp-icon {
+    color: #25D366;
+}
+
+.contact.empty {
+    height: 50px;
+}
+
+/* Área de chat */
+.chat-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+}
+
+.chat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #333;
+}
+
+.chat-title {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.bot-toggle.small .toggle {
+    width: 40px;
+    height: 20px;
+}
+
+.bot-toggle.small .slider:before {
+    height: 14px;
+    width: 14px;
+    left: 3px;
+    bottom: 3px;
+}
+
+.bot-toggle.small input:checked + .slider:before {
+    transform: translateX(20px);
+}
+
+/* Mensajes */
+.messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 15px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+
+/* En esta seccion hay que cambiar muchas cosas */
+
+
+.message {
+    max-width: 80%;
+    align-self: flex-start;
+}
+
+
+
+/* Primeramente, esta tomando en consideracion los divs pares de la columna de messages ponerlas en flex end  */
+.message:nth-child(even) {
+    align-self: flex-end;
+}
+
+.message-content {
+    background-color: #333;
+    padding: 10px 15px;
+    border-radius: 18px;
+    display: inline-block;
+}
+
+.message:nth-child(even) .message-content {
+    background-color: #0b93f6;
+}
+
+/* Campo de entrada de mensaje */
+.message-input-container {
+    display: flex;
+    margin-top: 25px;
+    border-radius: 30px;
+    background-color: #1e1e1e;
+    border: 1px solid #333;
+    overflow: hidden;
+}
+
+.message-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: white;
+    padding: 15px 20px;
+    font-size: 1rem;
+    outline: none;
+}
+
+.message-input::placeholder {
+    color: #aaa;
+}
+
+.send-button {
+    background: transparent;
+    border: none;
+    color: white;
+    padding: 0 20px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.send-button:hover {
+    color: #0b93f6;
+}
+
+/* Botón para mostrar/ocultar contactos en móvil */
+.toggle-contacts {
+    display: none;
+    position: fixed;
+    bottom: 50px;
+    left: 20px; 
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #0b93f6;
+    color: white;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    z-index: 1000;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Media queries para responsividad */
+@media (max-width: 992px) {
+    .chat-container {
+        width: 100%;
+        height: 100vh;
+        border-radius: 0;
+    }
+    
+    .contacts-list {
+        width: 35%;
+    }
+    
+    .platform span {
+        font-size: .9em;
+    }
+}
+
+@media (max-width: 768px) {
+    .filters {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .bot-toggle {
+        margin-top: 10px;
+        align-self: flex-end;
+    }
+    
+    .main-content {
+        position: relative;
+    }
+    
+    .contacts-list {
+        position: absolute;
+        width: 60%;
+        height: 100%;
+        z-index: 10;
+        background-color: #121212;
+        transform: translateX(-100%);
+    }
+    
+    .contacts-list.show {
+        transform: translateX(0);
+    }
+    
+    .toggle-contacts {
+        display: block;
+    }
+}
+
+@media (max-width: 576px) {
+    .filters {
+        padding: 25px 10px 10px 10px;
+    }
+    
+    .platform-filters {
+        gap: 10px;
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .filter {
+        font-size: 0.9em;
+    }
+    
+    .toggle {
+        width: 40px;
+        height: 20px;
+    }
+    
+    .slider:before {
+        height: 14px;
+        width: 14px;
+        left: 3px;
+        bottom: 3px;
+    }
+    
+    input:checked + .slider:before {
+        transform: translateX(20px);
+    }
+    
+    .chat-area {
+        padding: 10px;
+    }
+    
+    .message-content {
+        padding: 8px 12px;
+        font-size: 0.9em;
+    }
+    
+    .contacts-list {
+        width: 100%;
+    }
+    
+    .message-input {
+        padding: 12px 15px;
+    }
+}
+
+/* Estilos para cuando la pantalla está en modo vertical (móvil) */
+@media (max-height: 600px) {
+    .chat-container {
+        height: 100vh;
+    }
+    
+    .filters {
+        padding: 5px 10px;
+    }
+    
+    .contact {
+        padding: 10px;
+    }
+    
+    .messages {
+        padding: 10px 0;
+    }
+    
+    .message-input-container {
+        margin-top: 10px;
+    }
+    
+    .message-input {
+        padding: 10px 15px;
+    }
+}
+.message:nth-child(even) {
+    align-self: flex-end;
+}
+
+.message-content {
+    background-color: #333;
+    padding: 10px 15px;
+    border-radius: 18px;
+    display: inline-block;
+}
+
+.message:nth-child(even) .message-content {
+    background-color: #0b93f6;
+}
+
+/* Área de respuesta */
+.response-area {
+    margin-top: auto;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.response-input {
+    background-color: #333;
+    padding: 15px;
+    border-radius: 10px;
+    width: 50%;
+    text-align: center;
+    cursor: text;
 }
