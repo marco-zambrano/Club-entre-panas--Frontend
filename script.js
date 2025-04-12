@@ -58,26 +58,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
     });
-    
-    // functionality to sync the master toggle with the individual bot toggles 
-    const masterBotToggle = document.getElementById('master-bot-toggle');
-    const individualBotToggles = document.querySelectorAll('.individual-bot-toggle');
-    
-    masterBotToggle.addEventListener('change', function() {
-        const isChecked = this.checked;
-        
-        // Sincronizar todos los toggles individuales con el maestro
-        individualBotToggles.forEach(toggle => {
-            toggle.checked = !isChecked; // Invertimos porque "Desactivar todos los bots" significa checked = desactivado
-        });
-    });
-    
-    // Permitir control manual de los toggles individuales independientemente del maestro
-    individualBotToggles.forEach(toggle => {
-        toggle.addEventListener('change', function() {
-            // No es necesario sincronizar con el maestro cuando se cambia manualmente
-        });
-    });
 
     // Funcionalidad para enviar mensajes
     document.querySelector('.send-button').addEventListener('click', sendMessage);

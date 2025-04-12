@@ -5,6 +5,7 @@
 .vscode
 dist
 /assets
+notas.md
 
 .env
 .env.local
