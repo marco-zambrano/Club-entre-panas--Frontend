@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Changes the title of te current chat
     const changeChatTitle = (text) => document.querySelector('.chat-title').textContent = text;
 
+
     // hide or show text input depending the individual bot toggle boolean value
     function handleInputVisibility(isChecked) {
         const messageInputContainer = document.querySelector('.message-input-container');
@@ -20,6 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelector('.individual-bot-toggle').addEventListener('change', function() {
         handleInputVisibility(this.checked);
     });
+
 
     // select the contact using event delegation 
     document.querySelector('.contacts-list').addEventListener('click', (e) => {
@@ -43,6 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.querySelector('.contacts-list').classList.remove('show');
         }
     });
+
 
     // filter contacts for each platform 
     document.querySelectorAll('.platform-toggle').forEach(toggle => {
@@ -74,6 +77,37 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
     });
+
+
+    // Bot configuration modal functionality
+    const botConfigButton = document.querySelector('.bot-config-button');
+    const botConfigModal = document.querySelector('.bot-config-modal');
+    const closeModalButton = document.querySelector('.close-modal');
+
+    // Open modal
+    botConfigButton.addEventListener('click', () => {
+        botConfigModal.classList.add('show');
+    });
+
+    // Close modal with button
+    closeModalButton.addEventListener('click', () => {
+        botConfigModal.classList.remove('show');
+    });
+
+    // Close modal when clicking outside
+    botConfigModal.addEventListener('click', (e) => {
+        if (e.target === botConfigModal) {
+            botConfigModal.classList.remove('show');
+        }
+    });
+
+    // Close modal with Escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && botConfigModal.classList.contains('show')) {
+            botConfigModal.classList.remove('show');
+        }
+    });
+
 
     // Funcionalidad para enviar mensajes
     document.querySelector('.send-button').addEventListener('click', sendMessage);
