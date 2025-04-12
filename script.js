@@ -7,6 +7,20 @@ document.addEventListener('DOMContentLoaded', () => {
     // Changes the title of te current chat
     const changeChatTitle = (text) => document.querySelector('.chat-title').textContent = text;
 
+    // hide or show text input depending the individual bot toggle boolean value
+    function handleInputVisibility(isChecked) {
+        const messageInputContainer = document.querySelector('.message-input-container');
+        messageInputContainer.style.display = isChecked ? 'none' : 'flex';
+    }
+
+    // Initialice the input appearence based on the initial toggle value state
+    handleInputVisibility(document.querySelector('.individual-bot-toggle').checked);
+
+    // listen changes in the toggle
+    document.querySelector('.individual-bot-toggle').addEventListener('change', function() {
+        handleInputVisibility(this.checked);
+    });
+
     // select the contact using event delegation 
     document.querySelector('.contacts-list').addEventListener('click', (e) => {
         // verify if any child was clicked
@@ -20,7 +34,9 @@ document.addEventListener('DOMContentLoaded', () => {
         // update de chat title
         const contactName = contactElement.querySelector('.contact-name').textContent;
         changeChatTitle(contactName);
-        checkIndividualToggle()
+
+        // Actualizar visibilidad del input al cambiar de contacto
+        handleInputVisibility(document.querySelector('.individual-bot-toggle').checked);
         
         // in mobile, it closes the contact panel in case you click one
         if (window.matchMedia('(max-width: 768px)').matches) {
