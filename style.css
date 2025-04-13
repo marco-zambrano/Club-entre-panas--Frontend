@@ -207,12 +207,20 @@ input:checked + .slider:before {
     border-bottom: 1px solid #333;
     cursor: pointer;
     transition: background-color 0.3s;
+    position: relative;
 }
 .contact:hover {
     background-color: #1e1e1e;
 }
 .contact.active {
     background-color: #1e1e1e;
+}
+.contact-message-time {
+    position: absolute;
+    font-size: .6em;
+    bottom: 3px;
+    right: 15px;
+    opacity: .8;
 }
 .contact-info {
     display: flex;
