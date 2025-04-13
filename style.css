@@ -306,6 +306,17 @@ input:checked + .slider:before {
     flex-direction: column;
     gap: 10px;
 }
+/* Scrollbar for messages*/
+.messages::-webkit-scrollbar {
+    width: 6px;
+}
+.messages::-webkit-scrollbar-thumb {
+    background-color: #2a2a2a;
+}
+.messages::-webkit-scrollbar-thumb:hover {
+    background-color: #2f2f2f;
+}
+
 .message {
     max-width: 80%;
     align-self: flex-start;
