@@ -285,6 +285,14 @@ input:checked + .slider:before {
     padding: 10px 15px;
     border-radius: 18px;
     display: inline-block;
+    position: relative;
+}
+.message-time {
+    font-size: 0.7em;
+    color: rgba(255, 255, 255, 0.6);
+    margin-top: 4px;
+    display: block;
+    text-align: right;
 }
 .message:nth-child(even) .message-content {
     background-color: #0b93f6;

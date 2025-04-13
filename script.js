@@ -123,10 +123,21 @@ document.addEventListener('DOMContentLoaded', () => {
         const messageText = input.value.trim();
         
         if (messageText) {
+            // Obtener hora actual
+            const now = new Date();
+            const hours = now.getHours();
+            const minutes = now.getMinutes();
+            const timeString = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+            
             // Crear nuevo mensaje
             const messageElement = document.createElement('div');
             messageElement.className = 'message';
-            messageElement.innerHTML = `<div class="message-content">${messageText}</div>`;
+            messageElement.innerHTML = `
+                <div class="message-content">
+                    ${messageText}
+                    <span class="message-time">${timeString}</span>
+                </div>
+            `;
             
             // Añadir clase para alinear a la derecha (como si fuera enviado por el usuario)
             messageElement.style.alignSelf = 'flex-end';
