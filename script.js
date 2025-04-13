@@ -118,37 +118,36 @@ document.addEventListener('DOMContentLoaded', () => {
     function sendMessage() {
         const input = document.querySelector('.message-input');
         const messageText = input.value.trim();
+        if (!messageText) return
         
-        if (messageText) {
-            // Obtener hora actual
-            const now = new Date();
-            const hours = now.getHours();
-            const minutes = now.getMinutes();
-            const timeString = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
-            
-            // Crear nuevo mensaje
-            const messageElement = document.createElement('div');
-            messageElement.className = 'message';
-            messageElement.innerHTML = `
-                <div class="message-content">
-                    ${messageText}
-                    <span class="message-time">${timeString}</span>
-                </div>
-            `;
-            
-            // Añadir clase para alinear a la derecha (como si fuera enviado por el usuario)
-            messageElement.style.alignSelf = 'flex-end';
-            messageElement.querySelector('.message-content').style.backgroundColor = '#0b93f6';
-            
-            // Añadir mensaje al chat
-            document.querySelector('.messages').appendChild(messageElement);
-            
-            // Limpiar input
-            input.value = '';
-            
-            // Scroll al final de los mensajes
-            const messagesContainer = document.querySelector('.messages');
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        }
+        // Obtener hora actual
+        const now = new Date();
+        const hours = now.getHours();
+        const minutes = now.getMinutes();
+        const timeString = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+        
+        // Crear nuevo mensaje
+        const messageElement = document.createElement('div');
+        messageElement.className = 'message';
+        messageElement.innerHTML = `
+            <div class="message-content">
+                ${messageText}
+                <span class="message-time">${timeString}</span>
+            </div>
+        `;
+        
+        // Añadir clase para alinear a la derecha (como si fuera enviado por el usuario)
+        messageElement.style.alignSelf = 'flex-end';
+        messageElement.querySelector('.message-content').style.backgroundColor = '#0b93f6';
+        
+        // Añadir mensaje al chat
+        document.querySelector('.messages').appendChild(messageElement);
+        
+        // Limpiar input
+        input.value = '';
+        
+        // Scroll al final de los mensajes
+        const messagesContainer = document.querySelector('.messages');
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
 });
