@@ -90,24 +90,103 @@ body {
     border-radius: 50%;
 }
 
+/* Input del bot */
 input:checked + .slider {
     background-color: #4CAF50;
 }
 
+/* Input de las redes sociales */
 input:checked + .facebook-slider {
     background-color: #1877F2;
 }
-
 input:checked + .instagram-slider {
     background-color: #E1306C;
 }
-
 input:checked + .whatsapp-slider {
     background-color: #25D366;
 }
-
+/* Animation del input */
 input:checked + .slider:before {
     transform: translateX(26px);
+}
+
+/* Botón de configuración del bot */
+.bot-config-button {
+    background-color: #c52828;
+    color: white;
+    border: none;
+    min-width: 35px;
+    min-height: 35px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 16px;
+}
+.bot-config-button:hover {
+    transform: scale(1.08);
+    background-color: #a32424;
+}
+
+/* Modal de configuración del bot */
+.bot-config-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+}
+.bot-config-modal.show {
+    display: flex;
+    animation: modalFadeIn 0.3s ease;
+}
+.bot-config-modal .modal-content {
+    background-color: #1e1e1e;
+    width: 90%;
+    max-width: 600px;
+    max-height: 90vh;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+    transform: scale(0.9);
+    opacity: 0;
+    animation: modalContentAppear 0.3s ease forwards;
+}
+.bot-config-modal .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid #333;
+}
+.bot-config-modal .modal-header h2 {
+    color: white;
+    margin: 0;
+    font-size: 1.5em;
+}
+.bot-config-modal .close-modal {
+    background: transparent;
+    border: none;
+    color: #999;
+    font-size: 1.5em;
+    cursor: pointer;
+    padding: 5px;
+    transition: color 0.3s ease;
+}
+.bot-config-modal .close-modal:hover {
+    color: white;
+}
+.bot-config-modal .modal-body {
+    padding: 20px;
+    overflow-y: auto;
+    max-height: calc(90vh - 80px);
 }
 
 /* Contenido principal */
@@ -123,22 +202,18 @@ input:checked + .slider:before {
     border-right: 1px solid #333;
     overflow-y: auto;
 }
-
 .contact {
     padding: 15px;
     border-bottom: 1px solid #333;
     cursor: pointer;
     transition: background-color 0.3s;
 }
-
 .contact:hover {
     background-color: #1e1e1e;
 }
-
 .contact.active {
     background-color: #1e1e1e;
 }
-
 .contact-info {
     display: flex;
     justify-content: space-between;
@@ -147,28 +222,20 @@ input:checked + .slider:before {
 .contact.hidden {
     display: none;
 }
-
 .platform {
     display: flex;
     align-items: center;
     gap: 5px;
     font-size: 0.9em;
 }
-
 .facebook-icon {
     color: #1877F2;
 }
-
 .instagram-icon {
     color: #E1306C;
 }
-
 .whatsapp-icon {
     color: #25D366;
-}
-
-.contact.empty {
-    height: 50px;
 }
 
 /* Área de chat */
@@ -178,7 +245,6 @@ input:checked + .slider:before {
     flex-direction: column;
     padding: 15px;
 }
-
 .chat-header {
     display: flex;
     justify-content: space-between;
@@ -186,28 +252,35 @@ input:checked + .slider:before {
     padding-bottom: 15px;
     border-bottom: 1px solid #333;
 }
-
 .chat-title {
     font-size: 1.2em;
     font-weight: bold;
 }
-
 .bot-toggle.small .toggle {
     width: 40px;
     height: 20px;
 }
-
 .bot-toggle.small .slider:before {
     height: 14px;
     width: 14px;
     left: 3px;
     bottom: 3px;
 }
-
 .bot-toggle.small input:checked + .slider:before {
     transform: translateX(20px);
 }
-
+.message:nth-child(even) {
+    align-self: flex-end;
+}
+.message-content {
+    background-color: #333;
+    padding: 10px 15px;
+    border-radius: 18px;
+    display: inline-block;
+}
+.message:nth-child(even) .message-content {
+    background-color: #0b93f6;
+}
 /* Mensajes */
 .messages {
     flex: 1;
@@ -217,24 +290,20 @@ input:checked + .slider:before {
     flex-direction: column;
     gap: 10px;
 }
-
 .message {
     max-width: 80%;
     align-self: flex-start;
 }
-
 /* Primeramente, esta tomando en consideracion los divs pares de la columna de messages ponerlas en flex end  */
 .message:nth-child(even) {
     align-self: flex-end;
 }
-
 .message-content {
     background-color: #333;
     padding: 10px 15px;
     border-radius: 18px;
     display: inline-block;
 }
-
 .message:nth-child(even) .message-content {
     background-color: #0b93f6;
 }
@@ -248,7 +317,6 @@ input:checked + .slider:before {
     border: 1px solid #333;
     overflow: hidden;
 }
-
 .message-input {
     flex: 1;
     background: transparent;
@@ -258,11 +326,9 @@ input:checked + .slider:before {
     font-size: 1rem;
     outline: none;
 }
-
 .message-input::placeholder {
     color: #aaa;
 }
-
 .send-button {
     background: transparent;
     border: none;
@@ -273,8 +339,8 @@ input:checked + .slider:before {
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: color .2s ease;
 }
-
 .send-button:hover {
     color: #0b93f6;
 }
@@ -315,20 +381,14 @@ input:checked + .slider:before {
 }
 
 @media (max-width: 768px) {
-    .filters {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-    
-    .bot-toggle {
-        margin-top: 10px;
-        align-self: flex-end;
-    }
-    
     .main-content {
         position: relative;
     }
-    
+
+    .bot-toggle {
+        align-self: flex-end;
+    }
+
     .contacts-list {
         position: absolute;
         width: 60%;
@@ -336,6 +396,7 @@ input:checked + .slider:before {
         z-index: 10;
         background-color: #121212;
         transform: translateX(-100%);
+        transition: transform .3s ease;
     }
     
     .contacts-list.show {
@@ -345,21 +406,34 @@ input:checked + .slider:before {
     .toggle-contacts {
         display: block;
     }
+
+    .bot-config-modal .modal-content {
+        width: 95%;
+        margin: 10px;
+    }
+    
+    .bot-config-button {
+        width: 28px;
+        height: 28px;
+    }
 }
 
 @media (max-width: 576px) {
     .filters {
         padding: 25px 10px 10px 10px;
+        column-gap: 15px;
     }
     
     .platform-filters {
-        gap: 10px;
-        width: 100%;
-        justify-content: space-between;
+        gap: 15px;
+        flex-grow: 1;
+    }
+    .platform span {
+        display: none;
     }
     
     .filter {
-        font-size: 0.9em;
+        font-size: 0.8em;
     }
     
     .toggle {
@@ -390,7 +464,7 @@ input:checked + .slider:before {
     .contacts-list {
         width: 100%;
     }
-    
+
     .message-input {
         padding: 12px 15px;
     }
@@ -423,124 +497,6 @@ input:checked + .slider:before {
     }
 }
 
-.message:nth-child(even) {
-    align-self: flex-end;
-}
-
-.message-content {
-    background-color: #333;
-    padding: 10px 15px;
-    border-radius: 18px;
-    display: inline-block;
-}
-
-.message:nth-child(even) .message-content {
-    background-color: #0b93f6;
-}
-
-/* Área de respuesta */
-.response-area {
-    margin-top: auto;
-    display: flex;
-    justify-content: flex-end;
-}
-
-.response-input {
-    background-color: #333;
-    padding: 15px;
-    border-radius: 10px;
-    width: 50%;
-    text-align: center;
-    cursor: text;
-}
-
-/* Botón de configuración del bot */
-.bot-config-button {
-    background-color: #c52828;
-    color: white;
-    border: none;
-    width: 35px;
-    height: 35px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-size: 16px;
-}
-
-.bot-config-button:hover {
-    transform: scale(1.08);
-    background-color: #a32424;
-}
-
-/* Modal de configuración del bot */
-.bot-config-modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
-    z-index: 2000;
-    align-items: center;
-    justify-content: center;
-}
-
-.bot-config-modal.show {
-    display: flex;
-    animation: modalFadeIn 0.3s ease;
-}
-
-.bot-config-modal .modal-content {
-    background-color: #1e1e1e;
-    width: 90%;
-    max-width: 600px;
-    max-height: 90vh;
-    border-radius: 10px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-    overflow: hidden;
-    transform: scale(0.9);
-    opacity: 0;
-    animation: modalContentAppear 0.3s ease forwards;
-}
-
-.bot-config-modal .modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px;
-    border-bottom: 1px solid #333;
-}
-
-.bot-config-modal .modal-header h2 {
-    color: white;
-    margin: 0;
-    font-size: 1.5em;
-}
-
-.bot-config-modal .close-modal {
-    background: transparent;
-    border: none;
-    color: #999;
-    font-size: 1.5em;
-    cursor: pointer;
-    padding: 5px;
-    transition: color 0.3s ease;
-}
-
-.bot-config-modal .close-modal:hover {
-    color: white;
-}
-
-.bot-config-modal .modal-body {
-    padding: 20px;
-    overflow-y: auto;
-    max-height: calc(90vh - 80px);
-}
-
 @keyframes modalFadeIn {
     from {
         opacity: 0;
@@ -558,19 +514,5 @@ input:checked + .slider:before {
     to {
         transform: scale(1);
         opacity: 1;
-    }
-}
-
-/* Media queries para responsividad */
-@media (max-width: 768px) {
-    .bot-config-modal .modal-content {
-        width: 95%;
-        margin: 10px;
-    }
-    
-    .bot-config-button {
-        width: 28px;
-        height: 28px;
-        font-size: 14px;
     }
 }
