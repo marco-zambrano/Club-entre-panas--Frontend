@@ -89,19 +89,16 @@ document.addEventListener('DOMContentLoaded', () => {
     botConfigButton.addEventListener('click', () => {
         botConfigModal.classList.add('show');
     });
-
     // Close modal with button
     closeModalButton.addEventListener('click', () => {
         botConfigModal.classList.remove('show');
     });
-
     // Close modal when clicking outside
     botConfigModal.addEventListener('click', (e) => {
         if (e.target === botConfigModal) {
             botConfigModal.classList.remove('show');
         }
     });
-
     // Close modal with Escape key
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && botConfigModal.classList.contains('show')) {
