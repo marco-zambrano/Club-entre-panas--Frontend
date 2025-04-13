@@ -71,6 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             // In case there is no contact visible, set an adverstiment
                             document.querySelector('.chat-title').textContent = 'Selecciona un contacto';
                             document.querySelector('.messages').innerHTML = '';
+                            document.querySelector('.bot-toggle').style.display = 'none';
                         }
                     }
                 }
