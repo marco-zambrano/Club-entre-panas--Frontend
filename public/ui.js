@@ -24,15 +24,66 @@ export function createMessage(text, time, sender) {
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
 }
 
+export function updateContactsList(contacts) {
+    const contactsList = document.querySelector('.contacts-list');
+
+    contacts.forEach((contact, index) => {
+        const contactElement = document.createElement('div');
+        contactElement.className = `contact ${index === 0 ? 'active' : ''}`;
+        contactElement.dataset.platform = contact.platform;
+        contactElement.dataset.contactId = contact.id;
+
+        const contactInfo = document.createElement('div');
+        contactInfo.className = 'contact-info';
+
+        const contactName = document.createElement('span');
+        contactName.className = 'contact-name';
+        contactName.textContent = contact.name;
+
+        const platform = document.createElement('div');
+        platform.className = 'platform';
+        
+        const platformName = document.createElement('span');
+        platformName.textContent = contact.platform.charAt(0).toUpperCase() + contact.platform.slice(1);
+        
+        const platformIcon = document.createElement('i');
+        platformIcon.className = `fab fa-${contact.platform}-square ${contact.platform}-icon`;
+
+        const messageTime = document.createElement('span');
+        messageTime.className = 'contact-message-time';
+        messageTime.textContent = contact.lastMessageTime;
+
+        platform.appendChild(platformName);
+        platform.appendChild(platformIcon);
+        contactInfo.appendChild(contactName);
+        contactInfo.appendChild(platform);
+        contactInfo.appendChild(messageTime);
+        contactElement.appendChild(contactInfo);
+
+        // Agregar evento de clic para cambiar de contacto
+        contactElement.addEventListener('click', () => {
+            document.querySelectorAll('.contact').forEach(c => c.classList.remove('active'));
+            contactElement.classList.add('active');
+            document.querySelector('.chat-title').textContent = contact.name;
+            document.querySelector('.messages').innerHTML = '';
+            setCurrentContact(contact.id);
+        });
+
+        contactsList.appendChild(contactElement);
+    });
+
+    // Establecer el primer contacto como activo si existe
+    if (contacts.length > 0) {
+        setCurrentContact(contacts[0].id);
+        document.querySelector('.chat-title').textContent = contacts[0].name;
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     // functionality show / hide contacts in mobile
     document.querySelector('.toggle-contacts').addEventListener('click', function() {
         document.querySelector('.contacts-list').classList.toggle('show');
     });
-    
-    // Changes the title of te current chat
-    const changeChatTitle = (text) => document.querySelector('.chat-title').textContent = text;
-    
     
     // hide or show text input depending the individual bot toggle boolean value
     function handleInputVisibility(isChecked) {
@@ -47,31 +98,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelector('.individual-bot-toggle').addEventListener('change', function() {
         handleInputVisibility(this.checked);
     });
-    
-    
-    // select the contact using event delegation 
-    document.querySelector('.contacts-list').addEventListener('click', (e) => {
-        // verify if any child was clicked
-        const contactElement = e.target.closest('.contact');
-        if (!contactElement) return // return in case a contact is not clicked
-    
-        // update the active contact
-        document.querySelectorAll('.contact.active').forEach(c => c.classList.remove('active'));
-        contactElement.classList.add('active');
-        
-        // update de chat title
-        const contactName = contactElement.querySelector('.contact-name').textContent;
-        changeChatTitle(contactName);
-    
-        // Actualizar visibilidad del input al cambiar de contacto
-        handleInputVisibility(document.querySelector('.individual-bot-toggle').checked);
-        
-        // in mobile, it closes the contact panel in case you click one
-        if (window.matchMedia('(max-width: 768px)').matches) {
-            document.querySelector('.contacts-list').classList.remove('show');
-        }
-    });
-    
     
     // filter contacts for each platform 
     document.querySelectorAll('.platform-toggle').forEach(toggle => {
@@ -92,7 +118,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         if (firstVisibleContact) {
                             firstVisibleContact.classList.add('active');
                             const contactName = firstVisibleContact.querySelector('.contact-name').textContent;
-                            changeChatTitle(contactName);
+                            document.querySelector('.chat-title').textContent = contactName;
+                            setCurrentContact(firstVisibleContact.dataset.contactId);
                         } else {
                             // In case there is no contact visible, set an adverstiment
                             document.querySelector('.chat-title').textContent = 'Selecciona un contacto';
@@ -104,7 +131,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
     });
-    
     
     // Bot configuration modal functionality
     const botConfigButton = document.querySelector('.bot-config-button');
