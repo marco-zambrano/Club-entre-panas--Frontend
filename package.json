@@ -1,0 +1,26 @@
+{
+  "name": "club-entre-panas",
+  "version": "1.0.0",
+  "description": "��#\u0000 \u0000C\u0000l\u0000u\u0000b\u0000-\u0000e\u0000n\u0000t\u0000r\u0000e\u0000-\u0000p\u0000a\u0000n\u0000a\u0000s\u0000-\u0000-\u0000F\u0000r\u0000o\u0000n\u0000t\u0000e\u0000n\u0000d\u0000\r\u0000 \u0000",
+  "main": "client.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/marco-zambrano/Club-entre-panas--Frontend.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/marco-zambrano/Club-entre-panas--Frontend/issues"
+  },
+  "homepage": "https://github.com/marco-zambrano/Club-entre-panas--Frontend#readme",
+  "dependencies": {
+    "express": "^5.1.0",
+    "socket.io": "^4.8.1"
+  }
+}
