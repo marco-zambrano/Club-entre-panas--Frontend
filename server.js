@@ -20,7 +20,7 @@ io.on('connection', (socket) => {
             sender: Math.random() > 0.5 ? "bot" : "contact"
         };
         socket.emit('newMessage', data);
-    }, 5000);
+    }, 2500);
 
     socket.on('disconnect', () => {
         console.log('Cliente desconectado:', socket.id);

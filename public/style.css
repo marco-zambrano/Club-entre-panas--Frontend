@@ -277,26 +277,8 @@ input:checked + .slider:before {
 .bot-toggle.small input:checked + .slider:before {
     transform: translateX(20px);
 }
-.message:nth-child(even) {
-    align-self: flex-end;
-}
-.message-content {
-    background-color: #333;
-    padding: 10px 15px;
-    border-radius: 18px;
-    display: inline-block;
-    position: relative;
-}
-.message-time {
-    font-size: 0.7em;
-    color: rgba(255, 255, 255, 0.6);
-    margin-top: 4px;
-    display: block;
-    text-align: right;
-}
-.message:nth-child(even) .message-content {
-    background-color: #0b93f6;
-}
+
+
 /* Mensajes */
 .messages {
     flex: 1;
@@ -319,20 +301,30 @@ input:checked + .slider:before {
 
 .message {
     max-width: 80%;
-    align-self: flex-start;
-}
-/* Primeramente, esta tomando en consideracion los divs pares de la columna de messages ponerlas en flex end  */
-.message:nth-child(even) {
-    align-self: flex-end;
-}
-.message-content {
-    background-color: #333;
-    padding: 10px 15px;
     border-radius: 18px;
-    display: inline-block;
 }
-.message:nth-child(even) .message-content {
+.message.contact-sender {
+    align-self: flex-start;
+    background-color: #333;
+}
+.message.bot-sender {
+    align-self: flex-end;
     background-color: #0b93f6;
+}
+
+.message-content {
+    border-radius: 18px;
+    padding: 10px 15px;
+    display: inline-block;
+    position: relative;
+}
+
+.message-time {
+    font-size: 0.7em;
+    color: rgba(255, 255, 255, 0.6);
+    margin-top: 4px;
+    display: block;
+    text-align: right;
 }
 
 /* Campo de entrada de mensaje */

@@ -102,9 +102,10 @@
                         </label>
                     </div>
                 </div>
-                <div class="messages">
-                    
-                </div>
+
+                <!-- Here all the messages appear -->
+                <div class="messages"></div>
+
                 <div class="message-input-container">
                     <input type="text" class="message-input" placeholder="Escribir mensaje">
                     <button class="send-button">
@@ -122,7 +123,7 @@
 
     <!-- Incluimos Socket.IO del lado del cliente -->
     <script src="/socket.io/socket.io.js"></script>
-    <script src="ui.js"></script>
+    <script type="module" src="ui.js"></script>
     <script type="module" src="script.js"></script>
 </body>
 </html>

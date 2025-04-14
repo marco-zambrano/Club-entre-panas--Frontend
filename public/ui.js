@@ -1,3 +1,29 @@
+export function createMessage(text, time, sender) {
+    // Crear nuevo mensaje
+    const messageElement = document.createElement('div');
+    messageElement.className = 'message';
+
+    const messageContent = document.createElement('div');
+    messageContent.className = 'message-content';
+    messageContent.textContent = text;
+
+    const timeSpan = document.createElement('span');
+    timeSpan.className = 'message-time';
+    timeSpan.textContent = time;
+
+    // Se agrega el mensaje basado en el remitente usando su propiedad definida del css
+    messageElement.classList.add(`${sender}-sender`)
+    
+    // Añadir mensaje al chat
+    messageContent.appendChild(timeSpan);
+    messageElement.appendChild(messageContent);
+    document.querySelector('.messages').appendChild(messageElement);
+    
+    // Scroll al final de los mensajes
+    const messagesContainer = document.querySelector('.messages');
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     // functionality show / hide contacts in mobile
     document.querySelector('.toggle-contacts').addEventListener('click', function() {
@@ -105,8 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
             botConfigModal.classList.remove('show');
         }
     });
-    
-    
+
     // Funcionalidad para enviar mensajes
     document.querySelector('.send-button').addEventListener('click', sendMessage);
     document.querySelector('.message-input').addEventListener('keypress', function(e) {
@@ -126,22 +151,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const minutes = now.getMinutes();
         const timeString = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
         
-        // Crear nuevo mensaje
-        const messageElement = document.createElement('div');
-        messageElement.className = 'message';
-        messageElement.innerHTML = `
-            <div class="message-content">
-                ${messageText}
-                <span class="message-time">${timeString}</span>
-            </div>
-        `;
-        
-        // Añadir clase para alinear a la derecha (como si fuera enviado por el usuario)
-        messageElement.style.alignSelf = 'flex-end';
-        messageElement.querySelector('.message-content').style.backgroundColor = '#0b93f6';
-        
-        // Añadir mensaje al chat
-        document.querySelector('.messages').appendChild(messageElement);
+        // create the message
+        createMessage(messageText, timeString, 'bot');
         
         // Limpiar input
         input.value = '';
