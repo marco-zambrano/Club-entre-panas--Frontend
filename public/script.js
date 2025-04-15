@@ -6,6 +6,7 @@ let allContacts = []; // Mantener todos los contactos en memoria
 
 // Función para filtrar contactos basado en los toggles activos
 function filterContacts() {
+    document.querySelector('.bot-toggle').style.display = 'block';
     const filteredContacts = allContacts.filter(contact => {
         const platformToggle = document.querySelector(`.platform-toggle[data-platform="${contact.platform}"]`);
         return platformToggle && platformToggle.checked;
