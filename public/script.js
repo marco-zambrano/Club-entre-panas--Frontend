@@ -38,41 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.platform-toggle').forEach(toggle => {
         toggle.addEventListener('change', filterContacts);
     });
-
-    // Manejar el envío de mensajes
-    document.querySelector('.send-button').addEventListener('click', sendMessage);
-    document.querySelector('.message-input').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            sendMessage();
-        }
-    });
 });
-
-function sendMessage() {
-    const input = document.querySelector('.message-input');
-    const messageText = input.value.trim();
-    if (!messageText || !currentContactId) return;
-
-    // Obtener hora actual
-    const now = new Date();
-    const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-    // Crear el mensaje localmente
-    createMessage(messageText, timeString, 'bot');
-
-    // Enviar el mensaje al servidor
-    socket.emit('sendMessage', {
-        contactId: currentContactId,
-        messageText: messageText
-    });
-
-    // Limpiar input
-    input.value = '';
-
-    // Scroll al final de los mensajes
-    const messagesContainer = document.querySelector('.messages');
-    messagesContainer.scrollTop = messagesContainer.scrollHeight;
-}
 
 // Exportar la función para cambiar el contacto actual
 export function setCurrentContact(contactId) {

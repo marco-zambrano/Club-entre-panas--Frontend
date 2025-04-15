@@ -1,3 +1,5 @@
+import { setCurrentContact } from "./script.js";
+
 export function createMessage(text, time, sender) {
     // Crear nuevo mensaje
     const messageElement = document.createElement('div');
