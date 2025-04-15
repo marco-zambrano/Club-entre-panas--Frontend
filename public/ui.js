@@ -26,6 +26,8 @@ export function createMessage(text, time, sender) {
 
 export function updateContactsList(contacts) {
     const contactsList = document.querySelector('.contacts-list');
+    // Limpiar la lista existente
+    contactsList.innerHTML = '';
 
     contacts.forEach((contact, index) => {
         const contactElement = document.createElement('div');
@@ -76,6 +78,11 @@ export function updateContactsList(contacts) {
     if (contacts.length > 0) {
         setCurrentContact(contacts[0].id);
         document.querySelector('.chat-title').textContent = contacts[0].name;
+    } else {
+        // Si no hay contactos visibles, mostrar mensaje
+        document.querySelector('.chat-title').textContent = 'Selecciona un contacto';
+        document.querySelector('.messages').innerHTML = '';
+        document.querySelector('.bot-toggle').style.display = 'none';
     }
 }
 

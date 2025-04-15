@@ -2,11 +2,20 @@ import { socket, initSocket } from './socket.js';
 import { createMessage, updateContactsList } from './ui.js';
 
 let currentContactId = null;
+let allContacts = []; // Mantener todos los contactos en memoria
+
+// Función para filtrar contactos basado en los toggles activos
+function filterContacts() {
+    const filteredContacts = allContacts.filter(contact => {
+        const platformToggle = document.querySelector(`.platform-toggle[data-platform="${contact.platform}"]`);
+        return platformToggle && platformToggle.checked;
+    });
+    updateContactsList(filteredContacts);
+}
 
 document.addEventListener('DOMContentLoaded', () => {
     // Inicializar la conexión socket
     initSocket((data) => {
-        console.log(data.contactId === currentContactId)
         if (data.contactId === currentContactId) {
             const { message } = data;
             createMessage(message.text, message.time, message.sender);
@@ -15,54 +24,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Escuchar los contactos iniciales
     socket.on('initialContacts', (contacts) => {
-        updateContactsList(contacts);
+        allContacts = contacts; // Guardar todos los contactos
+        filterContacts(); // Aplicar filtros actuales
     });
 
     // Escuchar nuevos contactos
     socket.on('newContact', (contact) => {
-        const contactsList = document.querySelector('.contacts-list');
-        const contactElement = document.createElement('div');
-        contactElement.className = 'contact';
-        contactElement.dataset.platform = contact.platform;
-        contactElement.dataset.contactId = contact.id;
+        allContacts.push(contact); // Agregar nuevo contacto a la lista completa
+        filterContacts(); // Actualizar la lista filtrada
+    });
 
-        const contactInfo = document.createElement('div');
-        contactInfo.className = 'contact-info';
-
-        const contactName = document.createElement('span');
-        contactName.className = 'contact-name';
-        contactName.textContent = contact.name;
-
-        const platform = document.createElement('div');
-        platform.className = 'platform';
-        
-        const platformName = document.createElement('span');
-        platformName.textContent = contact.platform.charAt(0).toUpperCase() + contact.platform.slice(1);
-        
-        const platformIcon = document.createElement('i');
-        platformIcon.className = `fab fa-${contact.platform} ${contact.platform}-icon`;
-
-        const messageTime = document.createElement('span');
-        messageTime.className = 'contact-message-time';
-        messageTime.textContent = contact.lastMessageTime;
-
-        platform.appendChild(platformName);
-        platform.appendChild(platformIcon);
-        contactInfo.appendChild(contactName);
-        contactInfo.appendChild(platform);
-        contactInfo.appendChild(messageTime);
-        contactElement.appendChild(contactInfo);
-
-        // Agregar evento de clic para cambiar de contacto
-        contactElement.addEventListener('click', () => {
-            document.querySelectorAll('.contact').forEach(c => c.classList.remove('active'));
-            contactElement.classList.add('active');
-            document.querySelector('.chat-title').textContent = contact.name;
-            document.querySelector('.messages').innerHTML = '';
-            setCurrentContact(contact.id);
-        });
-
-        contactsList.appendChild(contactElement);
+    // Manejar los filtros de plataforma
+    document.querySelectorAll('.platform-toggle').forEach(toggle => {
+        toggle.addEventListener('change', filterContacts);
     });
 
     // Manejar el envío de mensajes
