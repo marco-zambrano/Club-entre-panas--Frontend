@@ -26,14 +26,14 @@ function generateRandomMessage() {
     const messages = [
         "Hola, ¿cómo estás?",
         "¿Podrías ayudarme con una consulta?",
-        "Necesito información sobre tus servicios",
-        "¿Tienes disponibilidad para hoy?",
-        "Me gustaría hacer una reserva",
+        "Necesito información sobre tus pulseras",
+        "¿Tienes disponibilidad para hablar hoy? 😊",
+        "Me gustaría preguntar por el accesorio...",
         "¿Cuál es el precio de...?",
-        "Gracias por tu ayuda",
+        "Gracias por tu ayuda ❤️",
         "¿Podrías darme más detalles?",
-        "Perfecto, me parece bien",
-        "¿A qué hora cierran?"
+        "Perfecto, me parece bien 👌",
+        "¿A qué hora puedo hablarles mañana?"
     ];
     return messages[Math.floor(Math.random() * messages.length)];
 }
@@ -61,7 +61,7 @@ io.on('connection', (socket) => {
         
         contacts.set(newContact.id, newContact);
         io.emit('newContact', newContact);
-    }, 10000);
+    }, 7000);
 
     // Enviar mensajes aleatorios cada 5 segundos
     messageInterval = setInterval(() => {
@@ -88,7 +88,7 @@ io.on('connection', (socket) => {
                 message: message
             });
         }
-    }, 5000);
+    }, 2000);
 
     socket.on('disconnect', () => {
         console.log('Cliente desconectado:', socket.id);

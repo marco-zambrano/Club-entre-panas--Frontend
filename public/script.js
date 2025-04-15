@@ -6,6 +6,7 @@ let currentContactId = null;
 document.addEventListener('DOMContentLoaded', () => {
     // Inicializar la conexión socket
     initSocket((data) => {
+        console.log(data.contactId === currentContactId)
         if (data.contactId === currentContactId) {
             const { message } = data;
             createMessage(message.text, message.time, message.sender);

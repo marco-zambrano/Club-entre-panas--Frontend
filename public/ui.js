@@ -47,7 +47,7 @@ export function updateContactsList(contacts) {
         platformName.textContent = contact.platform.charAt(0).toUpperCase() + contact.platform.slice(1);
         
         const platformIcon = document.createElement('i');
-        platformIcon.className = `fab fa-${contact.platform}-square ${contact.platform}-icon`;
+        platformIcon.className = `fab fa-${contact.platform} ${contact.platform}-icon`;
 
         const messageTime = document.createElement('span');
         messageTime.className = 'contact-message-time';
