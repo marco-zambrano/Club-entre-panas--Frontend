@@ -1,4 +1,4 @@
-import { setCurrentContact } from "./script.js";
+import { setCurrentContact, currentContactId } from "./script.js";
 
 export function createMessage(text, time, sender) {
     // Crear nuevo mensaje
@@ -31,9 +31,9 @@ export function updateContactsList(contacts) {
     // Limpiar la lista existente
     contactsList.innerHTML = '';
 
-    contacts.forEach((contact, index) => {
+    contacts.forEach((contact) => {
         const contactElement = document.createElement('div');
-        contactElement.className = `contact ${index === 0 ? 'active' : ''}`;
+        contactElement.className = `contact ${contact.id === currentContactId ? 'active' : ''}`;
         contactElement.dataset.platform = contact.platform;
         contactElement.dataset.contactId = contact.id;
 
@@ -76,10 +76,14 @@ export function updateContactsList(contacts) {
         contactsList.appendChild(contactElement);
     });
 
-    // Establecer el primer contacto como activo si existe
-    if (contacts.length > 0) {
-        setCurrentContact(contacts[0].id);
+    // Establecer el título del chat basado en el contacto actual
+    const currentContact = contacts.find(contact => contact.id === currentContactId);
+    if (currentContact) {
+        document.querySelector('.chat-title').textContent = currentContact.name;
+    } else if (contacts.length > 0) {
+        // Si no hay contacto actual pero hay contactos visibles, seleccionar el primero
         document.querySelector('.chat-title').textContent = contacts[0].name;
+        setCurrentContact(contacts[0].id);
     } else {
         // Si no hay contactos visibles, mostrar mensaje
         document.querySelector('.chat-title').textContent = 'Selecciona un contacto';
@@ -99,10 +103,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const messageInputContainer = document.querySelector('.message-input-container');
         messageInputContainer.style.display = isChecked ? 'none' : 'flex';
     }
-    
     // Initialice the input appearence based on the initial toggle value state
     handleInputVisibility(document.querySelector('.individual-bot-toggle').checked);
-    
     // listen changes in the toggle
     document.querySelector('.individual-bot-toggle').addEventListener('change', function() {
         handleInputVisibility(this.checked);
