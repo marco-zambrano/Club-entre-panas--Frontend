@@ -1,0 +1,546 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background-color: #121212;
+    color: #ffffff;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.chat-container {
+    width: 90%;
+    max-width: 1200px;
+    height: 80vh;
+    background-color: #121212;
+    border-radius: 10px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Filtros superiores */
+.filters {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px 20px;
+    border-bottom: 1px solid #333;
+}
+
+.platform-filters {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.filter {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.bot-toggle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Toggle switch */
+.toggle {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+}
+
+.toggle input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #333;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+/* Input del bot */
+input:checked + .slider {
+    background-color: #4CAF50;
+}
+
+/* Input de las redes sociales */
+input:checked + .facebook-slider {
+    background-color: #1877F2;
+}
+input:checked + .instagram-slider {
+    background-color: #E1306C;
+}
+input:checked + .whatsapp-slider {
+    background-color: #25D366;
+}
+/* Animation del input */
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+/* Botón de configuración del bot */
+.bot-config-button {
+    background-color: #c52828;
+    color: white;
+    border: none;
+    min-width: 35px;
+    min-height: 35px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 16px;
+}
+.bot-config-button:hover {
+    transform: scale(1.08);
+    background-color: #a32424;
+}
+
+/* Modal de configuración del bot */
+.bot-config-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+}
+.bot-config-modal.show {
+    display: flex;
+    animation: modalFadeIn 0.3s ease;
+}
+.bot-config-modal .modal-content {
+    background-color: #1e1e1e;
+    width: 90%;
+    max-width: 600px;
+    max-height: 90vh;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+    transform: scale(0.9);
+    opacity: 0;
+    animation: modalContentAppear 0.3s ease forwards;
+}
+.bot-config-modal .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid #333;
+}
+.bot-config-modal .modal-header h2 {
+    color: white;
+    margin: 0;
+    font-size: 1.5em;
+}
+.bot-config-modal .close-modal {
+    background: transparent;
+    border: none;
+    color: #999;
+    font-size: 1.5em;
+    cursor: pointer;
+    padding: 5px;
+    transition: color 0.3s ease;
+}
+.bot-config-modal .close-modal:hover {
+    color: white;
+}
+.bot-config-modal .modal-body {
+    padding: 20px;
+    overflow-y: auto;
+    max-height: calc(90vh - 80px);
+}
+
+/* Contenido principal */
+.main-content {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+/* Lista de contactos */
+.contacts-list {
+    width: 30%;
+    border-right: 1px solid #333;
+    overflow-y: auto;
+}
+.contacts-list::-webkit-scrollbar {
+    width: 6px;
+}
+.contacts-list::-webkit-scrollbar-thumb {
+    background-color: #2a2a2a;
+}
+.contacts-list::-webkit-scrollbar-thumb:hover {
+    background-color: #2f2f2f;
+}
+.contact {
+    padding: 15px;
+    border-bottom: 1px solid #333;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    position: relative;
+}
+.contact:hover {
+    background-color: #1e1e1e;
+}
+.contact.active {
+    background-color: #1e1e1e;
+}
+.contact-message-time {
+    position: absolute;
+    font-size: .6em;
+    bottom: 3px;
+    right: 15px;
+    opacity: .8;
+}
+.contact-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.contact.hidden {
+    display: none;
+}
+.platform {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.9em;
+}
+.facebook-icon {
+    color: #1877F2;
+}
+.instagram-icon {
+    color: #E1306C;
+}
+.whatsapp-icon {
+    color: #25D366;
+}
+
+/* Área de chat */
+.chat-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+}
+.chat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #333;
+}
+.chat-title {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+.bot-toggle.small .toggle {
+    width: 40px;
+    height: 20px;
+}
+.bot-toggle.small .slider:before {
+    height: 14px;
+    width: 14px;
+    left: 3px;
+    bottom: 3px;
+}
+.bot-toggle.small input:checked + .slider:before {
+    transform: translateX(20px);
+}
+
+
+/* Mensajes */
+.messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 15px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+/* Scrollbar for messages*/
+.messages::-webkit-scrollbar {
+    width: 6px;
+}
+.messages::-webkit-scrollbar-thumb {
+    background-color: #2a2a2a;
+}
+.messages::-webkit-scrollbar-thumb:hover {
+    background-color: #2f2f2f;
+}
+
+.message {
+    max-width: 80%;
+    border-radius: 18px;
+}
+.message.contact-sender {
+    align-self: flex-start;
+    background-color: #333;
+}
+.message.bot-sender {
+    align-self: flex-end;
+    background-color: #0b93f6;
+}
+
+.message-content {
+    border-radius: 18px;
+    padding: 10px 15px;
+    display: inline-block;
+    position: relative;
+}
+
+.message-time {
+    font-size: 0.7em;
+    color: rgba(255, 255, 255, 0.6);
+    margin-top: 4px;
+    display: block;
+    text-align: right;
+}
+
+/* Campo de entrada de mensaje */
+.message-input-container {
+    display: flex;
+    margin-top: 25px;
+    border-radius: 30px;
+    background-color: #1e1e1e;
+    border: 1px solid #333;
+    overflow: hidden;
+}
+.message-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: white;
+    padding: 15px 20px;
+    font-size: 1rem;
+    outline: none;
+}
+.message-input::placeholder {
+    color: #aaa;
+}
+.send-button {
+    background: transparent;
+    border: none;
+    color: white;
+    padding: 0 20px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color .2s ease;
+}
+.send-button:hover {
+    color: #0b93f6;
+}
+
+/* Botón para mostrar/ocultar contactos en móvil */
+.toggle-contacts {
+    display: none;
+    position: fixed;
+    bottom: 50px;
+    left: 20px; 
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #0b93f6;
+    color: white;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    z-index: 1000;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Media queries para responsividad */
+@media (max-width: 992px) {
+    .chat-container {
+        width: 100%;
+        height: 100vh;
+        border-radius: 0;
+    }
+    
+    .contacts-list {
+        width: 35%;
+    }
+    
+    .platform span {
+        font-size: .9em;
+    }
+}
+
+@media (max-width: 768px) {
+    .main-content {
+        position: relative;
+    }
+
+    .bot-toggle {
+        align-self: flex-end;
+    }
+
+    .contacts-list {
+        position: absolute;
+        width: 60%;
+        height: 100%;
+        z-index: 10;
+        background-color: #121212;
+        transform: translateX(-100%);
+        transition: transform .3s ease;
+    }
+    
+    .contacts-list.show {
+        transform: translateX(0);
+    }
+    
+    .toggle-contacts {
+        display: block;
+    }
+
+    .bot-config-modal .modal-content {
+        width: 95%;
+        margin: 10px;
+    }
+    
+    .bot-config-button {
+        width: 28px;
+        height: 28px;
+    }
+}
+
+@media (max-width: 576px) {
+    .filters {
+        padding: 25px 10px 10px 10px;
+        column-gap: 15px;
+    }
+    
+    .platform-filters {
+        gap: 15px;
+        flex-grow: 1;
+    }
+    .platform span {
+        display: none;
+    }
+    
+    .filter {
+        font-size: 0.8em;
+    }
+    
+    .toggle {
+        width: 40px;
+        height: 20px;
+    }
+    
+    .slider:before {
+        height: 14px;
+        width: 14px;
+        left: 3px;
+        bottom: 3px;
+    }
+    
+    input:checked + .slider:before {
+        transform: translateX(20px);
+    }
+    
+    .chat-area {
+        padding: 10px;
+    }
+    
+    .message-content {
+        padding: 8px 12px;
+        font-size: 0.9em;
+    }
+    
+    .contacts-list {
+        width: 100%;
+    }
+
+    .message-input {
+        padding: 12px 15px;
+    }
+}
+
+/* Estilos para cuando la pantalla está en modo vertical (móvil) */
+@media (max-height: 600px) {
+    .chat-container {
+        height: 100vh;
+    }
+    
+    .filters {
+        padding: 5px 10px;
+    }
+    
+    .contact {
+        padding: 10px;
+    }
+    
+    .messages {
+        padding: 10px 0;
+    }
+    
+    .message-input-container {
+        margin-top: 10px;
+    }
+    
+    .message-input {
+        padding: 10px 15px;
+    }
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes modalContentAppear {
+    from {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
