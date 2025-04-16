@@ -136,17 +136,24 @@ export function updateItemsList(items) {
 
     items.forEach((item) => {
         const itemElement = item.type === 'comment' ? createCommentCard(item) : createContactCard(item);
-
-        // Agregar evento de clic para cambiar de item
-        itemElement.addEventListener('click', () => {
-            document.querySelectorAll('.contact').forEach(c => c.classList.remove('active'));
-            itemElement.classList.add('active');
-            document.querySelector('.chat-title').textContent = item.name;
-            document.querySelector('.messages').innerHTML = '';
-            setCurrentItem(item.id);
-        });
-
         itemsList.appendChild(itemElement);
+
+        // Delegando eventos, para solo suscribirnos a uno
+        itemsList.addEventListener('click', (event) => {
+            const clicked = event.target.closest('.contact');
+            if (!clicked || !itemsList.contains(clicked)) return;
+
+            // Limpiar el estado activo anterior
+            document.querySelectorAll('.contact').forEach(c => c.classList.remove('active'));
+
+            // Activar el actual
+            clicked.classList.add('active');
+
+            // Mostrar nombre y limpiar mensajes
+            document.querySelector('.chat-title').textContent = clicked.dataset.itemName;
+            document.querySelector('.messages').innerHTML = '';
+            setCurrentItem(clicked.dataset.itemId);
+        });
     });
 
     // Establecer el título del chat basado en el item actual
