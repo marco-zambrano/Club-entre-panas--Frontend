@@ -1,4 +1,4 @@
-import { setCurrentContact, currentContactId } from "./script.js";
+import { setCurrentItem, currentItemId } from "./script.js";
 
 export function createMessage(text, time, sender) {
     // Crear nuevo mensaje
@@ -26,67 +26,140 @@ export function createMessage(text, time, sender) {
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
 }
 
-export function updateContactsList(contacts) {
-    const contactsList = document.querySelector('.contacts-list');
+function createContactCard(contact) {
+    const contactElement = document.createElement('div');
+    contactElement.className = `contact ${contact.id === currentItemId ? 'active' : ''}`;
+    contactElement.dataset.platform = contact.platform;
+    contactElement.dataset.itemId = contact.id;
+    contactElement.dataset.type = contact.type;
+
+    const contactInfo = document.createElement('div');
+    contactInfo.className = 'contact-info';
+
+    const contactName = document.createElement('span');
+    contactName.className = 'contact-name';
+    contactName.textContent = contact.name;
+
+    const platform = document.createElement('div');
+    platform.className = 'platform';
+    
+    const platformName = document.createElement('span');
+    platformName.textContent = contact.platform.charAt(0).toUpperCase() + contact.platform.slice(1);
+    
+    const platformIcon = document.createElement('i');
+    platformIcon.className = `fab fa-${contact.platform} ${contact.platform}-icon`;
+
+    const messageTime = document.createElement('span');
+    messageTime.className = 'contact-message-time';
+    messageTime.textContent = contact.lastMessageTime;
+
+    platform.appendChild(platformName);
+    platform.appendChild(platformIcon);
+    contactInfo.appendChild(contactName);
+    contactInfo.appendChild(platform);
+    contactInfo.appendChild(messageTime);
+    contactElement.appendChild(contactInfo);
+
+    return contactElement;
+}
+
+function createCommentCard(comment) {
+    const commentElement = document.createElement('div');
+    commentElement.className = `contact ${comment.id === currentItemId ? 'active' : ''}`;
+    commentElement.dataset.platform = comment.platform;
+    commentElement.dataset.itemId = comment.id;
+    commentElement.dataset.type = comment.type;
+
+    const commentInfo = document.createElement('div');
+    commentInfo.className = 'contact-info';
+    commentInfo.classList.add('comment');
+
+
+    // header
+    const commentHeader = document.createElement('div');
+    commentHeader.className = 'comment-header';
+
+    const commentName = document.createElement('span');
+    commentName.className = 'contact-name';
+    commentName.textContent = comment.name;
+
+    const typeIdentifier = document.createElement('span');
+    typeIdentifier.className = 'type-identifier';
+    typeIdentifier.textContent = 'C';
+    // header
+
+    
+    // comments details
+    const commentDetails = document.createElement('div');
+    commentDetails.classList.add('comment-details')
+    
+    const postTitle = document.createElement('span');
+    postTitle.className = 'post-title';
+    postTitle.textContent = comment.postTitle;
+
+    // Platform container
+    const platform = document.createElement('div');
+    platform.className = 'platform';
+    
+    const platformName = document.createElement('span');
+    platformName.textContent = comment.platform.charAt(0).toUpperCase() + comment.platform.slice(1);
+    
+    const platformIcon = document.createElement('i');
+    platformIcon.className = `fab fa-${comment.platform} ${comment.platform}-icon`;
+    
+    const messageTime = document.createElement('span');
+    messageTime.className = 'contact-message-time';
+    messageTime.textContent = comment.lastMessageTime;
+    // Platform container
+
+    commentHeader.appendChild(typeIdentifier);
+    commentHeader.appendChild(commentName);
+
+    platform.appendChild(platformName);
+    platform.appendChild(platformIcon);
+
+    commentDetails.appendChild(postTitle);
+    commentDetails.appendChild(platform);
+    commentDetails.appendChild(messageTime);
+    
+    commentInfo.appendChild(commentHeader);
+    commentInfo.appendChild(commentDetails)
+    commentElement.appendChild(commentInfo);
+
+    return commentElement;
+}
+
+export function updateItemsList(items) {
+    const itemsList = document.querySelector('.contacts-list');
     // Limpiar la lista existente
-    contactsList.innerHTML = '';
+    itemsList.innerHTML = '';
 
-    contacts.forEach((contact) => {
-        const contactElement = document.createElement('div');
-        contactElement.className = `contact ${contact.id === currentContactId ? 'active' : ''}`;
-        contactElement.dataset.platform = contact.platform;
-        contactElement.dataset.contactId = contact.id;
+    items.forEach((item) => {
+        const itemElement = item.type === 'comment' ? createCommentCard(item) : createContactCard(item);
 
-        const contactInfo = document.createElement('div');
-        contactInfo.className = 'contact-info';
-
-        const contactName = document.createElement('span');
-        contactName.className = 'contact-name';
-        contactName.textContent = contact.name;
-
-        const platform = document.createElement('div');
-        platform.className = 'platform';
-        
-        const platformName = document.createElement('span');
-        platformName.textContent = contact.platform.charAt(0).toUpperCase() + contact.platform.slice(1);
-        
-        const platformIcon = document.createElement('i');
-        platformIcon.className = `fab fa-${contact.platform} ${contact.platform}-icon`;
-
-        const messageTime = document.createElement('span');
-        messageTime.className = 'contact-message-time';
-        messageTime.textContent = contact.lastMessageTime;
-
-        platform.appendChild(platformName);
-        platform.appendChild(platformIcon);
-        contactInfo.appendChild(contactName);
-        contactInfo.appendChild(platform);
-        contactInfo.appendChild(messageTime);
-        contactElement.appendChild(contactInfo);
-
-        // Agregar evento de clic para cambiar de contacto
-        contactElement.addEventListener('click', () => {
+        // Agregar evento de clic para cambiar de item
+        itemElement.addEventListener('click', () => {
             document.querySelectorAll('.contact').forEach(c => c.classList.remove('active'));
-            contactElement.classList.add('active');
-            document.querySelector('.chat-title').textContent = contact.name;
+            itemElement.classList.add('active');
+            document.querySelector('.chat-title').textContent = item.name;
             document.querySelector('.messages').innerHTML = '';
-            setCurrentContact(contact.id);
+            setCurrentItem(item.id);
         });
 
-        contactsList.appendChild(contactElement);
+        itemsList.appendChild(itemElement);
     });
 
-    // Establecer el título del chat basado en el contacto actual
-    const currentContact = contacts.find(contact => contact.id === currentContactId);
-    if (currentContact) {
-        document.querySelector('.chat-title').textContent = currentContact.name;
-    } else if (contacts.length > 0) {
-        // Si no hay contacto actual pero hay contactos visibles, seleccionar el primero
-        document.querySelector('.chat-title').textContent = contacts[0].name;
-        setCurrentContact(contacts[0].id);
+    // Establecer el título del chat basado en el item actual
+    const currentItem = items.find(item => item.id === currentItemId);
+    if (currentItem) {
+        document.querySelector('.chat-title').textContent = currentItem.name;
+    } else if (items.length > 0) {
+        // Si no hay item actual pero hay items visibles, seleccionar el primero
+        document.querySelector('.chat-title').textContent = items[0].name;
+        setCurrentItem(items[0].id);
     } else {
-        // Si no hay contactos visibles, mostrar mensaje
-        document.querySelector('.chat-title').textContent = 'Selecciona un contacto';
+        // Si no hay items visibles, mostrar mensaje
+        document.querySelector('.chat-title').textContent = 'Selecciona un contacto o comentario';
         document.querySelector('.messages').innerHTML = '';
         document.querySelector('.bot-toggle').style.display = 'none';
     }

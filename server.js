@@ -38,21 +38,61 @@ function generateRandomMessage() {
     return messages[Math.floor(Math.random() * messages.length)];
 }
 
-// Almacenamiento de contactos y sus mensajes
+// Función para generar comentarios aleatorios
+function generateRandomComment() {
+    const comments = [
+        "Me encanta este producto! 😍",
+        "¿Tienen envíos a mi ciudad?",
+        "Necesito más información",
+        "¿Cuál es el precio?",
+        "Hermoso diseño ❤️",
+        "¿Tienen otros colores?",
+        "¿Hacen ventas al por mayor?",
+        "Excelente calidad",
+        "¿Tienen stock disponible?",
+        "¿Aceptan tarjetas de crédito?"
+    ];
+    return comments[Math.floor(Math.random() * comments.length)];
+}
+
+// Función para generar títulos de publicación aleatorios
+function generateRandomPostTitle() {
+    const titles = [
+        "Nueva colección de...",
+        "Ofertas especiales en...",
+        "Últimas tendencias en...",
+        "Descuentos exclusivos...",
+        "Productos destacados...",
+        "Novedades en nuestra...",
+        "Promoción especial de...",
+        "Lo más vendido en...",
+        "Colección limitada de...",
+        "Lanzamiento especial..."
+    ];
+    return titles[Math.floor(Math.random() * titles.length)];
+}
+
+// Almacenamiento de contactos y comentarios
 const contacts = new Map();
+const comments = new Map();
 let contactCreationInterval;
+let commentCreationInterval;
 let messageInterval;
 
 io.on('connection', (socket) => {
     console.log('Nuevo cliente conectado:', socket.id);
 
-    // Enviar los contactos existentes al cliente
-    socket.emit('initialContacts', Array.from(contacts.values()));
+    // Enviar los contactos y comentarios existentes al cliente
+    socket.emit('initialData', {
+        contacts: Array.from(contacts.values()),
+        comments: Array.from(comments.values())
+    });
 
-    // Crear un nuevo contacto cada 10 segundos
+    // Crear un nuevo contacto cada 5 segundos
     contactCreationInterval = setInterval(() => {
         const newContact = {
             id: `contact-${Date.now()}`,
+            type: 'contact',
             name: generateRandomName(),
             platform: generateRandomPlatform(),
             lastMessageTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
@@ -60,39 +100,61 @@ io.on('connection', (socket) => {
         };
         
         contacts.set(newContact.id, newContact);
-        io.emit('newContact', newContact);
-    }, 7000);
+        io.emit('newItem', newContact);
+    }, 5000);
 
-    // Enviar mensajes aleatorios cada 5 segundos
+    // Crear un nuevo comentario cada 8 segundos
+    commentCreationInterval = setInterval(() => {
+        const newComment = {
+            id: `comment-${Date.now()}`,
+            type: 'comment',
+            name: generateRandomName(),
+            platform: generateRandomPlatform(),
+            lastMessageTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            postTitle: generateRandomPostTitle(),
+            messages: []
+        };
+        
+        comments.set(newComment.id, newComment);
+        io.emit('newItem', newComment);
+    }, 5000);
+
+    // Enviar mensajes o comentarios aleatorios
     messageInterval = setInterval(() => {
-        if (contacts.size > 0) {
-            // Seleccionar un contacto aleatorio
-            const contactIds = Array.from(contacts.keys());
-            const randomContactId = contactIds[Math.floor(Math.random() * contactIds.length)];
-            const contact = contacts.get(randomContactId);
+        if (contacts.size > 0 || comments.size > 0) {
+            // Decidir aleatoriamente si enviar a un contacto o comentario
+            const isContact = Math.random() > 0.5;
+            const items = isContact ? contacts : comments;
+            
+            if (items.size > 0) {
+                const itemIds = Array.from(items.keys());
+                const randomId = itemIds[Math.floor(Math.random() * itemIds.length)];
+                const item = items.get(randomId);
 
-            // Crear un nuevo mensaje
-            const message = {
-                text: generateRandomMessage(),
-                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                sender: Math.random() > 0.5 ? 'bot' : 'contact'
-            };
+                // Crear un nuevo mensaje
+                const message = {
+                    text: isContact ? generateRandomMessage() : generateRandomComment(),
+                    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                    sender: Math.random() > 0.5 ? 'bot' : 'contact'
+                };
 
-            // Agregar el mensaje al contacto
-            contact.messages.push(message);
-            contact.lastMessageTime = message.time;
+                // Agregar el mensaje al item
+                item.messages.push(message);
+                item.lastMessageTime = message.time;
 
-            // Enviar el mensaje a todos los clientes
-            io.emit('newMessage', {
-                contactId: randomContactId,
-                message: message
-            });
+                // Enviar el mensaje a todos los clientes
+                io.emit('newMessage', {
+                    itemId: randomId,
+                    message: message
+                });
+            }
         }
     }, 2000);
 
     socket.on('disconnect', () => {
         console.log('Cliente desconectado:', socket.id);
         clearInterval(contactCreationInterval);
+        clearInterval(commentCreationInterval);
         clearInterval(messageInterval);
     });
 });
