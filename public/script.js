@@ -3,16 +3,22 @@ import { createMessage, updateItemsList } from './ui.js';
 
 export let currentItemId = null;
 let allItems = []; // Mantener todos los items (contactos y comentarios) en memoria
+let currentFilter = 'contact'; // Por defecto mostramos contacts
 
-// Función para filtrar items basado en los toggles activos
+// Función para filtrar items basado en los toggles activos y el tipo de item
 function filterItems() {
     document.querySelector('.bot-toggle').style.display = 'block';
-    
+
     const filteredItems = allItems.filter(item => {
         const platformToggle = document.querySelector(`.platform-toggle[data-platform="${item.platform}"]`);
-        return platformToggle && platformToggle.checked;
+        const matchesPlatform = platformToggle && platformToggle.checked;
+        const matchesType = currentFilter === 'contact' ? item.type === 'contact' : item.type === 'comment';
+        
+        console.log('item type: ', item.type, '\n')
+        console.log('Matching types: ', matchesType)
+        return matchesPlatform && matchesType;
     });
-    
+
     // Verificar si el item actual sigue visible después del filtrado
     const currentItemStillVisible = filteredItems.some(item => item.id === currentItemId);
     
@@ -35,14 +41,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Escuchar los datos iniciales
     socket.on('initialData', (data) => {
-        console.log('Received initial data:', data);
         allItems = [...data.contacts, ...data.comments]; // Combinar contactos y comentarios
         filterItems(); // Aplicar filtros actuales
     });
 
     // Escuchar nuevos items
     socket.on('newItem', (item) => {
-        console.log('Received new item:', item);
+        // console.log('Received new item:', item);
         allItems.push(item); // Agregar nuevo item a la lista completa
         filterItems(); // Actualizar la lista filtrada
     });
@@ -50,6 +55,36 @@ document.addEventListener('DOMContentLoaded', () => {
     // Manejar los filtros de plataforma
     document.querySelectorAll('.platform-toggle').forEach(toggle => {
         toggle.addEventListener('change', filterItems);
+    });
+
+    // Manejar el filtro de tipo (chat/comentario)
+    const chatButton = document.querySelector('.item-chat');
+    const commentButton = document.querySelector('.item-comment');
+
+    // Función para actualizar el estado de los botones
+    function updateFilterButtons() {
+        chatButton.classList.toggle('active', currentFilter === 'contact');
+        commentButton.classList.toggle('active', currentFilter === 'comment');
+    }
+
+    // Inicializar el estado de los botones
+    updateFilterButtons();
+
+    // Event listeners para los botones de filtro
+    chatButton.addEventListener('click', () => {
+        if (currentFilter !== 'contact') {
+            currentFilter = 'contact';
+            updateFilterButtons();
+            filterItems();
+        }
+    });
+
+    commentButton.addEventListener('click', () => {
+        if (currentFilter !== 'comment') {
+            currentFilter = 'comment';
+            updateFilterButtons();
+            filterItems();
+        }
     });
 });
 
