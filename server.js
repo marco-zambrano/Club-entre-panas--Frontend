@@ -101,7 +101,7 @@ io.on('connection', (socket) => {
         
         contacts.set(newContact.id, newContact);
         io.emit('newItem', newContact);
-    }, 5000);
+    }, 4000);
 
     // Crear un nuevo comentario cada 8 segundos
     commentCreationInterval = setInterval(() => {
@@ -117,7 +117,7 @@ io.on('connection', (socket) => {
         
         comments.set(newComment.id, newComment);
         io.emit('newItem', newComment);
-    }, 5000);
+    }, 7000);
 
     // Enviar mensajes o comentarios aleatorios
     messageInterval = setInterval(() => {
