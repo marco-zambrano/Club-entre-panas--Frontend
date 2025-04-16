@@ -148,13 +148,8 @@ export function updateItemsList(items, currentFilter) {
 
     // Verifica si hay items activos
     const currentItem = items.find(item => item.id === currentItemId);
-    if (!currentItem && items.length > 0) {
-        // Si no hay activo, pero si hay contactos o comentarios, seleccionamos el primero
-        document.querySelector('.chat-title').textContent = items[0].name;
-        setCurrentItem(items[0].id);
-        items[0].classList.add('active');
-    } else if (!currentItem && items.length === 0){
-        // Si no hay items visibles, mostrar mensaje
+    // Si no hay items visibles, mostrar mensaje
+    if (!currentItem && items.length === 0){
         document.querySelector('.chat-title').textContent = 'Selecciona un contacto o comentario';
         document.querySelector('.messages').innerHTML = '';
         document.querySelector('.bot-toggle').style.display = 'none';

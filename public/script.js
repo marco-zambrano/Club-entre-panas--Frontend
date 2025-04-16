@@ -22,8 +22,9 @@ function filterItems() {
     
     // Si el item actual ya no es visible, seleccionar el primer item visible
     if (!currentItemStillVisible && filteredItems.length > 0) {
+        console.log(filteredItems[0].name)
         setCurrentItem(filteredItems[0].id);
-        document.querySelector('chat-title').textContent = filteredItems[0].name;
+        document.querySelector('.chat-title').textContent = filteredItems[0].name;
     }
     
     updateItemsList(filteredItems, currentFilter);
