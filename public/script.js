@@ -13,9 +13,7 @@ function filterItems() {
         const platformToggle = document.querySelector(`.platform-toggle[data-platform="${item.platform}"]`);
         const matchesPlatform = platformToggle && platformToggle.checked;
         const matchesType = currentFilter === 'contact' ? item.type === 'contact' : item.type === 'comment';
-        
-        console.log('item type: ', item.type, '\n')
-        console.log('Matching types: ', matchesType)
+
         return matchesPlatform && matchesType;
     });
 
@@ -24,14 +22,15 @@ function filterItems() {
     
     // Si el item actual ya no es visible, seleccionar el primer item visible
     if (!currentItemStillVisible && filteredItems.length > 0) {
-        currentItemId = filteredItems[0].id;
+        setCurrentItem(filteredItems[0].id);
+        document.querySelector('chat-title').textContent = filteredItems[0].name;
     }
     
-    updateItemsList(filteredItems);
+    updateItemsList(filteredItems, currentFilter);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Inicializar la conexión socket
+    // Inicializar la conexión socket para recibir mensajes
     initSocket((data) => {
         if (data.itemId === currentItemId) {
             const { message } = data;
@@ -47,7 +46,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Escuchar nuevos items
     socket.on('newItem', (item) => {
-        // console.log('Received new item:', item);
         allItems.push(item); // Agregar nuevo item a la lista completa
         filterItems(); // Actualizar la lista filtrada
     });

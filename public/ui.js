@@ -129,42 +129,31 @@ function createCommentCard(comment) {
     return commentElement;
 }
 
-export function updateItemsList(items) {
+export function updateItemsList(items, currentFilter) {
     const itemsList = document.querySelector('.contacts-list');
-    // Limpiar la lista existente
     itemsList.innerHTML = '';
 
-    items.forEach((item) => {
-        const itemElement = item.type === 'comment' ? createCommentCard(item) : createContactCard(item);
-        itemsList.appendChild(itemElement);
+    // Create contact or comment card
+    if (currentFilter === 'contact') {
+        items.forEach(item => {
+            const itemElement = createContactCard(item);
+            itemsList.appendChild(itemElement);
+        })
+    } else {
+        items.forEach(item => {
+            const itemElement = createCommentCard(item);
+            itemsList.appendChild(itemElement);
+        })
+    }
 
-        // Delegando eventos, para solo suscribirnos a uno
-        itemsList.addEventListener('click', (event) => {
-            const clicked = event.target.closest('.contact');
-            if (!clicked || !itemsList.contains(clicked)) return;
-
-            // Limpiar el estado activo anterior
-            document.querySelectorAll('.contact').forEach(c => c.classList.remove('active'));
-
-            // Activar el actual
-            clicked.classList.add('active');
-
-            // Mostrar nombre y limpiar mensajes
-            document.querySelector('.chat-title').textContent = clicked.dataset.itemName;
-            document.querySelector('.messages').innerHTML = '';
-            setCurrentItem(clicked.dataset.itemId);
-        });
-    });
-
-    // Establecer el título del chat basado en el item actual
+    // Verifica si hay items activos
     const currentItem = items.find(item => item.id === currentItemId);
-    if (currentItem) {
-        document.querySelector('.chat-title').textContent = currentItem.name;
-    } else if (items.length > 0) {
-        // Si no hay item actual pero hay items visibles, seleccionar el primero
+    if (!currentItem && items.length > 0) {
+        // Si no hay activo, pero si hay contactos o comentarios, seleccionamos el primero
         document.querySelector('.chat-title').textContent = items[0].name;
         setCurrentItem(items[0].id);
-    } else {
+        items[0].classList.add('active');
+    } else if (!currentItem && items.length === 0){
         // Si no hay items visibles, mostrar mensaje
         document.querySelector('.chat-title').textContent = 'Selecciona un contacto o comentario';
         document.querySelector('.messages').innerHTML = '';
@@ -173,6 +162,24 @@ export function updateItemsList(items) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    // event listener for the contact or comment list
+    document.querySelector('.contacts-list').addEventListener('click', (event) => {
+        const clicked = event.target.closest('.contact');
+        if (!clicked) return;
+
+        // Remover la clase active del elemento que la tenía previamente
+        const previouslyActive = document.querySelector('.contact.active');
+        if (previouslyActive) previouslyActive.classList.remove('active');
+
+        // Activar el elemento clicked, ya sea comentario o contacto
+        clicked.classList.add('active');
+        setCurrentItem(clicked.dataset.itemId);
+        
+        // Actualizar el título del chat con el nombre del contacto/comentario
+        const contactName = clicked.querySelector('.contact-name').textContent;
+        document.querySelector('.chat-title').textContent = contactName;
+    });
+
     // functionality show / hide contacts in mobile
     document.querySelector('.toggle-contacts').addEventListener('click', function() {
         document.querySelector('.contacts-list').classList.toggle('show');
@@ -185,49 +192,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     // Initialice the input appearence based on the initial toggle value state
     handleInputVisibility(document.querySelector('.individual-bot-toggle').checked);
-    // listen changes in the toggle
+    // listen changes in the toggle for the input appearance
     document.querySelector('.individual-bot-toggle').addEventListener('change', function() {
         handleInputVisibility(this.checked);
     });
-    
-    // filter contacts for each platform 
-    document.querySelectorAll('.platform-toggle').forEach(toggle => {
-        toggle.addEventListener('change', function() {
-            const platform = this.getAttribute('data-platform');
-            const isChecked = this.checked;
-            
-            // show or hide the contacts based on the filter
-            document.querySelectorAll(`.contact[data-platform="${platform}"]`).forEach(contact => {
-                if (isChecked) {
-                    contact.classList.remove('hidden');
-                } else {
-                    contact.classList.add('hidden');
-                    
-                    // if the contact is hidden by the filter, then find another contact and add it the class active
-                    if (contact.classList.contains('active')) {
-                        const firstVisibleContact = document.querySelector('.contact:not(.hidden)');
-                        if (firstVisibleContact) {
-                            firstVisibleContact.classList.add('active');
-                            const contactName = firstVisibleContact.querySelector('.contact-name').textContent;
-                            document.querySelector('.chat-title').textContent = contactName;
-                            setCurrentContact(firstVisibleContact.dataset.contactId);
-                        } else {
-                            // In case there is no contact visible, set an adverstiment
-                            document.querySelector('.chat-title').textContent = 'Selecciona un contacto';
-                            document.querySelector('.messages').innerHTML = '';
-                            document.querySelector('.bot-toggle').style.display = 'none';
-                        }
-                    }
-                }
-            });
-        });
-    });
-    
+
     // Bot configuration modal functionality
     const botConfigButton = document.querySelector('.bot-config-button');
     const botConfigModal = document.querySelector('.bot-config-modal');
     const closeModalButton = document.querySelector('.close-modal');
-    
     // Open modal
     botConfigButton.addEventListener('click', () => {
         botConfigModal.classList.add('show');
