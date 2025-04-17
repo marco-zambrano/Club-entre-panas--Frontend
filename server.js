@@ -16,8 +16,9 @@ function generateRandomName() {
 }
 
 // Función para generar plataformas aleatorias
-function generateRandomPlatform() {
-    const platforms = ['facebook', 'instagram', 'whatsapp'];
+function generateRandomPlatform(platform) {
+    let platforms = null;
+    platforms = platform === 'contact' ? ['facebook', 'instagram', 'whatsapp'] : ['facebook', 'instagram']
     return platforms[Math.floor(Math.random() * platforms.length)];
 }
 
@@ -94,7 +95,7 @@ io.on('connection', (socket) => {
             id: `contact-${Date.now()}`,
             type: 'contact',
             name: generateRandomName(),
-            platform: generateRandomPlatform(),
+            platform: generateRandomPlatform('contact'),
             lastMessageTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
             messages: []
         };
@@ -109,7 +110,7 @@ io.on('connection', (socket) => {
             id: `comment-${Date.now()}`,
             type: 'comment',
             name: generateRandomName(),
-            platform: generateRandomPlatform(),
+            platform: generateRandomPlatform('comment'),
             lastMessageTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
             postTitle: generateRandomPostTitle(),
             messages: []

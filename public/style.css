@@ -108,7 +108,6 @@ input:checked + .slider:before {
     gap: 10px;
     margin-left: 20px;
 }
-
 .item-filter button {
     padding: 8px 15px;
     border: none;
@@ -119,16 +118,13 @@ input:checked + .slider:before {
     cursor: pointer;
     transition: all 0.3s ease;
 }
-
 .item-filter button:hover {
     background-color: #444;
 }
-
 .item-filter button.active {
     background-color: #0b93f6;
     cursor: default;
 }
-
 .item-filter button.active:hover {
     background-color: #0b93f6;
 }
@@ -501,9 +497,18 @@ input:checked + .slider:before {
         column-gap: 15px;
     }
     .platform-filters {
-        gap: 15px;
+        gap: 12px;
         flex-grow: 1;
     }
+    .item-filter {
+        margin-left: 0px;
+        gap: 3px;
+    }
+    .item-filter button {
+        padding: 6px 12px;
+        font-size: .75em;
+    }
+    
     .filter {
         font-size: 0.8em;
     }
