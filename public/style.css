@@ -370,6 +370,14 @@ input:checked + .slider:before {
 .message {
     max-width: 80%;
     border-radius: 18px;
+    position: relative;
+}
+.message-audio {
+    position: absolute;
+    bottom: 10px;
+    left: 20px;
+    opacity: .6;
+    font-size: .7em;
 }
 .message.contact-sender {
     align-self: flex-start;

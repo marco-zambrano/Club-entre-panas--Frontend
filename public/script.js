@@ -35,10 +35,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Escuchar nuevos mensajes
     socket.on('newMessage', (data) => {
-        console.log(data);
         const itemId = data.itemId;
-        // filter messages and comments appearance 
-        if (itemId.startsWith(currentFilter)) createMessage(data.message.text, data.message.time, data.message.sender);
+        if (itemId.startsWith(currentFilter)) {
+            createMessage(data.message.text, data.message.time, data.message.sender, data.message.type); // filter messages and comments appearance 
+        }
     });
     // hear the initial data
     socket.on('initialData', (data) => {

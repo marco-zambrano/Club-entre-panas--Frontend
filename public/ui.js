@@ -1,10 +1,19 @@
 import { setCurrentItem, currentItemId, filterItems, setCurrentFilter, currentFilter } from "./script.js";
 
-export function createMessage(text, time, sender) {
-    // Crear nuevo mensaje
+export function createMessage(text, time, sender, type) {
+    
+    // create new message
     const messageElement = document.createElement('div');
     messageElement.className = 'message';
 
+    // create audio spam in case the message is transcripted
+    if (type === 'audio') {
+        const audioAdvice = document.createElement('span');
+        audioAdvice.className = 'message-audio';
+        audioAdvice.textContent = 'audio.. 🔉';
+        messageElement.appendChild(audioAdvice)
+    }
+    
     const messageContent = document.createElement('div');
     messageContent.className = 'message-content';
     messageContent.textContent = text;
@@ -19,6 +28,7 @@ export function createMessage(text, time, sender) {
     // Añadir mensaje al chat
     messageContent.appendChild(timeSpan);
     messageElement.appendChild(messageContent);
+    // main container
     document.querySelector('.messages').appendChild(messageElement);
     
     // Scroll al final de los mensajes

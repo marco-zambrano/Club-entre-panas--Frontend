@@ -125,6 +125,7 @@ io.on('connection', (socket) => {
         if (contacts.size > 0 || comments.size > 0) {
             // Decidir aleatoriamente si enviar a un comentario o mensaje
             const isContact = Math.random() > 0.5;
+            const sender = Math.random() > 0.5 ? 'bot' : 'contact';
             const items = isContact ? contacts : comments;
             
             if (items.size > 0) {
@@ -136,8 +137,8 @@ io.on('connection', (socket) => {
                 const message = {
                     text: isContact ? generateRandomMessage() : generateRandomComment(),
                     time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                    sender: Math.random() > 0.5 ? 'bot' : 'contact',
-                    type: Math.random() > 0.5 ? 'audio' : '' // The message sets as type audio in case it is transcripted
+                    sender: sender,
+                    type: (Math.random() > 0.5 && isContact && sender === 'contact') ? 'audio' : '' // The message sets as type audio in case it is transcripted (not for comments)
                 };
 
                 // Agregar el mensaje al item
