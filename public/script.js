@@ -2,9 +2,9 @@ import { socket, initSocket } from './socket.js';
 import { createMessage, updateItemsList } from './ui.js';
 
 export let currentItemId = null;
-let allItems = []; // Mantener todos los items (contactos y comentarios) en memoria
-export let currentFilter; // Por defecto mostramos contacts
+export let currentFilter = null;
 setCurrentFilter('contact');
+let allItems = []; // Mantener todos los items (contactos y comentarios) en memoria (podrian traerse de la BD en futuro)
 
 // Función para filtrar items basado en los toggles activos y el tipo de item
 export function filterItems() {
