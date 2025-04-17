@@ -129,6 +129,11 @@ input:checked + .slider:before {
     background-color: #0b93f6;
 }
 
+/* WhatsApp toggle */
+#whatsapp-toggle.active {
+    display: none;
+}
+
 /* Botón de configuración del bot */
 .bot-config-button {
     background-color: #c52828;

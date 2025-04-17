@@ -62,6 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Manejar el filtro de tipo (chat/comentario)
     const chatButton = document.querySelector('.item-chat');
     const commentButton = document.querySelector('.item-comment');
+    const whatsAppToggle = document.getElementById('whatsapp-toggle');
 
     // Función para actualizar el estado de los botones
     function updateFilterButtons() {
@@ -76,6 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
     chatButton.addEventListener('click', () => {
         if (currentFilter !== 'contact') {
             currentFilter = 'contact';
+            whatsAppToggle.classList.toggle('active');
             updateFilterButtons();
             filterItems();
         }
@@ -84,6 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
     commentButton.addEventListener('click', () => {
         if (currentFilter !== 'comment') {
             currentFilter = 'comment';
+            whatsAppToggle.classList.toggle('active');
             updateFilterButtons();
             filterItems();
         }
