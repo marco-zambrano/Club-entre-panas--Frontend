@@ -22,21 +22,24 @@ function filterItems() {
     
     // Si el item actual ya no es visible, seleccionar el primer item visible
     if (!currentItemStillVisible && filteredItems.length > 0) {
-        console.log(filteredItems[0].name)
         setCurrentItem(filteredItems[0].id);
         document.querySelector('.chat-title').textContent = filteredItems[0].name;
+        document.querySelector('.messages').innerHTML = '';
     }
     
     updateItemsList(filteredItems, currentFilter);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Inicializar la conexión socket para recibir mensajes
-    initSocket((data) => {
-        if (data.itemId === currentItemId) {
-            const { message } = data;
-            createMessage(message.text, message.time, message.sender);
-        }
+    // Inicializar la conexión socket
+    initSocket();
+
+    // Escuchar nuevos mensajes
+    socket.on('newMessage', (data) => {
+        console.log(data);
+        const itemId = data.itemId;
+        // filter messages and comments
+        if (itemId.startsWith(currentFilter)) createMessage(data.message.text, data.message.time, data.message.sender);
     });
 
     // Escuchar los datos iniciales

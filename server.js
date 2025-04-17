@@ -122,7 +122,7 @@ io.on('connection', (socket) => {
     // Enviar mensajes o comentarios aleatorios
     messageInterval = setInterval(() => {
         if (contacts.size > 0 || comments.size > 0) {
-            // Decidir aleatoriamente si enviar a un contacto o comentario
+            // Decidir aleatoriamente si enviar a un comentario o mensaje
             const isContact = Math.random() > 0.5;
             const items = isContact ? contacts : comments;
             

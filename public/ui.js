@@ -173,6 +173,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // Actualizar el título del chat con el nombre del contacto/comentario
         const contactName = clicked.querySelector('.contact-name').textContent;
         document.querySelector('.chat-title').textContent = contactName;
+        // Borrar el content del chat anterior
+        document.querySelector('.messages').innerHTML = '';
     });
 
     // functionality show / hide contacts in mobile
