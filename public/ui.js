@@ -1,4 +1,4 @@
-import { setCurrentItem, currentItemId } from "./script.js";
+import { setCurrentItem, currentItemId, filterItems, setCurrentFilter, currentFilter } from "./script.js";
 
 export function createMessage(text, time, sender) {
     // Crear nuevo mensaje
@@ -192,6 +192,39 @@ document.addEventListener('DOMContentLoaded', () => {
     // listen changes in the toggle for the input appearance
     document.querySelector('.individual-bot-toggle').addEventListener('change', function() {
         handleInputVisibility(this.checked);
+    });
+
+    // Handle the platform filters
+    document.querySelectorAll('.platform-toggle').forEach(toggle => {
+        toggle.addEventListener('change', filterItems);
+    });
+    // Manejar el filtro de tipo (chat / comentario)
+    const chatButton = document.querySelector('.item-chat');
+    const commentButton = document.querySelector('.item-comment');
+    const whatsAppToggle = document.getElementById('whatsapp-toggle');
+    // Función para actualizar el estado de los botones
+    function updateFilterButtons() {
+        chatButton.classList.toggle('active', currentFilter === 'contact');
+        commentButton.classList.toggle('active', currentFilter === 'comment');
+    }
+    // Inicializar el estado de los botones
+    updateFilterButtons();
+    // Event listeners para los botones de filtro
+    chatButton.addEventListener('click', () => {
+        if (currentFilter !== 'contact') {
+            setCurrentFilter('contact');
+            whatsAppToggle.classList.toggle('active');
+            updateFilterButtons();
+            filterItems();
+        }
+    });
+    commentButton.addEventListener('click', () => {
+        if (currentFilter !== 'comment') {
+            setCurrentFilter('comment');
+            whatsAppToggle.classList.toggle('active');
+            updateFilterButtons();
+            filterItems();
+        }
     });
 
     // Bot configuration modal functionality

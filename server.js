@@ -136,7 +136,8 @@ io.on('connection', (socket) => {
                 const message = {
                     text: isContact ? generateRandomMessage() : generateRandomComment(),
                     time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                    sender: Math.random() > 0.5 ? 'bot' : 'contact'
+                    sender: Math.random() > 0.5 ? 'bot' : 'contact',
+                    type: Math.random() > 0.5 ? 'audio' : '' // The message sets as type audio in case it is transcripted
                 };
 
                 // Agregar el mensaje al item
