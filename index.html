@@ -26,12 +26,16 @@
                         <span class="slider instagram-slider"></span>
                     </label>
                 </div>
-                <div class="filter">
+                <div class="filter" id="whatsapp-toggle">
                     <span>WhatsApp</span>
                     <label class="toggle">
                         <input type="checkbox" checked class="platform-toggle" data-platform="whatsapp">
                         <span class="slider whatsapp-slider"></span>
                     </label>
+                </div>
+                <div class="item-filter">
+                    <button class="item-chat">Chats</button>
+                    <button class="item-comment">Comentarios</button>
                 </div>
             </div>
             <button class="bot-config-button">
@@ -57,18 +61,7 @@
         <!-- Contenido principal -->
         <div class="main-content">
             <!-- Lista de contactos -->
-            <div class="contacts-list">
-                <!-- <div class="contact active" data-platform="facebook">
-                    <div class="contact-info">
-                        <span class="contact-name">Contacto 1</span>
-                        <div class="platform">
-                            <span>Facebook</span>
-                            <i class="fab fa-facebook-square facebook-icon"></i>
-                        </div>
-                        <span class="contact-message-time">12:44 pm</span>
-                    </div>
-                </div> -->
-            </div>
+            <div class="contacts-list"></div>
 
             <!-- Área de chat -->
             <div class="chat-area">
@@ -102,7 +95,7 @@
     </div>
 
     <!-- Incluimos Socket.IO del lado del cliente -->
-    <script src="/socket.io/socket.io.js"></script>
+    <script type="module" src="/socket.io/socket.io.js"></script>
     <script type="module" src="ui.js"></script>
     <script type="module" src="script.js"></script>
 </body>

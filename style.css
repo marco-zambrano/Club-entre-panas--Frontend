@@ -102,6 +102,38 @@ input:checked + .slider:before {
     transform: translateX(26px);
 }
 
+/* chat or comment filter */
+.item-filter {
+    display: flex;
+    gap: 10px;
+    margin-left: 20px;
+}
+.item-filter button {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 15px;
+    background-color: #333;
+    color: #fff;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.item-filter button:hover {
+    background-color: #444;
+}
+.item-filter button.active {
+    background-color: #0b93f6;
+    cursor: default;
+}
+.item-filter button.active:hover {
+    background-color: #0b93f6;
+}
+
+/* WhatsApp toggle */
+#whatsapp-toggle.active {
+    display: none;
+}
+
 /* Botón de configuración del bot */
 .bot-config-button {
     background-color: #c52828;
@@ -338,6 +370,14 @@ input:checked + .slider:before {
 .message {
     max-width: 80%;
     border-radius: 18px;
+    position: relative;
+}
+.message-audio {
+    position: absolute;
+    bottom: 10px;
+    left: 20px;
+    opacity: .6;
+    font-size: .7em;
 }
 .message.contact-sender {
     align-self: flex-start;
@@ -470,9 +510,18 @@ input:checked + .slider:before {
         column-gap: 15px;
     }
     .platform-filters {
-        gap: 15px;
+        gap: 12px;
         flex-grow: 1;
     }
+    .item-filter {
+        margin-left: 0px;
+        gap: 3px;
+    }
+    .item-filter button {
+        padding: 6px 12px;
+        font-size: .75em;
+    }
+    
     .filter {
         font-size: 0.8em;
     }

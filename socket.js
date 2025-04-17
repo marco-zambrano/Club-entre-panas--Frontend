@@ -1,10 +1,8 @@
 export const socket = io();
 
-// Inicializa la escucha de mensajes y ejecuta la función de callback cuando llega uno nuevo
-export function initSocket(receiveMessageCallback) {
-    socket.on('newMessage', (data) => {
-        receiveMessageCallback(data);
-    });
+// Inicializa la conexión socket
+export function initSocket() {
+    console.log('Socket initialized');
 }
 
 // Función para enviar mensajes a través de Socket.IO
