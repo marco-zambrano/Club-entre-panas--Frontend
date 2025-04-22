@@ -1,10 +1,12 @@
 import { setCurrentItem, currentItemId, filterItems, setCurrentFilter, currentFilter } from "./script.js";
 
-export function createMessage(text, time, sender, type) {
+export function createMessage(text, time, sender, type, imageUrl) {
     
     // create new message
     const messageElement = document.createElement('div');
     messageElement.className = 'message';
+    // Se agrega el mensaje basado en el remitente usando su propiedad definida del css
+    messageElement.classList.add(`${sender}-sender`)
 
     // create audio spam in case the message is transcripted
     if (type === 'audio') {
@@ -16,14 +18,24 @@ export function createMessage(text, time, sender, type) {
     
     const messageContent = document.createElement('div');
     messageContent.className = 'message-content';
-    messageContent.textContent = text;
+
+    // Si es una imagen, crear el elemento img
+    if (type === 'image') {
+        messageElement.classList.add(`image`); //definimos que el mensaje va a ser un img
+
+        const imageElement = document.createElement('img');
+        imageElement.src = imageUrl;
+        imageElement.alt = 'Imagen enviada';
+        imageElement.className = 'message-image';
+        messageContent.appendChild(imageElement);
+    } else {
+        // Si es texto normal
+        messageContent.textContent = text;
+    }
 
     const timeSpan = document.createElement('span');
     timeSpan.className = 'message-time';
     timeSpan.textContent = time;
-
-    // Se agrega el mensaje basado en el remitente usando su propiedad definida del css
-    messageElement.classList.add(`${sender}-sender`)
     
     // Añadir mensaje al chat
     messageContent.appendChild(timeSpan);

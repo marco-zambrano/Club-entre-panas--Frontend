@@ -73,6 +73,18 @@ function generateRandomPostTitle() {
     return titles[Math.floor(Math.random() * titles.length)];
 }
 
+// Función para generar URLs de imágenes aleatorias
+function generateRandomImage() {
+    const imageUrls = [
+        'https://picsum.photos/300/200',
+        'https://picsum.photos/400/300',
+        'https://picsum.photos/500/400',
+        'https://picsum.photos/600/500',
+        'https://picsum.photos/700/600'
+    ];
+    return imageUrls[Math.floor(Math.random() * imageUrls.length)];
+}
+
 // Almacenamiento de contactos y comentarios
 const contacts = new Map();
 const comments = new Map();
@@ -133,12 +145,16 @@ io.on('connection', (socket) => {
                 const randomId = itemIds[Math.floor(Math.random() * itemIds.length)];
                 const item = items.get(randomId);
 
+                // Decidir aleatoriamente si enviar un mensaje de texto o una imagen
+                const isImage = Math.random() > 0.7; // 30% de probabilidad de ser imagen
+
                 // Crear un nuevo mensaje
                 const message = {
-                    text: isContact ? generateRandomMessage() : generateRandomComment(),
+                    text: isImage ? '' : (isContact ? generateRandomMessage() : generateRandomComment()),
                     time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
                     sender: sender,
-                    type: (Math.random() > 0.5 && isContact && sender === 'contact') ? 'audio' : '' // The message sets as type audio in case it is transcripted (not for comments)
+                    type: isImage ? 'image' : ((Math.random() > 0.5 && isContact && sender === 'contact') ? 'audio' : ''),
+                    imageUrl: isImage ? generateRandomImage() : null
                 };
 
                 // Agregar el mensaje al item

@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
     socket.on('newMessage', (data) => {
         const itemId = data.itemId;
         if (itemId.startsWith(currentFilter)) {
-            createMessage(data.message.text, data.message.time, data.message.sender, data.message.type); // filter messages and comments appearance 
+            createMessage(data.message.text, data.message.time, data.message.sender, data.message.type, data.message.imageUrl); // filter messages and comments appearance 
         }
     });
     // hear the initial data

@@ -393,6 +393,19 @@ input:checked + .slider:before {
     display: inline-block;
     position: relative;
 }
+/* message image */
+.message.image {
+    background-color: transparent;
+}
+.message-image {
+    max-width: 350px;
+    max-height: 250px;
+    border-radius: 12px;
+    display: block;
+    margin-bottom: 5px;
+    object-fit: cover;
+}
+
 .message-time {
     font-size: 0.7em;
     color: rgba(255, 255, 255, 0.6);
