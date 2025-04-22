@@ -17,6 +17,13 @@ export function filterItems() {
         return matchesPlatform && matchesType;
     });
 
+    // Sort items by lastMessageTime in descending order (most recent first)
+    filteredItems.sort((a, b) => {
+        const timeA = new Date(a.lastMessageTime);
+        const timeB = new Date(b.lastMessageTime);
+        return timeB - timeA;
+    });
+
     // Verificar si el item actual sigue visible después del filtrado
     const currentItemStillVisible = filteredItems.some(item => item.id === currentItemId);
     // Si el item actual ya no es visible, seleccionar el primer item visible
@@ -43,12 +50,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // hear the initial data
     socket.on('initialData', (data) => {
         allItems = [...data.contacts, ...data.comments]; // Combinar contactos y comentarios
-        filterItems(); // Aplicar filtros actuales
+        filterItems();
     });
     // hear the new items
     socket.on('newItem', (item) => {
-        allItems.push(item); // Agregar nuevo item a la lista completa
-        filterItems(); // Actualizar la lista filtrada
+        allItems.unshift(item); // Agregar nuevo item al principio de la lista
+        filterItems();
     });
 });
 
