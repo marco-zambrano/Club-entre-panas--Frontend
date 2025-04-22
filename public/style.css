@@ -564,7 +564,11 @@ input:checked + .slider:before {
         padding: 8px 12px;
         font-size: 0.9em;
     }
-    
+    .message-image {
+        max-width: 300px;
+        max-height: 200px;
+    }
+
     .contacts-list {
         width: 100%;
     }
@@ -573,6 +577,14 @@ input:checked + .slider:before {
         padding: 12px 15px;
     }
 }
+/* para las imagenes con el z fold */
+@media (max-width: 576px) {
+    .message-image {
+        max-width: 260px;
+        max-height: 170px;
+    }
+}
+
 
 /* Estilos para cuando la pantalla está en modo vertical (móvil) */
 @media (max-height: 600px) {
