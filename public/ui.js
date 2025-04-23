@@ -55,6 +55,10 @@ function createContactCard(contact) {
     contactElement.dataset.itemId = contact.id;
     contactElement.dataset.type = contact.type;
 
+    const preView = document.createElement('span');
+    preView.className = 'contact-preview';
+    preView.textContent = contact.preview;
+
     const contactInfo = document.createElement('div');
     contactInfo.className = 'contact-info';
 
@@ -77,9 +81,12 @@ function createContactCard(contact) {
 
     platform.appendChild(platformName);
     platform.appendChild(platformIcon);
+
     contactInfo.appendChild(contactName);
     contactInfo.appendChild(platform);
     contactInfo.appendChild(messageTime);
+
+    contactElement.appendChild(preView);
     contactElement.appendChild(contactInfo);
 
     return contactElement;

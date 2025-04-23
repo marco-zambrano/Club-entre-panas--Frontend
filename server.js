@@ -109,6 +109,7 @@ io.on('connection', (socket) => {
             name: generateRandomName(),
             platform: generateRandomPlatform('contact'),
             lastMessageTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            preview: generateRandomPostTitle(),
             messages: []
         };
         

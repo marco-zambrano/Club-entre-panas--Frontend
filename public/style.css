@@ -236,7 +236,7 @@ input:checked + .slider:before {
     background-color: #2f2f2f;
 }
 .contact {
-    padding: 15px;
+    padding: 15px 15px 25px 15px;
     border-bottom: 1px solid #333;
     cursor: pointer;
     transition: background-color 0.3s;
@@ -248,10 +248,25 @@ input:checked + .slider:before {
 .contact.active {
     background-color: #1e1e1e;
 }
+.contact-preview {
+    position: absolute;
+    left: 15px;
+    bottom: 7px;
+
+    color: #666;
+    font-size: 0.7em;
+    opacity: .8;
+    max-width: 130px;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 .contact-message-time {
     position: absolute;
     font-size: .6rem;
-    bottom: 3px;
+    bottom: 5px;
     right: 15px;
     opacity: .8;
 }
