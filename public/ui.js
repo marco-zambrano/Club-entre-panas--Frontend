@@ -1,4 +1,6 @@
 import { setCurrentItem, currentItemId, filterItems, setCurrentFilter, currentFilter } from "./script.js";
+import { sendBotStatus } from './socket.js';
+let botStatus = false;
 
 export function createMessage(text, time, sender, type, imageUrl) {
     
@@ -213,6 +215,8 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // hide or show text input depending the individual bot toggle boolean value
     function handleInputVisibility(isChecked) {
+        botStatus = !botStatus;
+        sendBotStatus(botStatus);
         const messageInputContainer = document.querySelector('.message-input-container');
         messageInputContainer.style.display = isChecked ? 'none' : 'flex';
     }

@@ -39,6 +39,10 @@ export function requestMoreItems(nextPage) {
     });
 }
 
+export function sendBotStatus(status) {
+    socket.emit('botToggle', status)
+}
+
 // Escuchar nuevos mensajes
 socket.on('newMessage', (data) => {
     // En caso de que no haya toggles activados, no permitir seguir con los mensajes llegados

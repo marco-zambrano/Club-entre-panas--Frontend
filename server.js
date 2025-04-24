@@ -180,6 +180,11 @@ io.on('connection', (socket) => {
         });
     });
 
+    // Para reecibir el estado del bot
+    socket.on('botToggle', (status) => {
+        console.log(status);
+    })
+
     // Generar nuevos contactos cada 10 segundos
     const contactInterval = setInterval(() => {
         const newContact = generateNewContact();
