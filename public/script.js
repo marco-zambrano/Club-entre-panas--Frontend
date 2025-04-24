@@ -3,24 +3,45 @@ import { createMessage, updateItemsList } from './ui.js';
 
 export let currentItemId = null;
 export let currentFilter = null;
-setCurrentFilter('contact');
-let allItems = []; // Mantener todos los items (contactos y comentarios) en memoria (podrian traerse de la BD en futuro)
+
+// Variables para rastrear el estado de la carga
+export let allItems = {
+    contacts: [],
+    comments: []
+};
+export let itemsCount = {
+    contacts: 0,
+    comments: 0
+};
+export let allItemsLoaded = {
+    contacts: false,
+    comments: false
+};
+export let currentPage = {
+    contacts: 0,
+    comments: 0
+};
+const ITEMS_PER_PAGE = 20;
 
 // Función para filtrar items basado en los toggles activos y el tipo de item
 export function filterItems() {
-    document.querySelector('.bot-toggle').style.display = 'block';
+    // If the but toggle is disabled, set it as available
+    const botToggle = document.querySelector('.bot-toggle');
+    const computedStyle = window.getComputedStyle(botToggle);
+    if (computedStyle.display === 'none') botToggle.style.display = 'block';
 
-    const filteredItems = allItems.filter(item => {
+    // Filter them by the activated platform toggle
+    console.log(allItems[currentFilter])
+    const filteredItems = allItems[currentFilter].filter(item => {
         const platformToggle = document.querySelector(`.platform-toggle[data-platform="${item.platform}"]`);
         const matchesPlatform = platformToggle && platformToggle.checked;
-        const matchesType = currentFilter === 'contact' ? item.type === 'contact' : item.type === 'comment';
-        return matchesPlatform && matchesType;
+        return matchesPlatform;
     });
 
     // Sort items by lastMessageTime in descending order (most recent first)
     filteredItems.sort((a, b) => {
         const timeA = new Date(a.lastMessageTime);
-        const timeB = new Date(b.lastMessageTime);
+        const timeB = new Date(b.lastMessageTime);  
         return timeB - timeA;
     });
 
@@ -36,6 +57,18 @@ export function filterItems() {
     updateItemsList(filteredItems, currentFilter);
 }
 
+// Función para cargar más items cuando se hace scroll
+export function loadMoreItems() {
+    if (allItemsLoaded[currentFilter]) return;
+    
+    const nextPage = currentPage[currentFilter] + 1;
+    socket.emit('loadMoreItems', {
+        type: currentFilter,
+        page: nextPage,
+        count: itemsCount[currentFilter]
+    });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     // Inicializar la conexión socket
     initSocket();
@@ -44,18 +77,48 @@ document.addEventListener('DOMContentLoaded', () => {
     socket.on('newMessage', (data) => {
         const itemId = data.itemId;
         if (itemId.startsWith(currentFilter)) {
-            createMessage(data.message.text, data.message.time, data.message.sender, data.message.type, data.message.imageUrl); // filter messages and comments appearance 
+            createMessage(data.message.text, data.message.time, data.message.sender, data.message.type, data.message.imageUrl);
         }
     });
-    // hear the initial data
+
+    // Escuchar la carga inicial de datos
     socket.on('initialData', (data) => {
-        allItems = [...data.contacts, ...data.comments]; // Combinar contactos y comentarios
+        allItems[currentFilter] = data.items;
+        itemsCount[currentFilter] = data.items.length;
+        allItemsLoaded[currentFilter] = data.items.length < ITEMS_PER_PAGE;
+        currentPage[currentFilter] = 0;
         filterItems();
     });
-    // hear the new items
+
+    // Escuchar nuevos items
     socket.on('newItem', (item) => {
-        allItems.unshift(item); // Agregar nuevo item al principio de la lista
+        if (item.type && allItems[item.type]) {
+            allItems[item.type].unshift(item);
+            itemsCount[item.type]++;
+            if (currentFilter === item.type) {
+                filterItems();
+            }
+        }
+    });
+
+    // Escuchar más items cargados
+    socket.on('moreItems', (data) => {
+        if (data.items.length < ITEMS_PER_PAGE) {
+            allItemsLoaded[currentFilter] = true;
+        }
+
+        allItems[currentFilter] = [...allItems[currentFilter], ...data.items];
+        itemsCount[currentFilter] += data.items.length;
+        currentPage[currentFilter] = data.page;
         filterItems();
+    });
+
+    // Implementar scroll infinito
+    const contactsList = document.querySelector('.contacts-list');
+    contactsList.addEventListener('scroll', () => {
+        if (contactsList.scrollTop + contactsList.clientHeight >= contactsList.scrollHeight - 100) {
+            loadMoreItems();
+        }
     });
 });
 
@@ -63,6 +126,21 @@ document.addEventListener('DOMContentLoaded', () => {
 export function setCurrentItem(itemId) {
     currentItemId = itemId;
 }
+
 export function setCurrentFilter(value) {
-    currentFilter = value;
+    if (currentFilter !== value) {
+        currentFilter = value;
+        // Si no tenemos items cargados para este tipo, solicitarlos
+        console.log(currentFilter);
+        if (!allItems[currentFilter] || allItems[currentFilter].length === 0) {
+            socket.emit('loadInitialItems', {
+                type: currentFilter,
+                count: 0
+            });
+        } else {
+            filterItems();
+        }
+    }
 }
+
+setCurrentFilter('contact');

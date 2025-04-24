@@ -88,23 +88,14 @@ function generateRandomImage() {
 // Almacenamiento de contactos y comentarios
 const contacts = new Map();
 const comments = new Map();
-let contactCreationInterval;
-let commentCreationInterval;
-let messageInterval;
+const ITEMS_PER_PAGE = 20;
 
-io.on('connection', (socket) => {
-    console.log('Nuevo cliente conectado:', socket.id);
-
-    // Enviar los contactos y comentarios existentes al cliente
-    socket.emit('initialData', {
-        contacts: Array.from(contacts.values()),
-        comments: Array.from(comments.values())
-    });
-
-    // Crear un nuevo contacto cada 5 segundos
-    contactCreationInterval = setInterval(() => {
-        const newContact = {
-            id: `contact-${Date.now()}`,
+// Generar datos iniciales
+function generateInitialData() {
+    // Generar 50 contactos
+    for (let i = 0; i < 50; i++) {
+        const contact = {
+            id: `contact-${i}`,
             type: 'contact',
             name: generateRandomName(),
             platform: generateRandomPlatform('contact'),
@@ -112,15 +103,13 @@ io.on('connection', (socket) => {
             preview: generateRandomPostTitle(),
             messages: []
         };
-        
-        contacts.set(newContact.id, newContact);
-        io.emit('newItem', newContact);
-    }, 4000);
+        contacts.set(contact.id, contact);
+    }
 
-    // Crear un nuevo comentario cada 8 segundos
-    commentCreationInterval = setInterval(() => {
-        const newComment = {
-            id: `comment-${Date.now()}`,
+    // Generar 50 comentarios
+    for (let i = 0; i < 50; i++) {
+        const comment = {
+            id: `comment-${i}`,
             type: 'comment',
             name: generateRandomName(),
             platform: generateRandomPlatform('comment'),
@@ -128,13 +117,83 @@ io.on('connection', (socket) => {
             postTitle: generateRandomPostTitle(),
             messages: []
         };
+        comments.set(comment.id, comment);
+    }
+}
+
+generateInitialData();
+
+// Función para generar un nuevo contacto
+function generateNewContact() {
+    const newContact = {
+        id: `contact-${Date.now()}`,
+        type: 'contact',
+        name: generateRandomName(),
+        platform: generateRandomPlatform('contact'),
+        lastMessageTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        preview: generateRandomPostTitle(),
+        messages: []
+    };
+    contacts.set(newContact.id, newContact);
+    return newContact;
+}
+
+// Función para generar un nuevo comentario
+function generateNewComment() {
+    const newComment = {
+        id: `comment-${Date.now()}`,
+        type: 'comment',
+        name: generateRandomName(),
+        platform: generateRandomPlatform('comment'),
+        lastMessageTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        postTitle: generateRandomPostTitle(),
+        messages: []
+    };
+    comments.set(newComment.id, newComment);
+    return newComment;
+}
+
+io.on('connection', (socket) => {
+    console.log('Nuevo cliente conectado:', socket.id);
+
+    // Manejar la carga inicial de items
+    socket.on('loadInitialItems', (data) => {
+        const items = data.type === 'contact' ? contacts : comments;
+        const itemsArray = Array.from(items.values());
+        const paginatedItems = itemsArray.slice(0, ITEMS_PER_PAGE);
         
-        comments.set(newComment.id, newComment);
+        socket.emit('initialData', {
+            items: paginatedItems
+        });
+    });
+
+    // Manejar la carga de más items
+    socket.on('loadMoreItems', (data) => {
+        const items = data.type === 'contact' ? contacts : comments;
+        const itemsArray = Array.from(items.values());
+        const startIndex = data.page * ITEMS_PER_PAGE;
+        const paginatedItems = itemsArray.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+        
+        socket.emit('moreItems', {
+            items: paginatedItems,
+            page: data.page
+        });
+    });
+
+    // Generar nuevos contactos cada 10 segundos
+    const contactInterval = setInterval(() => {
+        const newContact = generateNewContact();
+        io.emit('newItem', newContact);
+    }, 5000);
+
+    // Generar nuevos comentarios cada 15 segundos
+    const commentInterval = setInterval(() => {
+        const newComment = generateNewComment();
         io.emit('newItem', newComment);
     }, 7000);
 
-    // Enviar mensajes o comentarios aleatorios
-    messageInterval = setInterval(() => {
+    // Enviar mensajes o comentarios aleatorios cada 2 segundos
+    const messageInterval = setInterval(() => {
         if (contacts.size > 0 || comments.size > 0) {
             // Decidir aleatoriamente si enviar a un comentario o mensaje
             const isContact = Math.random() > 0.5;
@@ -170,14 +229,14 @@ io.on('connection', (socket) => {
             }
         }
     }, 2000);
-
     socket.on('disconnect', () => {
-        console.log('Cliente desconectado:', socket.id);
-        clearInterval(contactCreationInterval);
-        clearInterval(commentCreationInterval);
+        clearInterval(contactInterval);
+        clearInterval(commentInterval);
         clearInterval(messageInterval);
+        console.log('Cliente desconectado:', socket.id);
     });
 });
+
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => console.log(`Servidor corriendo en el puerto ${PORT}`));

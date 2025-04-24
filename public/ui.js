@@ -117,7 +117,6 @@ function createCommentCard(comment) {
     typeIdentifier.textContent = 'C';
     // header
 
-    
     // comments details
     const commentDetails = document.createElement('div');
     commentDetails.classList.add('comment-details')
@@ -182,6 +181,7 @@ export function updateItemsList(items, currentFilter) {
         document.querySelector('.chat-title').textContent = 'Selecciona un contacto o comentario';
         document.querySelector('.messages').innerHTML = '';
         document.querySelector('.bot-toggle').style.display = 'none';
+        setCurrentItem(null);
     }
 }
 
@@ -227,6 +227,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.platform-toggle').forEach(toggle => {
         toggle.addEventListener('change', filterItems);
     });
+    
     // Manejar el filtro de tipo (chat / comentario)
     const chatButton = document.querySelector('.item-chat');
     const commentButton = document.querySelector('.item-comment');
