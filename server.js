@@ -157,7 +157,7 @@ io.on('connection', (socket) => {
     console.log('Nuevo cliente conectado:', socket.id);
 
     // Manejar la carga inicial de items
-    socket.on('loadInitialItems', (data) => {
+    socket.on('requestInitialItems', (data) => {
         const items = data.type === 'contact' ? contacts : comments;
         const itemsArray = Array.from(items.values());
         const paginatedItems = itemsArray.slice(0, ITEMS_PER_PAGE);
@@ -168,13 +168,13 @@ io.on('connection', (socket) => {
     });
 
     // Manejar la carga de más items
-    socket.on('loadMoreItems', (data) => {
+    socket.on('requestMoreItems', (data) => {
         const items = data.type === 'contact' ? contacts : comments;
         const itemsArray = Array.from(items.values());
         const startIndex = data.page * ITEMS_PER_PAGE;
         const paginatedItems = itemsArray.slice(startIndex, startIndex + ITEMS_PER_PAGE);
         
-        socket.emit('moreItems', {
+        socket.emit('loadMoreItems', {
             items: paginatedItems,
             page: data.page
         });
@@ -196,8 +196,8 @@ io.on('connection', (socket) => {
     const messageInterval = setInterval(() => {
         if (contacts.size > 0 || comments.size > 0) {
             // Decidir aleatoriamente si enviar a un comentario o mensaje
-            const isContact = Math.random() > 0.5;
             const sender = Math.random() > 0.5 ? 'bot' : 'contact';
+            const isContact = Math.random() > 0.5;
             const items = isContact ? contacts : comments;
             
             if (items.size > 0) {
