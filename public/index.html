@@ -38,6 +38,7 @@
                     <button class="item-comment">Comentarios</button>
                 </div>
             </div>
+            <!-- boton de modal del bot -->
             <button class="bot-config-button">
                 <i class="fas fa-robot"></i>
             </button>
@@ -60,6 +61,7 @@
 
         <!-- Contenido principal -->
         <div class="main-content">
+
             <!-- Lista de contactos -->
             <div class="contacts-list"></div>
 
@@ -67,6 +69,7 @@
             <div class="chat-area">
                 <div class="chat-header">
                     <h2 class="chat-title"></h2>
+                    <!-- Toggle encender/apagar bot -->
                     <div class="bot-toggle small">
                         <span>bot</span>
                         <label class="toggle">
@@ -79,6 +82,7 @@
                 <!-- Here all the messages appear -->
                 <div class="messages"></div>
 
+                <!-- input text to send manual messages -->
                 <div class="message-input-container">
                     <input type="text" class="message-input" placeholder="Escribir mensaje">
                     <button class="send-button">
@@ -94,7 +98,6 @@
         </button>
     </div>
 
-    <!-- Incluimos Socket.IO del lado del cliente -->
     <script type="module" src="/socket.io/socket.io.js"></script>
     <script type="module" src="ui.js"></script>
     <script type="module" src="script.js"></script>

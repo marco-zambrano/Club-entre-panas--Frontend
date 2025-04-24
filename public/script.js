@@ -1,5 +1,5 @@
-import { allItems, allItemsLoaded, currentPage } from './socket.js';
-import { requestInitialItems, requestMoreItems} from './socket.js';
+import { allItems, allItemsLoaded, currentPage } from './socket.js'; // variables
+import { requestInitialItems, requestMoreItems} from './socket.js'; // functions
 import { updateItemsList } from './ui.js';
 
 export let currentItemId = null;
@@ -41,17 +41,17 @@ export function filterItems() {
     updateItemsList(filteredItems, currentFilter);
 }
 
-// Exportar la función para cambiar el item id actual
+// Función para cambiar el item id actual (el clickeado)
 export function setCurrentItem(itemId) {
     currentItemId = itemId;
 }
-
+// Funcion para cambiar si estamos en la seccion de chats o comentarios
 export function setCurrentFilter(value) {
     if (currentFilter !== value) {
         currentFilter = value;
         // Si no tenemos items cargados para este tipo, solicitarlos
         if (!allItems[currentFilter] || allItems[currentFilter].length === 0) {
-            requestInitialItems();
+            requestInitialItems();  // Pedir los items iniciales de la bd 
         } else {
             // si ya tenemos items cargados, simplemente lo filtramos depende el caso
             filterItems();
@@ -63,7 +63,7 @@ export function setCurrentFilter(value) {
 export function loadNewItems() {
     if (allItemsLoaded[currentFilter]) return; //Si ya estan todos los items cargados, no traer mas items
     const nextPage = currentPage[currentFilter] + 1;
-    requestMoreItems(nextPage)
+    requestMoreItems(nextPage) // Pedir mas items de las bases de datos (porque scrolleamos)
 }
 
 document.addEventListener('DOMContentLoaded', () => {

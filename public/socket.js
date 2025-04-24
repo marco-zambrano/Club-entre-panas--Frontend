@@ -23,13 +23,14 @@ export let currentPage = {
 
 const ITEMS_PER_PAGE = 20;
 
-// request for items in case theres no items in front
+// Pedir los items iniciales ni bien logea
 export function requestInitialItems() {
     socket.emit('requestInitialItems', {
         type: currentFilter,
         count: 0
     });
 }
+// Pedir los items pedidos por el scroll
 export function requestMoreItems(nextPage) {
     socket.emit('requestMoreItems', {
         type: currentFilter,
@@ -38,18 +39,21 @@ export function requestMoreItems(nextPage) {
     });
 }
 
-
 // Escuchar nuevos mensajes
 socket.on('newMessage', (data) => {
+    // En caso de que no haya toggles activados, no permitir seguir con los mensajes llegados
     if (document.querySelector('.chat-title').textContent === 'Selecciona un contacto o comentario') return;
 
     const itemId = data.itemId;
+    // Solo se ejecuta la funcion crear mensaje, si el id del mensaje comienza con 'contact' o por comment
+    // Debido a que los mensajes del back, tienen id 'contact-134kfj5t5992u' o 'comment-134kfj5t5992u'por ejemplo
+    // Igualmente no se como sera esto en produccion
     if (itemId.startsWith(currentFilter)) {
         createMessage(data.message.text, data.message.time, data.message.sender, data.message.type, data.message.imageUrl);
     }
 });
 
-// Escuchar la carga inicial de datos
+// Escuchar la carga inicial de datos (items) cuando se logea
 socket.on('initialData', (data) => {
     allItems[currentFilter] = data.items;
     itemsCount[currentFilter] = data.items.length;
@@ -58,7 +62,7 @@ socket.on('initialData', (data) => {
     filterItems();
 });
 
-// Escuchar nuevos items
+// Escuchar nuevos items (tiempo real)
 socket.on('newItem', (item) => {
     if (currentFilter === item.type) {
         allItems[item.type].unshift(item);
@@ -70,7 +74,7 @@ socket.on('newItem', (item) => {
     }
 });
 
-// Escuchar más items cargados
+// Escuchar más items cargados (por scroll)
 socket.on('loadMoreItems', (data) => {
     // if the data base sents all the items, set allItemsLoades as true (chat/comment)
     if (data.items.length < ITEMS_PER_PAGE) {

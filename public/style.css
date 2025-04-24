@@ -600,7 +600,6 @@ input:checked + .slider:before {
     }
 }
 
-
 /* Estilos para cuando la pantalla está en modo vertical (móvil) */
 @media (max-height: 600px) {
     .chat-container {
