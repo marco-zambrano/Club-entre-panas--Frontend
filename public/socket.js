@@ -64,13 +64,13 @@ socket.on('initialData', (data) => {
 
 // Escuchar nuevos items (tiempo real)
 socket.on('newItem', (item) => {
+    if (!allItems[item.type]) return;
+    
+    allItems[item.type].unshift(item);
+    itemsCount[item.type]++;
+    // if the filter is actived, print it, if it is not, just save it
     if (currentFilter === item.type) {
-        allItems[item.type].unshift(item);
-        itemsCount[item.type]++;
-        // if the filter is actived, print it, if it is not, just save it
-        if (currentFilter === item.type) {
-            filterItems();
-        }
+        filterItems();
     }
 });
 
