@@ -184,6 +184,10 @@ io.on('connection', (socket) => {
     socket.on('botToggle', (status) => {
         console.log(status);
     })
+    // Para recibir el texto que es enviado manualmente
+    socket.on('sendMessage', (data) => {
+        console.log(data.text);
+    })
 
     // Generar nuevos contactos cada 10 segundos
     const contactInterval = setInterval(() => {

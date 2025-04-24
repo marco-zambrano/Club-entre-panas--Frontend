@@ -39,8 +39,20 @@ export function requestMoreItems(nextPage) {
     });
 }
 
+// Enviar el estado del bot (encendido/apagado)
 export function sendBotStatus(status) {
     socket.emit('botToggle', status)
+}
+
+// Enviar mensaje enviado manualmente
+export function emitMessage(text, timeStamp, sender ) {
+    socket.emit('sendMessage', {
+        text: text,
+        timeStamp: timeStamp,
+        sender: sender,
+        type: '',
+        imageUrl: null
+    });
 }
 
 // Escuchar nuevos mensajes

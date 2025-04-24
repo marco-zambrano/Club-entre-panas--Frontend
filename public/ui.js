@@ -1,5 +1,5 @@
 import { setCurrentItem, currentItemId, filterItems, setCurrentFilter, currentFilter } from "./script.js";
-import { sendBotStatus } from './socket.js';
+import { sendBotStatus, emitMessage } from './socket.js';
 let botStatus = false;
 
 export function createMessage(text, time, sender, type, imageUrl) {
@@ -305,6 +305,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const minutes = now.getMinutes();
         const timeString = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
         
+        // send message to the backend
+        emitMessage(messageText, timeString, 'bot')
         // create the message
         createMessage(messageText, timeString, 'bot');
         
