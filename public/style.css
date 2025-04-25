@@ -213,6 +213,67 @@ input:checked + .slider:before {
     max-height: calc(90vh - 80px);
 }
 
+/* Estilos para el contenido del modal */
+.bot-modification {
+    margin-bottom: 20px;
+}
+.bot-modification h3 {
+    margin-bottom: 15px;
+    color: #fff;
+    font-size: 1.1em;
+}
+
+.bot-textarea {
+    width: 100%;
+    min-height: 250px;
+    background-color: #2a2a2a;
+    border: 1px solid #444;
+    border-radius: 8px;
+    color: #fff;
+    padding: 15px;
+    font-size: 0.95em;
+    resize: none;
+}
+.bot-textarea:focus {
+    outline: none;
+    border-color: #4CAF50;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.modal-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.cancel-button {
+    background-color: #c52323;
+    color: #fff;
+}
+.cancel-button:hover {
+    background-color: #a01c1c;
+}
+
+.save-button {
+    background-color: #4CAF50;
+    color: #fff;
+}
+.save-button:hover {
+    background-color: #3e9141;
+}
+.token-usage {
+    color: #888;
+    font-size: 0.9em;
+}
+
 /* Contenido principal */
 .main-content {
     display: flex;
@@ -580,8 +641,8 @@ input:checked + .slider:before {
         font-size: 0.9em;
     }
     .message-image {
-        max-width: 300px;
-        max-height: 200px;
+        max-width: 240px;
+        max-height: 170px;
     }
 
     .contacts-list {
@@ -591,12 +652,24 @@ input:checked + .slider:before {
     .message-input {
         padding: 12px 15px;
     }
-}
-/* para las imagenes con el z fold */
-@media (max-width: 576px) {
-    .message-image {
-        max-width: 240px;
-        max-height: 170px;
+
+    /* modal */
+    .bot-textarea {
+        min-height: 150px;
+    }
+
+    .modal-actions {
+        flex-direction: column-reverse;
+        gap: 10px;
+    }
+
+    .modal-button {
+        width: 100%;
+        padding: 12px;
+    }
+
+    .bot-modification h3 {
+        font-size: 1em;
     }
 }
 

@@ -265,12 +265,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const botConfigButton = document.querySelector('.bot-config-button');
     const botConfigModal = document.querySelector('.bot-config-modal');
     const closeModalButton = document.querySelector('.close-modal');
+    const cancelModalButtton = document.querySelector('.cancel-button');
     // Open modal
     botConfigButton.addEventListener('click', () => {
         botConfigModal.classList.add('show');
     });
-    // Close modal with button
+    // Close modal with X button
     closeModalButton.addEventListener('click', () => {
+        botConfigModal.classList.remove('show');
+    });
+    // Close modal with cancel button
+    cancelModalButtton.addEventListener('click', () => {
         botConfigModal.classList.remove('show');
     });
     // Close modal when clicking outside
