@@ -1,4 +1,5 @@
 const express = require('express');
+const { stat } = require('fs');
 const http = require('http');
 const socketIo = require('socket.io');
 
@@ -101,7 +102,8 @@ function generateInitialData() {
             platform: generateRandomPlatform('contact'),
             lastMessageTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
             preview: generateRandomPostTitle(),
-            messages: []
+            messages: [],
+            isBotActived: Math.random() > 0.5 ? true : false
         };
         contacts.set(contact.id, contact);
     }
@@ -115,7 +117,8 @@ function generateInitialData() {
             platform: generateRandomPlatform('comment'),
             lastMessageTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
             postTitle: generateRandomPostTitle(),
-            messages: []
+            messages: [],
+            isBotActived: Math.random() > 0.5 ? true : false
         };
         comments.set(comment.id, comment);
     }
@@ -132,7 +135,8 @@ function generateNewContact() {
         platform: generateRandomPlatform('contact'),
         lastMessageTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         preview: generateRandomPostTitle(),
-        messages: []
+        messages: [],
+        isBotActived: Math.random() > 0.5 ? true : false
     };
     contacts.set(newContact.id, newContact);
     return newContact;
@@ -147,7 +151,8 @@ function generateNewComment() {
         platform: generateRandomPlatform('comment'),
         lastMessageTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         postTitle: generateRandomPostTitle(),
-        messages: []
+        messages: [],
+        isBotActived: Math.random() > 0.5 ? true : false
     };
     comments.set(newComment.id, newComment);
     return newComment;
@@ -180,9 +185,16 @@ io.on('connection', (socket) => {
         });
     });
 
-    // Para reecibir el estado del bot
-    socket.on('botToggle', (status) => {
-        console.log(status);
+    // Para recibir el estado del bot
+    socket.on('botToggle', (data) => {
+        const { itemId, status } = data;
+        console.log('id: ', itemId);
+        console.log('status: ', status);
+        const itemType = itemId.startsWith('contact') ? contacts : comments;
+        const item = itemType.get(itemId);
+        if (item) {
+            item.isBotActived = status;
+        }
     })
     // Para recibir el texto que es enviado manualmente
     socket.on('sendMessage', (data) => {

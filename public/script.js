@@ -1,6 +1,6 @@
 import { allItems, allItemsLoaded, currentPage } from './socket.js'; // variables
 import { requestInitialItems, requestMoreItems} from './socket.js'; // functions
-import { updateItemsList } from './ui.js';
+import { updateItemsList, initiliceBotToggle } from './ui.js';
 
 export let currentItemId = null;
 export let currentFilter = null;
@@ -36,6 +36,7 @@ export function filterItems() {
         setCurrentItem(filteredItems[0].id);
         document.querySelector('.chat-title').textContent = filteredItems[0].name;
         document.querySelector('.messages').innerHTML = '';
+        initiliceBotToggle();
     }
     
     updateItemsList(filteredItems, currentFilter);

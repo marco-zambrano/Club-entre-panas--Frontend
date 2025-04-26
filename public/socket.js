@@ -1,5 +1,5 @@
-import { filterItems, currentFilter } from "./script.js";
-import { createMessage} from './ui.js';
+import { filterItems, currentFilter, setCurrentItem } from "./script.js";
+import { createMessage, initiliceBotToggle} from './ui.js';
 
 export const socket = io();
 
@@ -40,8 +40,11 @@ export function requestMoreItems(nextPage) {
 }
 
 // Enviar el estado del bot (encendido/apagado)
-export function sendBotStatus(status) {
-    socket.emit('botToggle', status)
+export function sendBotStatus(itemId, status) {
+    socket.emit('botToggle', {
+        itemId: itemId,
+        status: status
+    });
 }
 
 // Enviar mensaje enviado manualmente
@@ -71,10 +74,17 @@ socket.on('newMessage', (data) => {
 
 // Escuchar la carga inicial de datos (items) cuando se logea
 socket.on('initialData', (data) => {
+    // Set the first item as current if there are no items available
+    if (data.items.length > 0) {
+        setCurrentItem(data.items[0].id);
+    }
+    // Set all the initial data 
     allItems[currentFilter] = data.items;
     itemsCount[currentFilter] = data.items.length;
     allItemsLoaded[currentFilter] = data.items.length < ITEMS_PER_PAGE;
     currentPage[currentFilter] = 0;
+    // Initial functions
+    initiliceBotToggle();
     filterItems();
 });
 

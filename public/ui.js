@@ -1,6 +1,5 @@
 import { setCurrentItem, currentItemId, filterItems, setCurrentFilter, currentFilter } from "./script.js";
-import { sendBotStatus, emitMessage } from './socket.js';
-let botStatus = false;
+import { sendBotStatus, emitMessage, allItems } from './socket.js';
 
 export function createMessage(text, time, sender, type, imageUrl) {
     
@@ -93,7 +92,6 @@ function createContactCard(contact) {
 
     return contactElement;
 }
-
 function createCommentCard(comment) {
     const commentElement = document.createElement('div');
     commentElement.className = `contact ${comment.id === currentItemId ? 'active' : ''}`;
@@ -187,6 +185,52 @@ export function updateItemsList(items, currentFilter) {
     }
 }
 
+
+// hide or show text input depending the individual bot toggle boolean value
+function handleInputVisibility(isChecked, itemId) {
+    if (!itemId) return;
+    
+    const messageInputContainer = document.querySelector('.message-input-container');
+    messageInputContainer.style.display = isChecked ? 'none' : 'flex';
+    
+    sendBotStatus(itemId, isChecked);
+}
+
+let lastToggle = null;
+let lastToggleHandler = null;
+
+export function initiliceBotToggle() {
+    const currentItem = allItems[currentFilter].find(item => item.id === currentItemId);
+    
+    if (currentItem) {
+        const botToggle = document.querySelector('.individual-bot-toggle');
+
+        // Si había un toggle anterior, le quitamos el evento
+        if (lastToggle && lastToggleHandler) {
+            lastToggle.removeEventListener('change', lastToggleHandler);
+        }
+
+        // Definir la nueva función manejadora
+        const toggleHandler = (e) => {
+            const isChecked = e.target.checked;
+            handleInputVisibility(isChecked, currentItem.id);
+        };
+
+        // Guardar las referencias para futura limpieza
+        lastToggle = botToggle;
+        lastToggleHandler = toggleHandler;
+
+        // Establecer el estado actual del toggle
+        botToggle.checked = currentItem.isBotActived;
+        handleInputVisibility(currentItem.isBotActived, currentItem.id);
+
+        // Asignar el nuevo event listener
+        botToggle.addEventListener('change', toggleHandler);
+    }
+}
+
+
+
 document.addEventListener('DOMContentLoaded', () => {
     // event listener for the contact or comment list
     document.querySelector('.contacts-list').addEventListener('click', (event) => {
@@ -204,6 +248,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // Actualizar el título del chat con el nombre del contacto/comentario
         const contactName = clicked.querySelector('.contact-name').textContent;
         document.querySelector('.chat-title').textContent = contactName;
+        //actualizar el bot toggle
+        initiliceBotToggle();
         // Borrar el content del chat anterior
         document.querySelector('.messages').innerHTML = '';
     });
@@ -212,20 +258,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelector('.toggle-contacts').addEventListener('click', function() {
         document.querySelector('.contacts-list').classList.toggle('show');
     });
-    
-    // hide or show text input depending the individual bot toggle boolean value
-    function handleInputVisibility(isChecked) {
-        botStatus = !botStatus;
-        sendBotStatus(botStatus);
-        const messageInputContainer = document.querySelector('.message-input-container');
-        messageInputContainer.style.display = isChecked ? 'none' : 'flex';
-    }
-    // Initialice the input appearence based on the initial toggle value state
-    handleInputVisibility(document.querySelector('.individual-bot-toggle').checked);
-    // listen changes in the toggle for the input appearance
-    document.querySelector('.individual-bot-toggle').addEventListener('change', function() {
-        handleInputVisibility(this.checked);
-    });
+
 
     // Handle the platform filters
     document.querySelectorAll('.platform-toggle').forEach(toggle => {
