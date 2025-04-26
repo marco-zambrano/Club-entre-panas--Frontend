@@ -1,8 +1,8 @@
-import { setCurrentItem, currentItemId, filterItems, setCurrentFilter, currentFilter } from "./script.js";
-import { sendBotStatus, emitMessage, allItems } from './socket.js';
+import { currentItemId, currentFilter } from "./script.js"; // Variables
+import { setCurrentItem, setCurrentFilter, filterItems, initiliceBotToggle } from "./script.js"; // Functions
+import { emitMessage } from './socket.js';
 
 export function createMessage(text, time, sender, type, imageUrl) {
-    
     // create new message
     const messageElement = document.createElement('div');
     messageElement.className = 'message';
@@ -17,23 +17,24 @@ export function createMessage(text, time, sender, type, imageUrl) {
         messageElement.appendChild(audioAdvice)
     }
     
+    // Contenido del mensaje
     const messageContent = document.createElement('div');
     messageContent.className = 'message-content';
 
     // Si es una imagen, crear el elemento img
     if (type === 'image') {
-        messageElement.classList.add(`image`); //definimos que el mensaje va a ser un img
-
+        messageElement.classList.add(`image`); // Definimos que el mensaje va a ser un img
         const imageElement = document.createElement('img');
         imageElement.src = imageUrl;
         imageElement.alt = 'Imagen enviada';
         imageElement.className = 'message-image';
         messageContent.appendChild(imageElement);
     } else {
-        // Si es texto normal
+        // Si es texto normal, solo ponemos el texto
         messageContent.textContent = text;
     }
 
+    // Span de tiempo
     const timeSpan = document.createElement('span');
     timeSpan.className = 'message-time';
     timeSpan.textContent = time;
@@ -41,7 +42,7 @@ export function createMessage(text, time, sender, type, imageUrl) {
     // Añadir mensaje al chat
     messageContent.appendChild(timeSpan);
     messageElement.appendChild(messageContent);
-    // main container
+    // Agregar al main container
     document.querySelector('.messages').appendChild(messageElement);
     
     // Scroll al final de los mensajes
@@ -49,78 +50,95 @@ export function createMessage(text, time, sender, type, imageUrl) {
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
 }
 
+
+// Funciones para crear los items de comentarios y contactos
 function createContactCard(contact) {
+    // Container del contacto
     const contactElement = document.createElement('div');
     contactElement.className = `contact ${contact.id === currentItemId ? 'active' : ''}`;
     contactElement.dataset.platform = contact.platform;
     contactElement.dataset.itemId = contact.id;
     contactElement.dataset.type = contact.type;
 
+    // Preview
     const preView = document.createElement('span');
     preView.className = 'contact-preview';
     preView.textContent = contact.preview;
 
+    // Container de la info del contacto
     const contactInfo = document.createElement('div');
     contactInfo.className = 'contact-info';
 
+    // Nombre del contacto
     const contactName = document.createElement('span');
     contactName.className = 'contact-name';
     contactName.textContent = contact.name;
 
+    // Container de la plataforma
     const platform = document.createElement('div');
     platform.className = 'platform';
     
+    // Span de la plataforma
     const platformName = document.createElement('span');
     platformName.textContent = contact.platform.charAt(0).toUpperCase() + contact.platform.slice(1);
     
+    // Icono de la plataforma
     const platformIcon = document.createElement('i');
     platformIcon.className = `fab fa-${contact.platform} ${contact.platform}-icon`;
 
+    // Span del tiempo del ultimo mensaje
     const messageTime = document.createElement('span');
     messageTime.className = 'contact-message-time';
     messageTime.textContent = contact.lastMessageTime;
 
+    // Platform Container <--- nombre e icono
     platform.appendChild(platformName);
     platform.appendChild(platformIcon);
 
+    // Contact info <--- nombre, plataforma, hora de ultimo mensaje
     contactInfo.appendChild(contactName);
     contactInfo.appendChild(platform);
     contactInfo.appendChild(messageTime);
 
+    // Contact element <--- El preview y la informacion del contacto
     contactElement.appendChild(preView);
     contactElement.appendChild(contactInfo);
 
-    return contactElement;
+    return contactElement; // Retornamos el contacto
 }
+
 function createCommentCard(comment) {
+    // Container del comentario
     const commentElement = document.createElement('div');
     commentElement.className = `contact ${comment.id === currentItemId ? 'active' : ''}`;
     commentElement.dataset.platform = comment.platform;
     commentElement.dataset.itemId = comment.id;
     commentElement.dataset.type = comment.type;
 
+    // Container del info del comentario (la clase dice contact-info porque son los mismos estilos)
     const commentInfo = document.createElement('div');
     commentInfo.className = 'contact-info';
     commentInfo.classList.add('comment');
 
-
-    // header
+    // Header container
     const commentHeader = document.createElement('div');
     commentHeader.className = 'comment-header';
 
+    // Nombre del user del comentario
     const commentName = document.createElement('span');
     commentName.className = 'contact-name';
     commentName.textContent = comment.name;
 
+    // Logo con la C, para definir que es un comentario
     const typeIdentifier = document.createElement('span');
     typeIdentifier.className = 'type-identifier';
     typeIdentifier.textContent = 'C';
-    // header
 
-    // comments details
+    // comments details container
     const commentDetails = document.createElement('div');
     commentDetails.classList.add('comment-details')
     
+    // preview del titulo del post 
     const postTitle = document.createElement('span');
     postTitle.className = 'post-title';
     postTitle.textContent = comment.postTitle;
@@ -129,47 +147,55 @@ function createCommentCard(comment) {
     const platform = document.createElement('div');
     platform.className = 'platform';
     
+    // Nombre de la plataforma de la que viene el comment
     const platformName = document.createElement('span');
     platformName.textContent = comment.platform.charAt(0).toUpperCase() + comment.platform.slice(1);
     
+    // Logo de la plataforma
     const platformIcon = document.createElement('i');
     platformIcon.className = `fab fa-${comment.platform} ${comment.platform}-icon`;
     
+    // Tiempo del ultimo mensaje enviado
     const messageTime = document.createElement('span');
     messageTime.className = 'contact-message-time';
     messageTime.textContent = comment.lastMessageTime;
-    // Platform container
 
+    // commentHeader <--- logo de C y nonbre del user
     commentHeader.appendChild(typeIdentifier);
     commentHeader.appendChild(commentName);
 
+    // platform container <--- nombre de la plataforma e icono
     platform.appendChild(platformName);
     platform.appendChild(platformIcon);
 
+    // Detalles <--- preview del post, plataforma, tiempo del ultimo mensaje enviado
     commentDetails.appendChild(postTitle);
     commentDetails.appendChild(platform);
     commentDetails.appendChild(messageTime);
     
+    // Informacion del comentario <--- header, detalles, info (todos contenedores)
     commentInfo.appendChild(commentHeader);
     commentInfo.appendChild(commentDetails)
     commentElement.appendChild(commentInfo);
 
-    return commentElement;
+    return commentElement; // Retornamos el comment
 }
 
+
+// Actualizar la lista de items
 export function updateItemsList(items, currentFilter) {
     const itemsList = document.querySelector('.contacts-list');
-    itemsList.innerHTML = '';
+    itemsList.innerHTML = ''; // limpiamos
 
-    // Create contact or comment card
+    // Create contact or comment card defined by the currentFilter
     if (currentFilter === 'contact') {
         items.forEach(item => {
-            const itemElement = createContactCard(item);
+            const itemElement = createContactCard(item); // Creamos contacto
             itemsList.appendChild(itemElement);
         })
     } else {
         items.forEach(item => {
-            const itemElement = createCommentCard(item);
+            const itemElement = createCommentCard(item); // Creamos comentario
             itemsList.appendChild(itemElement);
         })
     }
@@ -184,51 +210,6 @@ export function updateItemsList(items, currentFilter) {
         setCurrentItem(null);
     }
 }
-
-
-// hide or show text input depending the individual bot toggle boolean value
-function handleInputVisibility(isChecked, itemId) {
-    if (!itemId) return;
-    
-    const messageInputContainer = document.querySelector('.message-input-container');
-    messageInputContainer.style.display = isChecked ? 'none' : 'flex';
-    
-    sendBotStatus(itemId, isChecked);
-}
-
-let lastToggle = null;
-let lastToggleHandler = null;
-
-export function initiliceBotToggle() {
-    const currentItem = allItems[currentFilter].find(item => item.id === currentItemId);
-    
-    if (currentItem) {
-        const botToggle = document.querySelector('.individual-bot-toggle');
-
-        // Si había un toggle anterior, le quitamos el evento
-        if (lastToggle && lastToggleHandler) {
-            lastToggle.removeEventListener('change', lastToggleHandler);
-        }
-
-        // Definir la nueva función manejadora
-        const toggleHandler = (e) => {
-            const isChecked = e.target.checked;
-            handleInputVisibility(isChecked, currentItem.id);
-        };
-
-        // Guardar las referencias para futura limpieza
-        lastToggle = botToggle;
-        lastToggleHandler = toggleHandler;
-
-        // Establecer el estado actual del toggle
-        botToggle.checked = currentItem.isBotActived;
-        handleInputVisibility(currentItem.isBotActived, currentItem.id);
-
-        // Asignar el nuevo event listener
-        botToggle.addEventListener('change', toggleHandler);
-    }
-}
-
 
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -248,11 +229,14 @@ document.addEventListener('DOMContentLoaded', () => {
         // Actualizar el título del chat con el nombre del contacto/comentario
         const contactName = clicked.querySelector('.contact-name').textContent;
         document.querySelector('.chat-title').textContent = contactName;
+
         //actualizar el bot toggle
         initiliceBotToggle();
+
         // Borrar el content del chat anterior
         document.querySelector('.messages').innerHTML = '';
     });
+
 
     // functionality show / hide contacts in mobile
     document.querySelector('.toggle-contacts').addEventListener('click', function() {
@@ -265,6 +249,7 @@ document.addEventListener('DOMContentLoaded', () => {
         toggle.addEventListener('change', filterItems);
     });
     
+
     // Manejar el filtro de tipo (chat / comentario)
     const chatButton = document.querySelector('.item-chat');
     const commentButton = document.querySelector('.item-comment');
@@ -293,6 +278,7 @@ document.addEventListener('DOMContentLoaded', () => {
             filterItems();
         }
     });
+
 
     // Bot configuration modal functionality
     const botConfigButton = document.querySelector('.bot-config-button');
@@ -323,15 +309,9 @@ document.addEventListener('DOMContentLoaded', () => {
             botConfigModal.classList.remove('show');
         }
     });
-
-    // Funcionalidad para enviar mensajes
-    document.querySelector('.send-button').addEventListener('click', sendMessage);
-    document.querySelector('.message-input').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            sendMessage();
-        }
-    });
     
+    
+    // Send message functionality
     function sendMessage() {
         const input = document.querySelector('.message-input');
         const messageText = input.value.trim();
@@ -355,4 +335,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const messagesContainer = document.querySelector('.messages');
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
+
+    document.querySelector('.send-button').addEventListener('click', sendMessage);
+
+    document.querySelector('.message-input').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            sendMessage();
+        }
+    });
 })

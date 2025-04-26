@@ -1,5 +1,6 @@
-import { filterItems, currentFilter, setCurrentItem } from "./script.js";
-import { createMessage, initiliceBotToggle} from './ui.js';
+import { currentFilter } from "./script.js"; // Variables
+import { filterItems, setCurrentItem, initiliceBotToggle } from "./script.js"; // Functions
+import { createMessage } from './ui.js'; // Function create message
 
 export const socket = io();
 
@@ -38,7 +39,6 @@ export function requestMoreItems(nextPage) {
         count: itemsCount[currentFilter]
     });
 }
-
 // Enviar el estado del bot (encendido/apagado)
 export function sendBotStatus(itemId, status) {
     socket.emit('botToggle', {
@@ -46,7 +46,6 @@ export function sendBotStatus(itemId, status) {
         status: status
     });
 }
-
 // Enviar mensaje enviado manualmente
 export function emitMessage(text, timeStamp, sender ) {
     socket.emit('sendMessage', {
@@ -74,7 +73,7 @@ socket.on('newMessage', (data) => {
 
 // Escuchar la carga inicial de datos (items) cuando se logea
 socket.on('initialData', (data) => {
-    // Set the first item as current if there are no items available
+    // Set the first item as current for the initial data
     if (data.items.length > 0) {
         setCurrentItem(data.items[0].id);
     }
@@ -84,17 +83,17 @@ socket.on('initialData', (data) => {
     allItemsLoaded[currentFilter] = data.items.length < ITEMS_PER_PAGE;
     currentPage[currentFilter] = 0;
     // Initial functions
-    initiliceBotToggle();
-    filterItems();
+    initiliceBotToggle(); // Set the state of the bot toggle
+    filterItems(); // Filter the items and show them in front
 });
 
 // Escuchar nuevos items (tiempo real)
 socket.on('newItem', (item) => {
-    if (!allItems[item.type]) return;
+    if (!allItems[item.type]) return; // Para que no de error en caso que sea undefined
     
     allItems[item.type].unshift(item);
     itemsCount[item.type]++;
-    // if the filter is actived, print it, if it is not, just save it
+    // If the filter is actived, print it, if it is not, just save it
     if (currentFilter === item.type) {
         filterItems();
     }
@@ -107,8 +106,8 @@ socket.on('loadMoreItems', (data) => {
         allItemsLoaded[currentFilter] = true;
     }
 
-    allItems[currentFilter] = [...allItems[currentFilter], ...data.items];
+    allItems[currentFilter] = [...allItems[currentFilter], ...data.items]; //old items + new items
     itemsCount[currentFilter] += data.items.length;
     currentPage[currentFilter] = data.page;
-    filterItems();
+    filterItems(); // Print it
 });

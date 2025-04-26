@@ -1,11 +1,14 @@
 import { allItems, allItemsLoaded, currentPage } from './socket.js'; // variables
-import { requestInitialItems, requestMoreItems} from './socket.js'; // functions
-import { updateItemsList, initiliceBotToggle } from './ui.js';
+import { requestInitialItems, requestMoreItems, sendBotStatus} from './socket.js'; // functions
+import { updateItemsList } from './ui.js';
 
-export let currentItemId = null;
-export let currentFilter = null;
+export let currentItemId = null; // Id of the item actived
+export let currentFilter = null; // define (Chat or Comment)
+let lastToggle = null; // referencia al ultimo toggle que hubo
+let lastToggleHandler = null; // referencia al ultimo addEventListener que hubo (para borrarlo y no acumular eventos)
 
-// Función para filtrar items basado en los toggles activos y el tipo de item
+
+// ACA LO QUE FILTRAMOS SON LAS PLATAFORMAS QUE SE VAN A MOSTRAR
 export function filterItems() {
     // Prevent filtering if allItems[currentFilter] is not initialized yet
     if (!allItems[currentFilter]) return;
@@ -42,7 +45,50 @@ export function filterItems() {
     updateItemsList(filteredItems, currentFilter);
 }
 
-// Función para cambiar el item id actual (el clickeado)
+// Funcionalidades del toggle del bot
+function handleInputVisibility(isChecked, itemId) {
+    if (!itemId) return;
+    
+    // hide or show text input depending the individual bot toggle boolean value
+    const messageInputContainer = document.querySelector('.message-input-container');
+    messageInputContainer.style.display = isChecked ? 'none' : 'flex';
+    
+    // Emit the new status from the bot toggle to the backend ------ (GOES TO BACK)
+    sendBotStatus(itemId, isChecked);
+}
+// inicializar el estado del boton 
+export function initiliceBotToggle() {
+    const currentItem = allItems[currentFilter].find(item => item.id === currentItemId);
+    
+    if (currentItem) {
+        const botToggle = document.querySelector('.individual-bot-toggle');
+
+        // Si había un toggle anterior, le quitamos el evento
+        if (lastToggle && lastToggleHandler) {
+            lastToggle.removeEventListener('change', lastToggleHandler);
+        }
+
+        // Definir la nueva función manejadora al momento de que el toggle changes
+        const toggleHandler = (e) => {
+            const isChecked = e.target.checked;
+            handleInputVisibility(isChecked, currentItem.id);
+        };
+
+        // Guardar las referencias para futura limpieza
+        lastToggle = botToggle;
+        lastToggleHandler = toggleHandler;
+
+        // Establecer el estado inicial del toggle
+        botToggle.checked = currentItem.isBotActived;
+        handleInputVisibility(currentItem.isBotActived, currentItem.id);
+
+        // Asignar el nuevo event listener
+        botToggle.addEventListener('change', toggleHandler);
+    }
+}
+
+
+// Función para cambiar el item id actual (el actived)
 export function setCurrentItem(itemId) {
     currentItemId = itemId;
 }
@@ -60,12 +106,14 @@ export function setCurrentFilter(value) {
     }
 }
 
+
 // Función para cargar más items cuando se hace scroll
 export function loadNewItems() {
     if (allItemsLoaded[currentFilter]) return; //Si ya estan todos los items cargados, no traer mas items
     const nextPage = currentPage[currentFilter] + 1;
     requestMoreItems(nextPage) // Pedir mas items de las bases de datos (porque scrolleamos)
 }
+
 
 document.addEventListener('DOMContentLoaded', () => {
     setCurrentFilter('contact');
