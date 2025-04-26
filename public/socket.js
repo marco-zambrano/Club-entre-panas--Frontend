@@ -75,6 +75,7 @@ socket.on('newMessage', (data) => {
 socket.on('initialData', (data) => {
     // Set the first item as current for the initial data
     if (data.items.length > 0) {
+        document.querySelector('.chat-title').textContent = data.items[0].name
         setCurrentItem(data.items[0].id);
     }
     // Set all the initial data 
