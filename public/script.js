@@ -53,8 +53,8 @@ function handleInputVisibility(isChecked, itemId) {
     const messageInputContainer = document.querySelector('.message-input-container');
     messageInputContainer.style.display = isChecked ? 'none' : 'flex';
     
-    // Emit the new status from the bot toggle to the backend ------ (GOES TO BACK)
-    sendBotStatus(itemId, isChecked);
+    // Emit the new status from the bot toggle to the backend 
+    sendBotStatus(itemId, isChecked); // ------ (GOES TO BACK)
 }
 // inicializar el estado del boton 
 export function initiliceBotToggle() {
@@ -98,7 +98,7 @@ export function setCurrentFilter(value) {
         currentFilter = value;
         // Si no tenemos items cargados para este tipo, solicitarlos
         if (!allItems[currentFilter] || allItems[currentFilter].length === 0) {
-            requestInitialItems();  // Pedir los items iniciales de la bd 
+            requestInitialItems();  // Pedir los items iniciales de la bd ------ (GOES TO BACK)
         } else {
             // si ya tenemos items cargados, simplemente lo filtramos depende el caso
             filterItems();
@@ -111,7 +111,7 @@ export function setCurrentFilter(value) {
 export function loadNewItems() {
     if (allItemsLoaded[currentFilter]) return; //Si ya estan todos los items cargados, no traer mas items
     const nextPage = currentPage[currentFilter] + 1;
-    requestMoreItems(nextPage) // Pedir mas items de las bases de datos (porque scrolleamos)
+    requestMoreItems(nextPage) // Pedir mas items de las bases de datos (porque scrolleamos) ------ (GOES TO BACK)
 }
 
 
