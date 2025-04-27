@@ -91,7 +91,14 @@ export function initiliceBotToggle() {
 // Función para cambiar el item id actual (el actived)
 export function setCurrentItem(itemId) {
     currentItemId = itemId;
-    // console.log(currentItemId);
+    // const currentItem = allItems[currentFilter].find( item => item.id === currentItemId);
+    // if (currentItem.messages.length > 0) {
+    //     currentItem.messages.forEach(message => {
+    //         createMessage(message.text, message.time, message.sender, message.type, message.imageUrl);
+    //     });
+    //     return;
+    // }
+
     sendActivedItem(currentItemId);
 }
 // Funcion para cambiar si estamos en la seccion de chats o comentarios

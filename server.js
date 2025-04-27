@@ -199,8 +199,28 @@ io.on('connection', (socket) => {
         console.log(data.text);
     })
     // recibimos el id del item activo
-    socket.on('activedItem', (data) => {
-        console.log(data);
+    socket.on('activedItem', (itemId) => {
+        // Recibimos el id del item activo
+        // Lo buscas en la base de datos, y me lo mandas en un array
+        // Como el de messages = []
+        let messages = [];
+        for (let i = 0; i < 50; i++) {
+            const sender = Math.random() > 0.5 ? 'bot' : 'contact';
+            const isContact = Math.random() > 0.5;
+            const isImage = Math.random() > 0.7;
+            
+            const message = {
+                text: isImage ? '' : (isContact ? generateRandomMessage() : generateRandomComment()),
+                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                sender: sender,
+                type: isImage ? 'image' : ((Math.random() > 0.5 && isContact && sender === 'contact') ? 'audio' : ''),
+                imageUrl: isImage ? generateRandomImage() : null
+            };
+
+            messages.push(message);
+        }
+
+        socket.emit('loadDBMessages', messages); 
     })
 
     // Generar nuevos contactos cada 10 segundos
