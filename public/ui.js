@@ -3,6 +3,7 @@ import { setCurrentItem, setCurrentFilter, filterItems, initiliceBotToggle } fro
 import { emitMessage } from './socket.js';
 
 export function createMessage(text, time, sender, type, imageUrl) {
+    console.log('llegamos otra vez')
     // create new message
     const messageElement = document.createElement('div');
     messageElement.className = 'message';
@@ -44,10 +45,6 @@ export function createMessage(text, time, sender, type, imageUrl) {
     messageElement.appendChild(messageContent);
     // Agregar al main container
     document.querySelector('.messages').appendChild(messageElement);
-    
-    // Scroll al final de los mensajes
-    const messagesContainer = document.querySelector('.messages');
-    messagesContainer.scrollTop = messagesContainer.scrollHeight;
 }
 
 
@@ -232,9 +229,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         //actualizar el bot toggle
         initiliceBotToggle();
-
-        // Borrar el content del chat anterior
-        document.querySelector('.messages').innerHTML = '';
     });
 
 
@@ -326,7 +320,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // send message to the backend
         emitMessage(messageText, timeString, 'bot')
         // create the message
-        createMessage(messageText, timeString, 'bot');
+        createMessage(messageText, timeString, 'bot', '', null);
         
         // Limpiar input
         input.value = '';

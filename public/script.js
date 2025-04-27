@@ -1,6 +1,6 @@
 import { allItems, allItemsLoaded, currentPage } from './socket.js'; // variables
 import { requestInitialItems, requestMoreItems, sendBotStatus, sendActivedItem} from './socket.js'; // functions
-import { updateItemsList } from './ui.js';
+import { updateItemsList, createMessage } from './ui.js';
 
 export let currentItemId = null; // Id of the item actived
 export let currentFilter = null; // define (Chat or Comment)
@@ -91,13 +91,27 @@ export function initiliceBotToggle() {
 // Función para cambiar el item id actual (el actived)
 export function setCurrentItem(itemId) {
     currentItemId = itemId;
-    // const currentItem = allItems[currentFilter].find( item => item.id === currentItemId);
-    // if (currentItem.messages.length > 0) {
-    //     currentItem.messages.forEach(message => {
-    //         createMessage(message.text, message.time, message.sender, message.type, message.imageUrl);
-    //     });
-    //     return;
-    // }
+    if (!currentItemId) return;
+
+    const currentItem = allItems[currentFilter].find(item => item.id === currentItemId);
+    if (!currentItem) return;
+
+    // Limpiar el contenedor de mensajes antes de agregar nuevos
+    const messagesContainer = document.querySelector('.messages');
+    if (messagesContainer) {
+        messagesContainer.innerHTML = '';
+    }
+
+    if (currentItem.messages && currentItem.messages.length > 0) {
+        console.log('Cargando mensajes existentes para el item:', currentItemId);
+        currentItem.messages.forEach(message => {
+            createMessage(message.text, message.time, message.sender, message.type, message.imageUrl);
+        });
+        
+        const messagesContainer = document.querySelector('.messages');
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        return;
+    }
 
     sendActivedItem(currentItemId);
 }

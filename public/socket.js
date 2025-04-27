@@ -77,7 +77,6 @@ socket.on('newMessage', (data) => {
 
 // Escuchar los mensajes de la base de datos
 socket.on('loadDBMessages', (messages) => {
-    console.log(messages)
     const currentItem = allItems[currentFilter].find( item => item.id === currentItemId);
     
     if (currentItem) {
@@ -86,23 +85,30 @@ socket.on('loadDBMessages', (messages) => {
             createMessage(message.text, message.time, message.sender, message.type, message.imageUrl);
         });
     }
+
+        
+    // Scroll al final de los mensajes
+    const messagesContainer = document.querySelector('.messages');
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
 })
 
 // Escuchar la carga inicial de datos (items) cuando se logea
 socket.on('initialData', (data) => {
-    // Set the first item as current for the initial data
-    if (data.items.length > 0) {
-        document.querySelector('.chat-title').textContent = data.items[0].name
-        setCurrentItem(data.items[0].id);
-    }
     // Set all the initial data 
     allItems[currentFilter] = data.items;
     itemsCount[currentFilter] = data.items.length;
     allItemsLoaded[currentFilter] = data.items.length < ITEMS_PER_PAGE;
     currentPage[currentFilter] = 0;
-
+    
     // Initial functions
     initiliceBotToggle(); // Set the state of the bot toggle
+    
+    // Set the first item as current for the initial data
+    if (data.items.length > 0) {
+        document.querySelector('.chat-title').textContent = data.items[0].name
+        setCurrentItem(data.items[0].id);
+    }
+    
     filterItems(); // Filter the items and show them in front
 });
 
