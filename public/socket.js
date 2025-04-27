@@ -56,6 +56,10 @@ export function emitMessage(text, timeStamp, sender ) {
         imageUrl: null
     });
 }
+// Enviar cual es el item que esta seleccionado
+export function sendActivedItem(itemId) {
+    socket.emit('activedItem', itemId);
+}
 
 // Escuchar nuevos mensajes
 socket.on('newMessage', (data) => {

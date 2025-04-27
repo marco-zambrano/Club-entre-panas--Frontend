@@ -1,5 +1,5 @@
 import { allItems, allItemsLoaded, currentPage } from './socket.js'; // variables
-import { requestInitialItems, requestMoreItems, sendBotStatus} from './socket.js'; // functions
+import { requestInitialItems, requestMoreItems, sendBotStatus, sendActivedItem} from './socket.js'; // functions
 import { updateItemsList } from './ui.js';
 
 export let currentItemId = null; // Id of the item actived
@@ -91,6 +91,8 @@ export function initiliceBotToggle() {
 // Función para cambiar el item id actual (el actived)
 export function setCurrentItem(itemId) {
     currentItemId = itemId;
+    // console.log(currentItemId);
+    sendActivedItem(currentItemId);
 }
 // Funcion para cambiar si estamos en la seccion de chats o comentarios
 export function setCurrentFilter(value) {

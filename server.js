@@ -188,8 +188,6 @@ io.on('connection', (socket) => {
     // Para recibir el estado del bot
     socket.on('botToggle', (data) => {
         const { itemId, status } = data;
-        console.log('id: ', itemId);
-        console.log('status: ', status);
         const itemType = itemId.startsWith('contact') ? contacts : comments;
         const item = itemType.get(itemId);
         if (item) {
@@ -199,6 +197,10 @@ io.on('connection', (socket) => {
     // Para recibir el texto que es enviado manualmente
     socket.on('sendMessage', (data) => {
         console.log(data.text);
+    })
+    // recibimos el id del item activo
+    socket.on('activedItem', (data) => {
+        console.log(data);
     })
 
     // Generar nuevos contactos cada 10 segundos
