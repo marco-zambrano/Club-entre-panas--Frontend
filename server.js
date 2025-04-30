@@ -227,13 +227,13 @@ io.on('connection', (socket) => {
     const contactInterval = setInterval(() => {
         const newContact = generateNewContact();
         io.emit('newItem', newContact);
-    }, 5000);
+    }, 15000);
 
     // Generar nuevos comentarios cada 15 segundos
     const commentInterval = setInterval(() => {
         const newComment = generateNewComment();
         io.emit('newItem', newComment);
-    }, 7000);
+    }, 15000);
 
     // Enviar mensajes o comentarios aleatorios cada 2 segundos
     const messageInterval = setInterval(() => {
@@ -271,7 +271,7 @@ io.on('connection', (socket) => {
                 });
             }
         }
-    }, 2000);
+    }, 10000);
     socket.on('disconnect', () => {
         clearInterval(contactInterval);
         clearInterval(commentInterval);

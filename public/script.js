@@ -105,7 +105,7 @@ export function setCurrentItem(itemId) {
     if (currentItem.messages && currentItem.messages.length > 0) {
         console.log('Cargando mensajes existentes para el item:', currentItemId);
         currentItem.messages.forEach(message => {
-            createMessage(message.text, message.time, message.sender, message.type, message.imageUrl);
+            createMessage(message.text, message.time, message.sender, message.type, message.imageUrl); //WILL CHANGE FOR EPOCH
         });
         
         const messagesContainer = document.querySelector('.messages');
