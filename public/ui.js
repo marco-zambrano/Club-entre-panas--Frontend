@@ -275,38 +275,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-
-    // Bot configuration modal functionality
-    const botConfigButton = document.querySelector('.bot-config-button');
-    const botConfigModal = document.querySelector('.bot-config-modal');
-    const closeModalButton = document.querySelector('.close-modal');
-    const cancelModalButtton = document.querySelector('.cancel-button');
-    // Open modal
-    botConfigButton.addEventListener('click', () => {
-        botConfigModal.classList.add('show');
-    });
-    // Close modal with X button
-    closeModalButton.addEventListener('click', () => {
-        botConfigModal.classList.remove('show');
-    });
-    // Close modal with cancel button
-    cancelModalButtton.addEventListener('click', () => {
-        botConfigModal.classList.remove('show');
-    });
-    // Close modal when clicking outside
-    botConfigModal.addEventListener('click', (e) => {
-        if (e.target === botConfigModal) {
-            botConfigModal.classList.remove('show');
-        }
-    });
-    // Close modal with Escape key
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && botConfigModal.classList.contains('show')) {
-            botConfigModal.classList.remove('show');
-        }
-    });
-    
-    
     // Send message functionality
     function sendMessage() {
         const input = document.querySelector('.message-input');
@@ -349,6 +317,104 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelector('.message-input').addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
             sendMessage();
+        }
+    });
+
+    // --- MODALES Y BOTONES ---
+    const botConfigButton = document.querySelector('.bot-config-button');
+    const mainConfigModal = document.getElementById('mainConfigModal');
+    const closeMainConfig = document.getElementById('closeMainConfig');
+    const openBotConfig = document.getElementById('openBotConfig');
+    const openQuickRepliesConfig = document.getElementById('openQuickRepliesConfig');
+    const botConfigModal = document.querySelector('.bot-config-modal');
+    const closeModalButton = document.querySelector('.close-modal');
+    const cancelModalButtton = document.querySelector('.cancel-button');
+    const quickRepliesModal = document.getElementById('quickRepliesModal');
+    const closeQuickReplies = document.getElementById('closeQuickReplies');
+    const openCreateQuickReply = document.getElementById('openCreateQuickReply');
+    const createQuickReplyModal = document.getElementById('createQuickReplyModal');
+    const cancelCreateQuickReply = document.getElementById('cancelCreateQuickReply');
+
+    // --- FUNCIONALIDAD DE MODALES ---
+    // Abrir modal principal de configuración
+    botConfigButton.addEventListener('click', () => {
+        mainConfigModal.classList.add('show');
+    });
+    // Cerrar modal principal
+    closeMainConfig.addEventListener('click', () => {
+        mainConfigModal.classList.remove('show');
+    });
+    mainConfigModal.addEventListener('click', (e) => {
+        if (e.target === mainConfigModal) {
+            mainConfigModal.classList.remove('show');
+        }
+    });
+    // Escape para cerrar modal principal
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && mainConfigModal.classList.contains('show')) {
+            mainConfigModal.classList.remove('show');
+        }
+    });
+
+    // Abrir modal de configuración del bot
+    openBotConfig.addEventListener('click', () => {
+        mainConfigModal.classList.remove('show');
+        botConfigModal.classList.add('show');
+    });
+    // Cerrar modal de configuración del bot
+    closeModalButton.addEventListener('click', () => {
+        botConfigModal.classList.remove('show');
+    });
+    cancelModalButtton.addEventListener('click', () => {
+        botConfigModal.classList.remove('show');
+    });
+    botConfigModal.addEventListener('click', (e) => {
+        if (e.target === botConfigModal) {
+            botConfigModal.classList.remove('show');
+        }
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && botConfigModal.classList.contains('show')) {
+            botConfigModal.classList.remove('show');
+        }
+    });
+
+    // Abrir modal de respuestas rápidas desde el modal principal
+    openQuickRepliesConfig.addEventListener('click', () => {
+        mainConfigModal.classList.remove('show');
+        quickRepliesModal.classList.add('show');
+    });
+    // Cerrar modal de respuestas rápidas
+    closeQuickReplies.addEventListener('click', () => {
+        quickRepliesModal.classList.remove('show');
+    });
+    quickRepliesModal.addEventListener('click', (e) => {
+        if (e.target === quickRepliesModal) {
+            quickRepliesModal.classList.remove('show');
+        }
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && quickRepliesModal.classList.contains('show')) {
+            quickRepliesModal.classList.remove('show');
+        }
+    });
+
+    // Abrir modal de crear nueva respuesta rápida
+    openCreateQuickReply.addEventListener('click', () => {
+        createQuickReplyModal.classList.add('show');
+    });
+    // Cerrar modal de crear nueva respuesta rápida
+    cancelCreateQuickReply.addEventListener('click', () => {
+        createQuickReplyModal.classList.remove('show');
+    });
+    createQuickReplyModal.addEventListener('click', (e) => {
+        if (e.target === createQuickReplyModal) {
+            createQuickReplyModal.classList.remove('show');
+        }
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && createQuickReplyModal.classList.contains('show')) {
+            createQuickReplyModal.classList.remove('show');
         }
     });
 })
