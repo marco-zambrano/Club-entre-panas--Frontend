@@ -385,6 +385,31 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
+
+    // Todo lo que tiene que ver con las respuestas rapidas
+    // La idea es que traigas las respuestas de la bd del back, una vez el usuario inicia sesion
+    // Una vez la traiste, la puedes guardar en un array por ejemplo el de aca
+    // Que ya quede como variable global, para que al momento de yo abrir el modal de las respuestas rapidas, estas manes se carguen
+    const quickRepliesArr = [
+        'respuesta 1',
+        'respuesta 2',
+        'respuesta 3',
+        'respuesta 4',
+    ]
+
+    function createQuickReply(text) {
+        // Quick replies container
+        const quickRepliesContainer = document.querySelector('.quick-replies-list');
+            
+        // Creamos el nuevo reply
+        const newReply = document.createElement('p');
+        newReply.textContent = text;
+        newReply.classList.add('quick-reply-item');
+
+        // Agregamos al contenedor de replies
+        quickRepliesContainer.appendChild(newReply);
+    }
+
     function createReplyModal() {
         // Abrir modal de crear nueva respuesta rápida
         openCreateQuickReply.addEventListener('click', () => {
@@ -408,20 +433,17 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }); 
 
-        // CREATE MODAL BUTTON
+        // Iteramos y creamos las respuestas ya cargadas
+        quickRepliesArr.forEach(reply => {
+            createQuickReply(reply);
+        })
+
+        // Boton de crear respuesta nueva
         createReplyBtn.addEventListener('click', () => {
-            // Quick replies container
-            const quickRepliesContainer = document.querySelector('.quick-replies-list');
             // New quick reply text
             const text = document.querySelector('.quick-reply-textarea').value.trim();
-
-            // Creamos el nuevo reply
-            const newReply = document.createElement('p');
-            newReply.textContent = text;
-            newReply.classList.add('quick-reply-item');
-
-            // Agregamos al contenedor de replies
-            quickRepliesContainer.appendChild(newReply);
+            createQuickReply(text);
+            // Ahi le pones para enviar la nueva respuesta rapida a la base de datos una vez la creas
         })
     }
     
