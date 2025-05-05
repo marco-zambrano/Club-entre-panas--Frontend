@@ -1,138 +1,239 @@
 import { currentFilter, currentItemId } from "./script.js"; // Variables
-import { filterItems, setCurrentItem, initiliceBotToggle } from "./script.js"; // Functions
+import { filterItems, openItem, initiliceBotToggle } from "./script.js"; // Functions
 import { createMessage } from './ui.js'; // Function create message
 
 export const socket = io();
 
-// Variables para rastrear el estado de la carga
-export let allItems = {
-    contacts: [],
-    comments: []
-};
-export let itemsCount = {
-    contacts: 0,
-    comments: 0
-};
-export let allItemsLoaded = {
-    contacts: false,
-    comments: false
-};
-export let currentPage = {
-    contacts: 0,
-    comments: 0
-};
-
 const ITEMS_PER_PAGE = 20;
 
-// Pedir los items iniciales ni bien logea
-export function requestInitialItems() {
-    socket.emit('requestInitialItems', {
-        type: currentFilter,
-        count: 0
-    });
+
+// MAY GOD BLESS THIS CODE
+export var items = {
+    contacts: {
+        allItemsLoaded: false,
+        list: []
+    },
+    comments: {
+        allItemsLoaded: false,
+        list: []
+    }
 }
-// Pedir los items pedidos por el scroll
-export function requestMoreItems(nextPage) {
-    socket.emit('requestMoreItems', {
-        type: currentFilter,
-        page: nextPage,
-        count: itemsCount[currentFilter]
-    });
+
+export var quickReps = [];
+
+
+// AND YOU KNOW I'M THE LORD WHEN I SAY THIS
+export function getItems(filter) { //must be "contacts" or "comments" PLURAL
+    socket.emit('getItems', {
+        filter: filter,
+        count: items[filter].list.length // amount of items already loaded.
+        //.length works good here because the backend uses arra.prototype.slice. So it's good that if the local array has [0, ...N] items
+        //.length returns N+1. N+1 is exactly from where the backend should start returning the items.
+        // then, when items has [0, ...N] items, the backend will return items from N+1 to N+20. So we have 20 new items.
+        // in other words, 
+    })
 }
-// Enviar el estado del bot (encendido/apagado)
-export function sendBotStatus(itemId, status) {
-    socket.emit('botToggle', {
+
+
+
+//SEND BOT STATUS
+export function updateBotStatus(itemId, status) {
+    socket.emit('botStatus', {
         itemId: itemId,
         status: status
     });
 }
-// Enviar mensaje enviado manualmente
-export function emitMessage(text, timeStamp, sender ) {
-    socket.emit('sendMessage', {
-        text: text,
-        timeStamp: timeStamp,
-        sender: sender,
-        type: '',
-        imageUrl: null
+//SEND MANUAL MESSAGE
+export function sendManMessage(metaId, type, content, filter) {
+
+    socket.emit('sendManMessage', {
+        metaId: metaId,
+        content: content,
+        type: type,
+        filter: filter
     });
 }
-// Enviar cual es el item que esta seleccionado
-export function sendActivedItem(itemId) {
-    socket.emit('activedItem', itemId);
+//SEND WHICH ITEM IS OPENED
+export function getItemHistory(itemId, filter) {
+    console.log("GETTING ITEM HISTORY")
+    socket.emit('getItemHistory', {itemId, filter});
 }
 
-// Escuchar nuevos mensajes
-socket.on('newMessage', (data) => {
-    // En caso de que no haya toggles activados, no permitir seguir con los mensajes llegados
-    if (document.querySelector('.chat-title').textContent === 'Selecciona un contacto o comentario') return;
+//QUICK REPLIES
+export function getQuickReps(){
+    socket.emit("getQuickReps"); //only for when the user just logs in
+}
+socket.on('quickReps', (qckRps) => { //WHEN THE SERVER SENDS THE SAVED QUICK REPLIES, UPDATE THE LOCAL ARRAY
+    quickReps = qckRps;
+})
+export function updateQuickReps(newReps){ //SHOULD BE EXECUTED USING: updateQuickReps(quickReps) ONCE THEY ARE UPDATED. THIS WILL SEND THE NEW QUICK REPS TO THE SERVER
+    socket.emit("updateQuickReps", {
+        qckRps: newReps
+    });
+}
 
-    const itemId = data.itemId;
-    // Solo se ejecuta la funcion crear mensaje, si el id del mensaje comienza con 'contact' o por comment
-    // Debido a que los mensajes del back, tienen id 'contact-134kfj5t5992u' o 'comment-134kfj5t5992u'por ejemplo
-    // Igualmente no se como sera esto en produccion
-    if (itemId.startsWith(currentFilter)) {
-        createMessage(data.message.text, data.message.time, data.message.sender, data.message.type, data.message.imageUrl);
-    }
-});
 
-// Escuchar los mensajes de la base de datos
-socket.on('loadDBMessages', (messages) => {
-    const currentItem = allItems[currentFilter].find( item => item.id === currentItemId);
+//SEARCH CONTENT HISTORY FOR AN ITEM
+socket.on('itemContentHistory', (entries) => {
+    const currentItem = items[currentFilter].list.find( item => item.id === currentItemId);
     
     if (currentItem) {
-        messages.forEach(message => {
-            currentItem.messages.push(message);
-            createMessage(message.text, message.time, message.sender, message.type, message.imageUrl);
+        const sender = (entries[0].self) ? "bot" : (entries[0].self == false) ? "contact" : null;
+        entries.forEach(entry => {
+            var entryKey = (currentFilter == "contacts") ? "messages" : (currentFilter == "comments") ? "comments" : null;
+            currentItem[entryKey].push(entry);
+            const timeString = new Date(entry.time).toLocaleString('en-US', {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true
+            });
+            createMessage(entry.content, timeString, sender, entry.type);
         });
     }
 
         
-    // Scroll al final de los mensajes
+    //SCROLL TO THE END (DEPRECATED?)
     const messagesContainer = document.querySelector('.messages');
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    console.log('Received history for item:', currentItemId, 'with messages:', entries);
 })
 
-// Escuchar la carga inicial de datos (items) cuando se logea
-socket.on('initialData', (data) => {
-    // Set all the initial data 
-    allItems[currentFilter] = data.items;
-    itemsCount[currentFilter] = data.items.length;
-    allItemsLoaded[currentFilter] = data.items.length < ITEMS_PER_PAGE;
-    currentPage[currentFilter] = 0;
-    
-    // Initial functions
-    initiliceBotToggle(); // Set the state of the bot toggle
-    
-    // Set the first item as current for the initial data
-    if (data.items.length > 0) {
-        document.querySelector('.chat-title').textContent = data.items[0].name
-        setCurrentItem(data.items[0].id);
+socket.on('newItems', (data) => { //RECEIVES LIST, TYPE, ALLITEMSLOADED.
+    //IF DATA FILTER IS UNDEFINED, RETURN
+    if (!items[data.filter]){
+        console.log('Data.type undefined when sending newItems: ', data.filter);
+        return;
     }
-    
-    filterItems(); // Filter the items and show them in front
-});
 
-// Escuchar nuevos items (tiempo real)
-socket.on('newItem', (item) => {
-    if (!allItems[item.type]) return; // Para que no de error en caso que sea undefined
+    //ADD THE ITEM TO THE FILTER LIST
+    items[data.filter].list = [...items[data.filter].list, ...data.items];
+    items[data.filter].allItemsLoaded = data.allItemsLoaded; //IF EVERYTHINGS BEEN LOADED
     
-    allItems[item.type].unshift(item);
-    itemsCount[item.type]++;
-    // If the filter is actived, print it, if it is not, just save it
-    if (currentFilter === item.type) {
+    //IF IT'S THE SAME AS THE ONES OPENED, UPDATE THE LIST
+    if (currentFilter === data.filter) {
         filterItems();
     }
 });
 
-// Escuchar más items cargados (por scroll)
-socket.on('loadMoreItems', (data) => {
-    // if the data base sents all the items, set allItemsLoades as true (chat/comment)
-    if (data.items.length < ITEMS_PER_PAGE) {
-        allItemsLoaded[currentFilter] = true;
+
+socket.on('newMessage', (data) => {
+    console.log("NEW MESSAGE RECEIVED");
+    //JUST TO KNOW HOW TO DEAL WITH THE OBJECTS
+    const typeMapping = {
+        contacts: {
+            listKey: 'messages',
+            dataKey: 'message'
+        },
+        comments: {
+            listKey: 'comments',
+            dataKey: 'comment'
+        }
+    };
+    const itemType = data.message ? 'contacts' : data.comment ? 'comments' : null;
+
+    if (!itemType) { //IF ITEMTYPE IS UNDEFINED SHOW ERROR
+        console.log("Error: itemType unclear");
+        return;
     }
 
-    allItems[currentFilter] = [...allItems[currentFilter], ...data.items]; //old items + new items
-    itemsCount[currentFilter] += data.items.length;
-    currentPage[currentFilter] = data.page;
-    filterItems(); // Print it
+    const { listKey, dataKey } = typeMapping[itemType]; // Get the list key and data key based on the item type
+    const item = items[itemType].list.find(item => item.id === data.id); // Find the item on the local list
+
+
+
+    if (!item) { //IF IT AINT THERE CREATE A NEW ITEM
+        //PLACEHOLDER VAR
+        const newItem = {
+            id: data.id,
+            name: data.name,
+            platform: data.platform,
+            interest: data.interest,
+            botEnabled: data.botEnabled,
+            [listKey]: [] // Dynamically set the property (messages or comments)
+        };
+
+        const newEntry = { // Create a new entry for the message/comment
+            id: data[dataKey].id,
+            content: data[dataKey].content,
+            type: data[dataKey].type,
+            time: data[dataKey].time,
+            self: data[dataKey].self
+        };
+        newItem[listKey].push(newEntry); // Add the new entry to the new item
+
+        items[itemType].list.unshift(newItem); // Add it at the beginning of the list
+        console.log(items[itemType]);
+    } else {
+        // UPDATE THE EXISTING ITEM
+        item.interest = data.interest;
+
+        item.preview = item.preview || {};
+        item.preview.content = data[dataKey].content;
+        item.preview.timestamp = data[dataKey].time;
+
+        //CREATE THE NEW ENTRY WITH THE RECEIVED DATA
+        const newEntry = {
+            id: data[dataKey].id,
+            content: data[dataKey].content,
+            type: data[dataKey].type,
+            time: data[dataKey].time,
+            self: data[dataKey].self
+        };
+
+        item[listKey].push(newEntry); // Add the new entry to the existing item
+
+        if(currentItemId === data.id) { //IF THE ITEM IS OPENED, SHOW THE MESSAGE
+            const timeString = new Date(data[dataKey].time).toLocaleString('en-US', {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true
+            });
+            const senderString = data[dataKey].self === true ? 'bot' : "contact"; //if true, bot, else contact
+            createMessage(data[dataKey].content, timeString, senderString, data[dataKey].type); //WILL CHANGE FOR EPOCH
+        }
+
+    }
+
+    filterItems(); // Filter the items and show them in front
 });
+
+
+//THIS IS AN EXAMPLE DATA FOR THE SOCKET. THIS IS NOT USED
+var newDATA = {
+    itemId: "kKFDSlfdjs89989_32342432",
+    username: "John Doe",
+    platform: "whatsapp",
+    interest: 1, // FROM 0 TO 10
+    preview: {
+        content: "example",
+        timestamp: 1234567890
+    },
+    message: {
+        id: "kKFDSlfdjs89989_32342432",
+        content: "helo bish",
+        time: 1234567890,
+        self: false,
+        type: "text" //if type is image, the content is the url of the image
+    }
+}
+
+
+
+var examplecontact = {
+    id: "kKFDSlfdjs89989_32342432",
+    name: "John Doe",
+    platform: "whatsapp",
+    interest: 1, // FROM 0 TO 10
+    preview: {
+        content: "example",
+        timestamp: 1234567890
+    },
+    messages: [
+        {
+            content: "example",
+            time: 1234567890,
+            self: false,
+            type: "text" //if type is image, the content is the url of the image
+        }
+    ]
+}

@@ -1,38 +1,36 @@
 import { currentItemId, currentFilter } from "./script.js"; // Variables
-import { setCurrentItem, setCurrentFilter, filterItems, initiliceBotToggle } from "./script.js"; // Functions
-import { emitMessage } from './socket.js';
+import { openItem, setCurrentFilter, filterItems, initiliceBotToggle } from "./script.js"; // Functions
+import { sendManMessage, items } from './socket.js';
 
-export function createMessage(text, time, sender, type, imageUrl) {
-    console.log('llegamos otra vez')
+export function createMessage(content, time, sender, type) {
     // create new message
     const messageElement = document.createElement('div');
     messageElement.className = 'message';
     // Se agrega el mensaje basado en el remitente usando su propiedad definida del css
     messageElement.classList.add(`${sender}-sender`)
 
-    // create audio spam in case the message is transcripted
-    if (type === 'audio') {
-        const audioAdvice = document.createElement('span');
-        audioAdvice.className = 'message-audio';
-        audioAdvice.textContent = 'audio.. 🔉';
-        messageElement.appendChild(audioAdvice)
-    }
-    
     // Contenido del mensaje
     const messageContent = document.createElement('div');
     messageContent.className = 'message-content';
+    
 
     // Si es una imagen, crear el elemento img
     if (type === 'image') {
         messageElement.classList.add(`image`); // Definimos que el mensaje va a ser un img
         const imageElement = document.createElement('img');
-        imageElement.src = imageUrl;
+        imageElement.src = content;
         imageElement.alt = 'Imagen enviada';
         imageElement.className = 'message-image';
         messageContent.appendChild(imageElement);
-    } else {
+    } else if(type === "text"){
         // Si es texto normal, solo ponemos el texto
-        messageContent.textContent = text;
+        messageContent.textContent = content;
+    } else if (type === 'audio') {
+        const audioAdvice = document.createElement('span');
+        audioAdvice.className = 'message-audio';
+        audioAdvice.textContent = 'audio.. 🔉';
+        messageElement.appendChild(audioAdvice);
+        messageContent.textContent = content;
     }
 
     // Span de tiempo
@@ -44,7 +42,11 @@ export function createMessage(text, time, sender, type, imageUrl) {
     messageContent.appendChild(timeSpan);
     messageElement.appendChild(messageContent);
     // Agregar al main container
-    document.querySelector('.messages').appendChild(messageElement);
+
+    
+    //SET TIME INVERVAL OF 1 SECOND
+    const messagesContainer = document.querySelector('.messages');
+    messagesContainer.appendChild(messageElement);
 }
 
 
@@ -52,7 +54,7 @@ export function createMessage(text, time, sender, type, imageUrl) {
 function createContactCard(contact) {
     // Container del contacto
     const contactElement = document.createElement('div');
-    contactElement.className = `contact ${contact.id === currentItemId ? 'active' : ''}`;
+    contactElement.className = `contact ${contact.id === currentItemId ? 'active' : ''}`; //WHAT THIS DOES IS THAT IF THE CONTACT ID IS THE SAME AS THE CURRENT ITEM ID, IT WILL ADD THE CLASS ACTIVE
     contactElement.dataset.platform = contact.platform;
     contactElement.dataset.itemId = contact.id;
     contactElement.dataset.type = contact.type;
@@ -60,7 +62,7 @@ function createContactCard(contact) {
     // Preview
     const preView = document.createElement('span');
     preView.className = 'contact-preview';
-    preView.textContent = contact.preview;
+    preView.textContent = contact.messages[contact.messages.length - 1].content; // Ultimo mensaje
 
     // Container de la info del contacto
     const contactInfo = document.createElement('div');
@@ -185,7 +187,7 @@ export function updateItemsList(items, currentFilter) {
     itemsList.innerHTML = ''; // limpiamos
 
     // Create contact or comment card defined by the currentFilter
-    if (currentFilter === 'contact') {
+    if (currentFilter === 'contacts') {
         items.forEach(item => {
             const itemElement = createContactCard(item); // Creamos contacto
             itemsList.appendChild(itemElement);
@@ -204,7 +206,7 @@ export function updateItemsList(items, currentFilter) {
         document.querySelector('.chat-title').textContent = 'Selecciona un contacto o comentario';
         document.querySelector('.messages').innerHTML = '';
         document.querySelector('.bot-toggle').style.display = 'none';
-        setCurrentItem(null);
+        openItem(null);
     }
 }
 
@@ -221,7 +223,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Activar el elemento clicked, ya sea comentario o contacto
         clicked.classList.add('active');
-        setCurrentItem(clicked.dataset.itemId);
+        openItem(clicked.dataset.itemId);
         
         // Actualizar el título del chat con el nombre del contacto/comentario
         const contactName = clicked.querySelector('.contact-name').textContent;
@@ -258,7 +260,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Event listeners para los botones de filtro
     chatButton.addEventListener('click', () => {
         if (currentFilter !== 'contact') {
-            setCurrentFilter('contact');
+            setCurrentFilter('contacts');
             whatsAppToggle.classList.toggle('active');
             updateFilterButtons();
             filterItems();
@@ -266,7 +268,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     commentButton.addEventListener('click', () => {
         if (currentFilter !== 'comment') {
-            setCurrentFilter('comment');
+            setCurrentFilter('comments');
             whatsAppToggle.classList.toggle('active');
             updateFilterButtons();
             filterItems();
@@ -316,18 +318,30 @@ document.addEventListener('DOMContentLoaded', () => {
         const hours = now.getHours();
         const minutes = now.getMinutes();
         const timeString = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+        //BUT FIRST WE NEED TO GET HOURS AND MINUTES
         
         // send message to the backend
-        emitMessage(messageText, timeString, 'bot')
-        // create the message
-        createMessage(messageText, timeString, 'bot', '', null);
+        sendManMessage(currentItemId, "text", messageText, currentFilter); // (senderId (Meta), type, content) STILL NEEDS A PLATFORM AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
         
+        // create the message
+        createMessage(messageText, timeString, 'bot', 'text');
+        
+        const entry = {
+            content: messageText,
+            time: Date.now(),
+            type: "text",
+            self: true
+        }
+        var entryKey = (currentFilter == "contacts") ? "messages" : (currentFilter == "comments") ? "comments" : null;
+        items[currentFilter].list.find(item => item.id === currentItemId)[entryKey].push(entry);
+
         // Limpiar input
         input.value = '';
         
         // Scroll al final de los mensajes
         const messagesContainer = document.querySelector('.messages');
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        filterItems();
     }
 
     document.querySelector('.send-button').addEventListener('click', sendMessage);
