@@ -334,87 +334,123 @@ document.addEventListener('DOMContentLoaded', () => {
     const openCreateQuickReply = document.getElementById('openCreateQuickReply');
     const createQuickReplyModal = document.getElementById('createQuickReplyModal');
     const cancelCreateQuickReply = document.getElementById('cancelCreateQuickReply');
+    const createReplyBtn = document.querySelector('.save-create-quick-reply')
 
     // --- FUNCIONALIDAD DE MODALES ---
-    // Abrir modal principal de configuración
-    botConfigButton.addEventListener('click', () => {
-        mainConfigModal.classList.add('show');
-    });
-    // Cerrar modal principal
-    closeMainConfig.addEventListener('click', () => {
-        mainConfigModal.classList.remove('show');
-    });
-    mainConfigModal.addEventListener('click', (e) => {
-        if (e.target === mainConfigModal) {
+
+    function GeneralModalConfiguration() {
+        // Abrir modal principal de configuración
+        botConfigButton.addEventListener('click', () => {
+            mainConfigModal.classList.add('show');
+        });
+        // Cerrar modal principal
+        closeMainConfig.addEventListener('click', () => {
             mainConfigModal.classList.remove('show');
-        }
-    });
-    // Escape para cerrar modal principal
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && mainConfigModal.classList.contains('show')) {
+        });
+        mainConfigModal.addEventListener('click', (e) => {
+            if (e.target === mainConfigModal) {
+                mainConfigModal.classList.remove('show');
+            }
+        });
+        // Escape para cerrar modal principal
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && mainConfigModal.classList.contains('show')) {
+                mainConfigModal.classList.remove('show');
+            }
+        });
+    }
+
+    function botModalConfiguration() {
+        // Abrir modal de configuración del bot
+        openBotConfig.addEventListener('click', () => {
             mainConfigModal.classList.remove('show');
-        }
-    });
-
-    // Abrir modal de configuración del bot
-    openBotConfig.addEventListener('click', () => {
-        mainConfigModal.classList.remove('show');
-        botConfigModal.classList.add('show');
-    });
-    // Cerrar modal de configuración del bot
-    closeModalButton.addEventListener('click', () => {
-        botConfigModal.classList.remove('show');
-    });
-    cancelModalButtton.addEventListener('click', () => {
-        botConfigModal.classList.remove('show');
-    });
-    botConfigModal.addEventListener('click', (e) => {
-        if (e.target === botConfigModal) {
+            botConfigModal.classList.add('show');
+        });
+        // Cerrar modal de configuración del bot
+        closeModalButton.addEventListener('click', () => {
             botConfigModal.classList.remove('show');
-        }
-    });
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && botConfigModal.classList.contains('show')) {
+        });
+        cancelModalButtton.addEventListener('click', () => {
             botConfigModal.classList.remove('show');
-        }
-    });
-
-    // Abrir modal de respuestas rápidas desde el modal principal
-    openQuickRepliesConfig.addEventListener('click', () => {
-        mainConfigModal.classList.remove('show');
-        quickRepliesModal.classList.add('show');
-    });
-    // Cerrar modal de respuestas rápidas
-    closeQuickReplies.addEventListener('click', () => {
-        quickRepliesModal.classList.remove('show');
-    });
-    quickRepliesModal.addEventListener('click', (e) => {
-        if (e.target === quickRepliesModal) {
-            quickRepliesModal.classList.remove('show');
-        }
-    });
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && quickRepliesModal.classList.contains('show')) {
-            quickRepliesModal.classList.remove('show');
-        }
-    });
-
-    // Abrir modal de crear nueva respuesta rápida
-    openCreateQuickReply.addEventListener('click', () => {
-        createQuickReplyModal.classList.add('show');
-    });
-    // Cerrar modal de crear nueva respuesta rápida
-    cancelCreateQuickReply.addEventListener('click', () => {
-        createQuickReplyModal.classList.remove('show');
-    });
-    createQuickReplyModal.addEventListener('click', (e) => {
-        if (e.target === createQuickReplyModal) {
+        });
+        botConfigModal.addEventListener('click', (e) => {
+            if (e.target === botConfigModal) {
+                botConfigModal.classList.remove('show');
+            }
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && botConfigModal.classList.contains('show')) {
+                botConfigModal.classList.remove('show');
+            }
+        });
+    }
+    
+    function createReplyModal() {
+        // Abrir modal de crear nueva respuesta rápida
+        openCreateQuickReply.addEventListener('click', () => {
+            createQuickReplyModal.classList.add('show');
+        });
+        // Cerrar modal de crear nueva respuesta rápida
+        cancelCreateQuickReply.addEventListener('click', () => {
             createQuickReplyModal.classList.remove('show');
-        }
-    });
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && createQuickReplyModal.classList.contains('show')) {
+        });
+        createReplyBtn.addEventListener('click', () => {
             createQuickReplyModal.classList.remove('show');
-        }
-    });
+        })
+        createQuickReplyModal.addEventListener('click', (e) => {
+            if (e.target === createQuickReplyModal) {
+                createQuickReplyModal.classList.remove('show');
+            }
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && createQuickReplyModal.classList.contains('show')) {
+                createQuickReplyModal.classList.remove('show');
+            }
+        }); 
+
+        // CREATE MODAL BUTTON
+        createReplyBtn.addEventListener('click', () => {
+            // Quick replies container
+            const quickRepliesContainer = document.querySelector('.quick-replies-list');
+            // New quick reply text
+            const text = document.querySelector('.quick-reply-textarea').value.trim();
+
+            // Creamos el nuevo reply
+            const newReply = document.createElement('p');
+            newReply.textContent = text;
+            newReply.classList.add('quick-reply-item');
+
+            // Agregamos al contenedor de replies
+            quickRepliesContainer.appendChild(newReply);
+        })
+    }
+    
+    function repliesModalConfiguration() {
+        // Abrir modal de respuestas rápidas desde el modal principal
+        openQuickRepliesConfig.addEventListener('click', () => {
+            mainConfigModal.classList.remove('show');
+            quickRepliesModal.classList.add('show');
+        });
+        // Cerrar modal de respuestas rápidas
+        closeQuickReplies.addEventListener('click', () => {
+            quickRepliesModal.classList.remove('show');
+        });
+        quickRepliesModal.addEventListener('click', (e) => {
+            if (e.target === quickRepliesModal) {
+                quickRepliesModal.classList.remove('show');
+            }
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && quickRepliesModal.classList.contains('show')) {
+                quickRepliesModal.classList.remove('show');
+            }
+        });
+
+        createReplyModal();
+    }
+
+
+    GeneralModalConfiguration();
+    botModalConfiguration();
+    repliesModalConfiguration();
 })
