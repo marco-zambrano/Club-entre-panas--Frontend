@@ -43,7 +43,7 @@ export async function filterItems() {
     //IF IT'S NOT VISIBLE, OPEN THE FIRST ITEM IN THE FILTERED LIST
     if (!currentItemStillVisible && filteredItems.length > 0) {
         openItem(filteredItems[0].id);
-        initiliceBotToggle();
+        initilizeBotToggle();
     }
     updateItemsList(filteredItems, currentFilter);
 
@@ -62,7 +62,7 @@ function handleInputVisibility(isChecked, itemId) {
     updateBotStatus(itemId, isChecked); //GOES TO THE BACKEND USING WEBSOCKETS
 }
 //INITIALIZE BOT TOGGLE
-export function initiliceBotToggle() {
+export function initilizeBotToggle() {
     const currentItem = items[currentFilter].list.find(item => item.id === currentItemId);
     
     if (currentItem) {

@@ -1,5 +1,5 @@
 import { currentItemId, currentFilter } from "./script.js"; // Variables
-import { openItem, setCurrentFilter, filterItems, initiliceBotToggle } from "./script.js"; // Functions
+import { openItem, setCurrentFilter, filterItems, initilizeBotToggle } from "./script.js"; // Functions
 import { sendManMessage, items } from './socket.js';
 
 export function createMessage(content, time, sender, type) {
@@ -230,7 +230,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelector('.chat-title').textContent = contactName;
 
         //actualizar el bot toggle
-        initiliceBotToggle();
+        initilizeBotToggle();
     });
 
 
