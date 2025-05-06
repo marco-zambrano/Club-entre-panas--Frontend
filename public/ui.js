@@ -343,6 +343,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- FUNCIONALIDAD DE MODALES ---
 
+    // MODAL GENERAL
     function GeneralModalConfiguration() {
         // Abrir modal principal de configuración
         botConfigButton.addEventListener('click', () => {
@@ -365,6 +366,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // MODAL DEL BOT
     function botModalConfiguration() {
         // Abrir modal de configuración del bot
         openBotConfig.addEventListener('click', () => {
@@ -391,6 +393,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
 
+    // ----- QR FUNCTIONS -----
     function createQuickReply(id, text) {
         // Creamos el nuevo reply
         const newReply = document.createElement('div');
@@ -432,6 +435,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return `qr-${timestamp}-${randomPart}`;
     }
 
+    // Create new qr item
     function createReplyModal() {
         // Abrir modal de crear nueva respuesta rápida
         openCreateQuickReply.addEventListener('click', () => {
