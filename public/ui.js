@@ -399,6 +399,9 @@ document.addEventListener('DOMContentLoaded', () => {
         trashIcon.classList.add('fas');
         trashIcon.classList.add('fa-trash');
         trashIcon.id = `${id}-trash`;   // trash can con id personalizado
+        trashIcon.addEventListener('click', () => {
+            newReply.remove()
+        })
         
         // Agregamos paragraph en el contenedor
         newReply.appendChild(replyText);
