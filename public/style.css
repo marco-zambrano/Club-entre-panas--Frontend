@@ -686,18 +686,39 @@ input:checked + .slider:before {
     gap: 12px;
 }
 .quick-reply-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
     background: #232323;
     color: #fff;
+    max-width: 372px;
     border-radius: 8px;
-    padding: 12px 16px;
     font-size: 1em;
-    cursor: pointer;
-    transition: background 0.2s;
     border: 1px solid transparent;
+    
+    transition: background 0.2s;
 }
-.quick-reply-item:hover {
+.quick-reply-text {
+    padding: 12px 16px;
+    cursor: pointer;
+    word-wrap: break-word;
+    width: 90%;
+}
+.quick-reply-text:hover {
     background: #2a2a2a;
     color: #fff;
+}
+/* trash icon */
+.fa-trash {
+    color: rgb(255, 41, 41);
+    cursor: pointer;
+    margin-right: 16px;
+    margin-left: 5px;
+    transition: all ease .3s;
+}
+.fa-trash:hover {
+    color: rgb(187, 31, 31);
 }
 .add-quick-reply-btn {
     background: #4CAF50;

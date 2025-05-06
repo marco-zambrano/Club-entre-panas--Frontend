@@ -402,9 +402,21 @@ document.addEventListener('DOMContentLoaded', () => {
         const quickRepliesContainer = document.querySelector('.quick-replies-list');
             
         // Creamos el nuevo reply
-        const newReply = document.createElement('p');
-        newReply.textContent = text;
+        const newReply = document.createElement('div');
         newReply.classList.add('quick-reply-item');
+
+        const replyText = document.createElement('p');
+        replyText.classList.add('quick-reply-text')
+        replyText.textContent = text;
+
+        const trashIcon = document.createElement('i');
+        trashIcon.classList.add('fas');
+        trashIcon.classList.add('fa-trash');
+        
+        // Agregamos paragraph can en la nueva respuesta
+        newReply.appendChild(replyText);
+        // Agregamos trash can en la nueva respuesta
+        newReply.appendChild(trashIcon);
 
         // Agregamos al contenedor de replies
         quickRepliesContainer.appendChild(newReply);
