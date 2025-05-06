@@ -1,6 +1,6 @@
 import { currentItemId, currentFilter } from "./script.js"; // Variables
 import { openItem, setCurrentFilter, filterItems, initilizeBotToggle } from "./script.js"; // Functions
-import { sendManMessage, items } from './socket.js';
+import { sendManMessage, items, quickReps, getQuickReps } from './socket.js';
 
 export function createMessage(content, time, sender, type) {
     // create new message
@@ -210,7 +210,6 @@ export function updateItemsList(items, currentFilter) {
     }
 }
 
-
 document.addEventListener('DOMContentLoaded', () => {
     // event listener for the contact or comment list
     document.querySelector('.contacts-list').addEventListener('click', (event) => {
@@ -334,6 +333,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const openCreateQuickReply = document.getElementById('openCreateQuickReply');
     const createQuickReplyModal = document.getElementById('createQuickReplyModal');
     const cancelCreateQuickReply = document.getElementById('cancelCreateQuickReply');
+    const quickRepliesContainer = document.querySelector('.quick-replies-list');    // Quick reply container
     const createReplyBtn = document.querySelector('.save-create-quick-reply')
 
     // --- FUNCIONALIDAD DE MODALES ---
@@ -386,21 +386,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
 
-    // Todo lo que tiene que ver con las respuestas rapidas
-    // La idea es que traigas las respuestas de la bd del back, una vez el usuario inicia sesion
-    // Una vez la traiste, la puedes guardar en un array por ejemplo el de aca
-    // Que ya quede como variable global, para que al momento de yo abrir el modal de las respuestas rapidas, estas manes se carguen
-    const quickRepliesArr = [
-        'respuesta 1',
-        'respuesta 2',
-        'respuesta 3',
-        'respuesta 4',
-    ]
-
-    function createQuickReply(text) {
-        // Quick replies container
-        const quickRepliesContainer = document.querySelector('.quick-replies-list');
-            
+    function createQuickReply(id, text) {
         // Creamos el nuevo reply
         const newReply = document.createElement('div');
         newReply.classList.add('quick-reply-item');
@@ -412,10 +398,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const trashIcon = document.createElement('i');
         trashIcon.classList.add('fas');
         trashIcon.classList.add('fa-trash');
+        trashIcon.id = `${id}-trash`;   // trash can con id personalizado
         
-        // Agregamos paragraph can en la nueva respuesta
+        // Agregamos paragraph en el contenedor
         newReply.appendChild(replyText);
-        // Agregamos trash can en la nueva respuesta
+        // Agregamos trash-can en el contenedor
         newReply.appendChild(trashIcon);
 
         // Agregamos al contenedor de replies
@@ -443,20 +430,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (e.key === 'Escape' && createQuickReplyModal.classList.contains('show')) {
                 createQuickReplyModal.classList.remove('show');
             }
-        }); 
-
-        // Iteramos y creamos las respuestas ya cargadas
-        quickRepliesArr.forEach(reply => {
-            createQuickReply(reply);
-        })
-
-        // Boton de crear respuesta nueva
-        createReplyBtn.addEventListener('click', () => {
-            // New quick reply text
-            const text = document.querySelector('.quick-reply-textarea').value.trim();
-            createQuickReply(text);
-            // Ahi le pones para enviar la nueva respuesta rapida a la base de datos una vez la creas
-        })
+        });
     }
     
     function repliesModalConfiguration() {
@@ -464,6 +438,11 @@ document.addEventListener('DOMContentLoaded', () => {
         openQuickRepliesConfig.addEventListener('click', () => {
             mainConfigModal.classList.remove('show');
             quickRepliesModal.classList.add('show');
+            quickRepliesContainer.innerHTML = ''    // Limpiamos
+
+            quickReps.forEach(res => {
+                createQuickReply(res.id, res.text); // Volvemos a generar
+            })
         });
         // Cerrar modal de respuestas rápidas
         closeQuickReplies.addEventListener('click', () => {
@@ -479,12 +458,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 quickRepliesModal.classList.remove('show');
             }
         });
-
-        createReplyModal();
+        
+        getQuickReps();
     }
-
-
+    
     GeneralModalConfiguration();
     botModalConfiguration();
     repliesModalConfiguration();
+    createReplyModal();
 })

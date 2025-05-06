@@ -19,7 +19,7 @@ export var items = {
     }
 }
 
-export var quickReps = [];
+export let quickReps = [];
 
 
 // AND YOU KNOW I'M THE LORD WHEN I SAY THIS
@@ -63,8 +63,10 @@ export function getItemHistory(itemId, filter) {
 export function getQuickReps(){
     socket.emit("getQuickReps"); //only for when the user just logs in
 }
-socket.on('quickReps', (qckRps) => { //WHEN THE SERVER SENDS THE SAVED QUICK REPLIES, UPDATE THE LOCAL ARRAY
-    quickReps = qckRps;
+socket.on('quickReps', (qckRps) => { //WHEN THE SERVER SENDS THE SAVED QUICK REPLIES, UPDATE THE LOCAL ARRAY // recibimos [{id: , text:}]
+    qckRps.forEach(resp => {
+        quickReps.push(resp);
+    })
 })
 export function updateQuickReps(newReps){ //SHOULD BE EXECUTED USING: updateQuickReps(quickReps) ONCE THEY ARE UPDATED. THIS WILL SEND THE NEW QUICK REPS TO THE SERVER
     socket.emit("updateQuickReps", {

@@ -166,9 +166,14 @@ io.on('connection', (socket) => {
     })
 
     //QUICK REPLIES
-    var qckRps = ["Listo, yo le aviso", "Lindo día", "Nos vemos"];
+    const replies = [
+        {id: 'primero', text: 'Hola que tal'},
+        {id: 'segundo', text: 'Como estamos'},
+        {id: 'tercero', text: 'Que tal ha ido'}
+    ];
+
     socket.on('getQuickReps', () => {
-        socket.emit('quickReps', {quickReps: qckRps}); 
+        socket.emit('quickReps', replies); 
     });
 
     socket.on('updateQuickReps', (data) => {
