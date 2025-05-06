@@ -1,6 +1,6 @@
 import { currentItemId, currentFilter } from "./script.js"; // Variables
 import { openItem, setCurrentFilter, filterItems, initilizeBotToggle } from "./script.js"; // Functions
-import { sendManMessage, items, quickReps, getQuickReps } from './socket.js';
+import { sendManMessage, items, quickReps, getQuickReps, updateQuickReps } from './socket.js';
 
 export function createMessage(content, time, sender, type) {
     // create new message
@@ -320,21 +320,25 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // --- MODALES Y BOTONES ---
-    const botConfigButton = document.querySelector('.bot-config-button');
-    const mainConfigModal = document.getElementById('mainConfigModal');
-    const closeMainConfig = document.getElementById('closeMainConfig');
-    const openBotConfig = document.getElementById('openBotConfig');
-    const openQuickRepliesConfig = document.getElementById('openQuickRepliesConfig');
-    const botConfigModal = document.querySelector('.bot-config-modal');
-    const closeModalButton = document.querySelector('.close-modal');
-    const cancelModalButtton = document.querySelector('.cancel-button');
-    const quickRepliesModal = document.getElementById('quickRepliesModal');
-    const closeQuickReplies = document.getElementById('closeQuickReplies');
-    const openCreateQuickReply = document.getElementById('openCreateQuickReply');
-    const createQuickReplyModal = document.getElementById('createQuickReplyModal');
-    const cancelCreateQuickReply = document.getElementById('cancelCreateQuickReply');
-    const quickRepliesContainer = document.querySelector('.quick-replies-list');    // Quick reply container
-    const createReplyBtn = document.querySelector('.save-create-quick-reply')
+    // Modal Principal
+    const botConfigButton = document.querySelector('.bot-config-button');   // Boton de configuracion
+    const mainConfigModal = document.getElementById('mainConfigModal'); // Modal principal
+    const closeMainConfig = document.getElementById('closeMainConfig'); // Cerrar modal principal
+    const openBotConfig = document.getElementById('openBotConfig'); // btn abrir bot modal
+    const openQuickRepliesConfig = document.getElementById('openQuickRepliesConfig'); // btn abrir qr modal
+    // Bot Modal
+    const botConfigModal = document.querySelector('.bot-config-modal'); // Modal de configuracion del bot
+    const closeModalButton = document.querySelector('.close-modal'); // Cerrar modal del bot
+    const cancelModalButtton = document.querySelector('.cancel-button'); // Btn cancelar modificacion del bot
+    // QRs
+    const quickRepliesModal = document.getElementById('quickRepliesModal'); // QR modal
+    const closeQuickReplies = document.getElementById('closeQuickReplies'); // Cerrar QR modal 
+    const openCreateQuickReply = document.getElementById('openCreateQuickReply'); // Abrir modal crear nueva reply
+    // Modal crear nueva reply
+    const createQuickReplyModal = document.getElementById('createQuickReplyModal'); // Modal de crear nueva QR
+    const cancelCreateQuickReply = document.getElementById('cancelCreateQuickReply'); // Cancelar nueva QR
+    const createReplyBtn = document.querySelector('.save-create-quick-reply') // Crear nueva QR
+    const quickRepliesContainer = document.querySelector('.quick-replies-list');    // Quick reply items containers
 
     // --- FUNCIONALIDAD DE MODALES ---
 
@@ -430,8 +434,16 @@ document.addEventListener('DOMContentLoaded', () => {
             createQuickReplyModal.classList.remove('show');
         });
         createReplyBtn.addEventListener('click', () => {
+            // Mostramos modal de crear nuevo mensaje
             createQuickReplyModal.classList.remove('show');
-            createQuickReply(generateRandomReplyId(), document.querySelector('.quick-reply-textarea').value.trim());
+
+            const newId = generateRandomReplyId()
+            const textContent = document.querySelector('.quick-reply-textarea').value.trim();
+
+            // creamos el mensaje
+            createQuickReply(newId, textContent);
+            //Enviamos esa nueva qr a el backend
+            updateQuickReps(newId, textContent);
         })
         createQuickReplyModal.addEventListener('click', (e) => {
             if (e.target === createQuickReplyModal) {

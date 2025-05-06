@@ -185,8 +185,9 @@ io.on('connection', (socket) => {
         socket.emit('quickReps', replies); 
     });
 
-    socket.on('updateQuickReps', (data) => {
-        qckRps = data.quickReps
+    socket.on('updateQuickReps', (newQr) => {
+        const {id, text} = newQr;
+        console.log(`new QR --> ${id}: ${text}`);
     });
 
 
