@@ -68,10 +68,11 @@ socket.on('quickReps', (qckRps) => { //WHEN THE SERVER SENDS THE SAVED QUICK REP
         quickReps.push(resp);
     })
 })
-export function updateQuickReps(id, text){ //SHOULD BE EXECUTED USING: updateQuickReps(quickReps) ONCE THEY ARE UPDATED. THIS WILL SEND THE NEW QUICK REPS TO THE SERVER
+export function updateQuickReps(id, text, type){ // Actualizar QRs, tanto si eliminas o agregas una, si eliminas, el type es delete, si agregas, el type es create
     socket.emit("updateQuickReps", {
         id: id,
-        text: text
+        text: text,
+        type: type
     });
 }
 

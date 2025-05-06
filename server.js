@@ -186,8 +186,9 @@ io.on('connection', (socket) => {
     });
 
     socket.on('updateQuickReps', (newQr) => {
-        const {id, text} = newQr;
+        const {id, text, type} = newQr;
         console.log(`new QR --> ${id}: ${text}`);
+        console.log('TYPE: ', type);
     });
 
 

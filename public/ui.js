@@ -339,6 +339,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const cancelCreateQuickReply = document.getElementById('cancelCreateQuickReply'); // Cancelar nueva QR
     const createReplyBtn = document.querySelector('.save-create-quick-reply') // Crear nueva QR
     const quickRepliesContainer = document.querySelector('.quick-replies-list');    // Quick reply items containers
+    const newQrTextArea = document.querySelector('.quick-reply-textarea');
 
     // --- FUNCIONALIDAD DE MODALES ---
 
@@ -403,8 +404,15 @@ document.addEventListener('DOMContentLoaded', () => {
         trashIcon.classList.add('fas');
         trashIcon.classList.add('fa-trash');
         trashIcon.id = `${id}-trash`;   // trash can con id personalizado
+        // click event for that trash can
         trashIcon.addEventListener('click', () => {
-            newReply.remove()
+            // remove from de DOM
+            newReply.remove();
+            // Update QRs as deletion
+            updateQuickReps(id, text, 'delete');
+            // Delete it locally
+            const index = quickReps.findIndex(item => item.id !== id);
+            quickReps.splice(index, 1);
         })
         
         // Agregamos paragraph en el contenedor
@@ -433,17 +441,20 @@ document.addEventListener('DOMContentLoaded', () => {
         cancelCreateQuickReply.addEventListener('click', () => {
             createQuickReplyModal.classList.remove('show');
         });
+        // btn crear qr
         createReplyBtn.addEventListener('click', () => {
             // Mostramos modal de crear nuevo mensaje
             createQuickReplyModal.classList.remove('show');
 
             const newId = generateRandomReplyId()
-            const textContent = document.querySelector('.quick-reply-textarea').value.trim();
+            const textContent = newQrTextArea.value.trim();
 
-            // creamos el mensaje
+            // creamos el mensaje en el DOM
             createQuickReply(newId, textContent);
+            // Pusheamos a la variable local
+            quickReps.push({id: newId, text: textContent});
             //Enviamos esa nueva qr a el backend
-            updateQuickReps(newId, textContent);
+            updateQuickReps(newId, textContent, 'create');
         })
         createQuickReplyModal.addEventListener('click', (e) => {
             if (e.target === createQuickReplyModal) {
