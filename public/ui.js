@@ -409,6 +409,14 @@ document.addEventListener('DOMContentLoaded', () => {
         quickRepliesContainer.appendChild(newReply);
     }
 
+    function generateRandomReplyId() {
+        // Genera un ID con prefijo 'qr-' (quick reply) + timestamp + 4 caracteres aleatorios
+        const timestamp = Date.now().toString(36); // Base36 para acortar
+        const randomPart = Math.random().toString(36).substring(2, 6); // 4 caracteres aleatorios
+        
+        return `qr-${timestamp}-${randomPart}`;
+    }
+
     function createReplyModal() {
         // Abrir modal de crear nueva respuesta rápida
         openCreateQuickReply.addEventListener('click', () => {
@@ -420,6 +428,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         createReplyBtn.addEventListener('click', () => {
             createQuickReplyModal.classList.remove('show');
+            createQuickReply(generateRandomReplyId(), document.querySelector('.quick-reply-textarea').value.trim());
         })
         createQuickReplyModal.addEventListener('click', (e) => {
             if (e.target === createQuickReplyModal) {

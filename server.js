@@ -165,11 +165,20 @@ io.on('connection', (socket) => {
         socket.emit('itemContentHistory', itemSearched[entries]); 
     })
 
+
+    function generateRandomReplyId() {
+        // Genera un ID con prefijo 'qr-' (quick reply) + timestamp + 4 caracteres aleatorios
+        const timestamp = Date.now().toString(36); // Base36 para acortar
+        const randomPart = Math.random().toString(36).substring(2, 6); // 4 caracteres aleatorios
+        
+        return `qr-${timestamp}-${randomPart}`;
+    }
+
     //QUICK REPLIES
     const replies = [
-        {id: 'primero', text: 'Hola que tal'},
-        {id: 'segundo', text: 'Como estamos'},
-        {id: 'tercero', text: 'Que tal ha ido'}
+        {id: generateRandomReplyId(), text: 'Hola que tal'},
+        {id: generateRandomReplyId(), text: 'Como estamos'},
+        {id: generateRandomReplyId(), text: 'Que tal ha ido'}
     ];
 
     socket.on('getQuickReps', () => {
