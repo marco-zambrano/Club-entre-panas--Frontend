@@ -261,14 +261,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const whatsAppToggle = document.getElementById('whatsapp-toggle');
     // Función para actualizar el estado de los botones
     function updateFilterButtons() {
-        chatButton.classList.toggle('active', currentFilter === 'contact');
-        commentButton.classList.toggle('active', currentFilter === 'comment');
+        chatButton.classList.toggle('active', currentFilter === 'contacts');
+        commentButton.classList.toggle('active', currentFilter === 'comments');
     }
     // Inicializar el estado de los botones
+    console.log(currentFilter)
     updateFilterButtons();
     // Event listeners para los botones de filtro
     chatButton.addEventListener('click', () => {
-        if (currentFilter !== 'contact') {
+        if (currentFilter !== 'contacts') {
             setCurrentFilter('contacts');
             whatsAppToggle.classList.toggle('active');
             updateFilterButtons();
@@ -276,7 +277,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     commentButton.addEventListener('click', () => {
-        if (currentFilter !== 'comment') {
+        if (currentFilter !== 'comments') {
             setCurrentFilter('comments');
             whatsAppToggle.classList.toggle('active');
             updateFilterButtons();
