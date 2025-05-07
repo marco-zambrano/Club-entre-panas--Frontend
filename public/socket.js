@@ -66,13 +66,8 @@ export function getQuickReps(){
 socket.on('quickReps', (qckRps) => { //WHEN THE SERVER SENDS THE SAVED QUICK REPLIES, UPDATE THE LOCAL ARRAY // recibimos [{id: , text:}]
     quickReps = [...qckRps];
 })
-
-export function updateQuickReps(id, text, type){ // Actualizar QRs, tanto si eliminas o agregas una, si eliminas, el type es delete, si agregas, el type es create
-    socket.emit("updateQuickReps", {
-        id: id,
-        text: text,
-        type: type  //delete or create
-    });
+export function updateQuickReps(arr){ // Actualizar QRs, tanto si eliminas o agregas una, si eliminas, el type es delete, si agregas, el type es create
+    socket.emit("updateQuickReps", arr);
 }
 
 

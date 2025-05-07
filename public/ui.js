@@ -405,7 +405,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
 
     // ----- QR FUNCTIONS -----
-    function createQuickReply(id, text) {
+    function createQuickReply(text) {
         // Creamos el nuevo reply
         const newReply = document.createElement('div');
         newReply.classList.add('quick-reply-item');
@@ -417,16 +417,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const trashIcon = document.createElement('i');
         trashIcon.classList.add('fas');
         trashIcon.classList.add('fa-trash');
-        trashIcon.id = `${id}-trash`;   // trash can con id personalizado
         // click event for that trash can
         trashIcon.addEventListener('click', () => {
             // remove from de DOM
-            newReply.remove();
-            // Update QRs as deletion
-            updateQuickReps(id, text, 'delete');
+            newReply.remove();            
             // Delete it locally
-            const index = quickReps.findIndex(item => item.id !== id);
-            quickReps.splice(index, 1);
+            const index = quickReps.findIndex(item => item === text);
+            if (index !== -1) quickReps.splice(index, 1);
+            // Update QRs as deletion
+            updateQuickReps(quickReps);
         })
         
         // Agregamos paragraph en el contenedor
@@ -465,11 +464,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const textContent = newQrTextArea.value.trim();
 
             // creamos el mensaje en el DOM
-            createQuickReply(newId, textContent);
+            createQuickReply(textContent);
             // Pusheamos a la variable local
-            quickReps.push({id: newId, text: textContent});
+            quickReps.push(textContent);
             //Enviamos esa nueva qr a el backend
-            updateQuickReps(newId, textContent, 'create');
+            updateQuickReps(quickReps);
         })
         createQuickReplyModal.addEventListener('click', (e) => {
             if (e.target === createQuickReplyModal) {
@@ -491,7 +490,7 @@ document.addEventListener('DOMContentLoaded', () => {
             quickRepliesContainer.innerHTML = ''    // Limpiamos
 
             quickReps.forEach(res => {
-                createQuickReply(res.id, res.text); // Volvemos a generar
+                createQuickReply(res); // Volvemos a generar
             })
         });
         // Cerrar modal de respuestas rápidas

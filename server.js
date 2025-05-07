@@ -175,20 +175,14 @@ io.on('connection', (socket) => {
     }
 
     //QUICK REPLIES
-    const replies = [
-        {id: generateRandomReplyId(), text: 'Hola que tal'},
-        {id: generateRandomReplyId(), text: 'Como estamos'},
-        {id: generateRandomReplyId(), text: 'Que tal ha ido'}
-    ];
+    const replies = ['hola guambrita', 'como te ha ido miamor', 'hola bienvenido a Buenos aires'];
 
     socket.on('getQuickReps', () => {
         socket.emit('quickReps', replies); 
     });
 
-    socket.on('updateQuickReps', (newQr) => {
-        const {id, text, type} = newQr;
-        console.log(`new QR --> ${id}: ${text}`);
-        console.log('TYPE: ', type);
+    socket.on('updateQuickReps', (newQrs) => {
+        console.log(newQrs)
     });
 
 
