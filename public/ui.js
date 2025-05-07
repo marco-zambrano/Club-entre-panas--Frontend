@@ -88,7 +88,12 @@ function createContactCard(contact) {
     // Span del tiempo del ultimo mensaje
     const messageTime = document.createElement('span');
     messageTime.className = 'contact-message-time';
-    messageTime.textContent = contact.lastMessageTime;
+    const fecha = new Date(contact.messages[contact.messages.length -1].time);
+    const horas = fecha.getHours();
+    const minutos = fecha.getMinutes().toString().padStart(2, '0');
+    const ampm = horas >= 12 ? 'p.m.' : 'a.m.';
+    const horas12 = horas % 12 || 12;
+    messageTime.textContent = `${horas12}:${minutos} ${ampm}`;
 
     // Platform Container <--- nombre e icono
     platform.appendChild(platformName);
@@ -157,7 +162,12 @@ function createCommentCard(comment) {
     // Tiempo del ultimo mensaje enviado
     const messageTime = document.createElement('span');
     messageTime.className = 'contact-message-time';
-    messageTime.textContent = comment.lastMessageTime;
+    const fecha = new Date(comment.comments[comment.comments.length -1].time);
+    const horas = fecha.getHours();
+    const minutos = fecha.getMinutes().toString().padStart(2, '0');
+    const ampm = horas >= 12 ? 'p.m.' : 'a.m.';
+    const horas12 = horas % 12 || 12;
+    messageTime.textContent = `${horas12}:${minutos} ${ampm}`;
 
     // commentHeader <--- logo de C y nonbre del user
     commentHeader.appendChild(typeIdentifier);

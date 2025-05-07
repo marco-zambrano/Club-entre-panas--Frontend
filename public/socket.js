@@ -72,7 +72,7 @@ export function updateQuickReps(id, text, type){ // Actualizar QRs, tanto si eli
     socket.emit("updateQuickReps", {
         id: id,
         text: text,
-        type: type
+        type: type  //delete or create
     });
 }
 

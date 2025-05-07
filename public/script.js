@@ -9,7 +9,7 @@ let lastToggleHandler = null; // referencia al ultimo addEventListener que hubo 
 
 
 //THIS FILTERS ITEMS BY PLATFORM, TYPE(COMMENT OR MESSAGE), AND SORTS THEM
-export async function filterItems() {
+export function filterItems() {
     //PREVENT FURTHER FILTERING IF NO ITEMS
     if (!items[currentFilter]){
         console.error('items[currentFilter] is not initialized yet');
@@ -45,8 +45,8 @@ export async function filterItems() {
         openItem(filteredItems[0].id);
         initilizeBotToggle();
     }
-    updateItemsList(filteredItems, currentFilter);
 
+    updateItemsList(filteredItems, currentFilter);
 }
 
 //BOT TOGGLE FUNCTIONALITY
