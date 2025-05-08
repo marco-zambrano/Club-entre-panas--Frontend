@@ -6,6 +6,8 @@ export const socket = io();
 
 const ITEMS_PER_PAGE = 20;
 
+let isChatsLoaded = false;
+let isCommentsLoaded = false;
 
 // MAY GOD BLESS THIS CODE
 export var items = {
@@ -106,11 +108,11 @@ socket.on('newItems', (data) => { //RECEIVES LIST, TYPE, ALLITEMSLOADED.
         return;
     }
 
-    if (Array.isArray(data.items)) {
+    console.log(data)
+
+    if (data.filter === 'comments') {
         data.items.forEach(item => {
-            if (item.comments && item.userId && item.postId) {
-                item.id = `${item.userId}-${item.postId}`;
-            }
+            item.id = `${item.userId}-${item.postId}`;
         });
     }
 
@@ -126,8 +128,8 @@ socket.on('newItems', (data) => { //RECEIVES LIST, TYPE, ALLITEMSLOADED.
 
 
 socket.on('newMessage', (data) => {
-    console.log("NEW MESSAGE RECEIVED");
-    console.log(data);
+    // console.log("NEW MESSAGE RECEIVED");
+    // console.log(data);
 
     //JUST TO KNOW HOW TO DEAL WITH THE OBJECTS
     const typeMapping = {
@@ -148,26 +150,25 @@ socket.on('newMessage', (data) => {
     }
 
     const { listKey, dataKey } = typeMapping[itemType]; // Get the list key and data key based on the item type
-    let newItemId = null;
+    let newItem = null;
+    let itemId = null;
+
+    const newEntry = { // Create a new entry for the message/comment
+        id: data[dataKey].id,
+        content: data[dataKey].content,
+        type: data[dataKey].type,
+        time: data[dataKey].time,
+        self: data[dataKey].self
+    };
 
     if (itemType === 'comments') {
-        const { userId, postId } = data;
-        const newContactId = `${userId}-${postId}`;
-        newItemId = newContactId;
+        itemId = `${data.userId}-${data.postId}`;
 
-    } else if (itemType === 'contacts') {
-        newItemId = data.id
-        
-    }
-    
-    const item = items[itemType].list.find(item => item.id === newItemId); // Find the item o the message sent, on the local list
-
-
-
-    if (!item) { //IF IT AINT THERE CREATE A NEW ITEM
         //PLACEHOLDER VAR
-        const newItem = {
-            id: data.id,
+        newItem = {
+            id: itemId,
+            userId: data.userId,
+            postId: data.postId,
             name: data.name,
             platform: data.platform,
             interest: data.interest,
@@ -175,34 +176,33 @@ socket.on('newMessage', (data) => {
             [listKey]: [] // Dynamically set the property (messages or comments)
         };
 
-        const newEntry = { // Create a new entry for the message/comment
-            id: data[dataKey].id,
-            content: data[dataKey].content,
-            type: data[dataKey].type,
-            time: data[dataKey].time,
-            self: data[dataKey].self
-        };
-        newItem[listKey].push(newEntry); // Add the new entry to the new item
+    } else if (itemType === 'contacts') {
+        itemId = data.id
 
+        //PLACEHOLDER VAR
+        newItem = {
+            id: itemId,
+            name: data.name,
+            platform: data.platform,
+            interest: data.interest,
+            botEnabled: data.botEnabled,
+            [listKey]: [] // Dynamically set the property (messages or comments)
+        };
+        
+    }
+    
+    const item = items[itemType].list.find(item => item.id === itemId); // Find the item o the message sent, on the local list
+
+    if (!item) { //IF IT AINT THERE CREATE A NEW ITEM
+        newItem[listKey].push(newEntry); // Add the new entry to the new item
         items[itemType].list.unshift(newItem); // Add it at the beginning of the list
-        console.log(items);
 
     } else {
         // UPDATE THE EXISTING ITEM
         item.interest = data.interest;
-
         item.preview = item.preview || {};
         item.preview.content = data[dataKey].content;
         item.preview.timestamp = data[dataKey].time;
-
-        //CREATE THE NEW ENTRY WITH THE RECEIVED DATA
-        const newEntry = {
-            id: data[dataKey].id,
-            content: data[dataKey].content,
-            type: data[dataKey].type,
-            time: data[dataKey].time,
-            self: data[dataKey].self
-        };
 
         item[listKey].push(newEntry); // Add the new entry to the existing item
 
@@ -218,6 +218,7 @@ socket.on('newMessage', (data) => {
 
     }
 
+    console.log(items)
     filterItems(); // Filter the items and show them in front
 });
 
