@@ -137,7 +137,7 @@ io.on('connection', (socket) => {
 
     // UPDATE BOT STATUS
     socket.on('botStatus', (data) => {
-        console.log(data);
+        // console.log(data);
         const { itemId, status } = data;
         const item = items.contacts.list.find(item => item.id === itemId) || items.comments.list.find(item => `${item.userId}-${item.postId}` === itemId);
         item.botEnabled = status;

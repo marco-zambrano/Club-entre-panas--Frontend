@@ -119,6 +119,11 @@ function createCommentCard(comment) {
     commentElement.dataset.itemId = comment.id;
     commentElement.dataset.type = comment.type;
 
+    // Preview
+    const preView = document.createElement('span');
+    preView.className = 'contact-preview';
+    preView.textContent = comment.comments[comment.comments.length - 1].content; // Ultimo mensaje
+
     // Container del info del comentario (la clase dice contact-info porque son los mismos estilos)
     const commentInfo = document.createElement('div');
     commentInfo.className = 'contact-info';
@@ -183,6 +188,7 @@ function createCommentCard(comment) {
     commentDetails.appendChild(messageTime);
     
     // Informacion del comentario <--- header, detalles, info (todos contenedores)
+    commentInfo.appendChild(preView);
     commentInfo.appendChild(commentHeader);
     commentInfo.appendChild(commentDetails)
     commentElement.appendChild(commentInfo);
