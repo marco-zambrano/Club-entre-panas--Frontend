@@ -193,6 +193,7 @@ function createCommentCard(comment) {
 
 // Actualizar la lista de items
 export function updateItemsList(items, currentFilter) {
+    if (!items) return;
     const itemsList = document.querySelector('.contacts-list');
     itemsList.innerHTML = ''; // limpiamos
 
@@ -264,8 +265,7 @@ document.addEventListener('DOMContentLoaded', () => {
         chatButton.classList.toggle('active', currentFilter === 'contacts');
         commentButton.classList.toggle('active', currentFilter === 'comments');
     }
-    // Inicializar el estado de los botones
-    console.log(currentFilter)
+
     updateFilterButtons();
     // Event listeners para los botones de filtro
     chatButton.addEventListener('click', () => {
@@ -278,6 +278,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     commentButton.addEventListener('click', () => {
         if (currentFilter !== 'comments') {
+            // console.log('llegamos')
             setCurrentFilter('comments');
             whatsAppToggle.classList.toggle('active');
             updateFilterButtons();

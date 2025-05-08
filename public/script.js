@@ -31,9 +31,12 @@ export function filterItems() {
     //SORT ITEMS BY LAST SORT ITEMS BY TIME IN DESCENDING ORDER (MOST RECENT FIRST)
     var entryKey = (currentFilter == "contacts") ? "messages" : (currentFilter == "comments") ? "comments" : null;
     filteredItems.sort((a, b) => {
-        const timeA = new Date(a[entryKey][a[entryKey].length-1].time);
-        const timeB = new Date(b[entryKey][b[entryKey].length-1].time);  
-        return timeB - timeA;
+        const msgsA = a[entryKey];
+        const msgsB = b[entryKey];
+        const lastA = msgsA.length ? msgsA[msgsA.length - 1].time : 0;
+        const lastB = msgsB.length ? msgsB[msgsB.length - 1].time : 0;
+
+        return lastB - lastA; // ← esto lo invierte (más viejo a más nuevo)
     });
 
     //VERIFY IF CURRENTITEM IS VISIBLE AFTER FILTERING
@@ -42,6 +45,7 @@ export function filterItems() {
     
     //IF IT'S NOT VISIBLE, OPEN THE FIRST ITEM IN THE FILTERED LIST
     if (!currentItemStillVisible && filteredItems.length > 0) {
+        console.log('entramos')
         openItem(filteredItems[0].id);
         initilizeBotToggle();
     }
@@ -52,6 +56,8 @@ export function filterItems() {
 //BOT TOGGLE FUNCTIONALITY
 function handleInputVisibility(isChecked, itemId) {
     if (!itemId) return;
+    // console.log('item ID:', itemId);
+    // console.log('checkeado:', isChecked);
     
     //HIDE OR SHOW TEXT INPUT DEPENDING ON THE INDIVIDUAL BOT TOGGLE BOOLEAN VALUE
     const messageInputContainer = document.querySelector('.message-input-container');
@@ -64,6 +70,7 @@ function handleInputVisibility(isChecked, itemId) {
 //INITIALIZE BOT TOGGLE
 export function initilizeBotToggle() {
     const currentItem = items[currentFilter].list.find(item => item.id === currentItemId);
+    console.log(currentItem);
     
     if (currentItem) {
         const botToggle = document.querySelector('.individual-bot-toggle');
@@ -110,12 +117,12 @@ export function openItem(itemId) {
         messagesContainer.innerHTML = '';
     }
 
+    // Si no hay ningun mensaje en el contenedor messages
     var entryKey = (currentFilter == "contacts") ? "messages" : (currentFilter == "comments") ? "comments" : null;
     if (currentItem[entryKey] && currentItem[entryKey].length > 0) {
         console.log('Cargando mensajes existentes para el item:', currentItemId);
         //TO HAVE TIME IN A HH:MM AM/PM FORMAT
         currentItem[entryKey].forEach(message => {
-    
             const timeString = new Date(message.time).toLocaleString('en-US', {
                 hour: '2-digit',
                 minute: '2-digit',
@@ -141,6 +148,8 @@ export function setCurrentFilter(value) {
         filterItems();
     } else { //IF THERE AINT ITEMS LOADDED FOR THIS FILTER, REQUEST THEM
         getItems(currentFilter);
+        // console.log('primero');
+        console.log(items)
         filterItems();
     }
 }
@@ -159,7 +168,6 @@ document.addEventListener('DOMContentLoaded', () => {
         ) {
             isLoading = true; //stop new calls
 
-            console.log('Loading more items...');
             getItems(currentFilter); //wait until it finishes
             filterItems();
 

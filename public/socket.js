@@ -38,6 +38,9 @@ export function getItems(filter) { //must be "contacts" or "comments" PLURAL
 
 //SEND BOT STATUS
 export function updateBotStatus(itemId, status) {
+    console.log('item ID:', itemId);
+    console.log('checkeado:', status);
+    
     socket.emit('botStatus', {
         itemId: itemId,
         status: status
@@ -103,6 +106,14 @@ socket.on('newItems', (data) => { //RECEIVES LIST, TYPE, ALLITEMSLOADED.
         return;
     }
 
+    if (Array.isArray(data.items)) {
+        data.items.forEach(item => {
+            if (item.comments && item.userId && item.postId) {
+                item.id = `${item.userId}-${item.postId}`;
+            }
+        });
+    }
+
     //ADD THE ITEM TO THE FILTER LIST
     items[data.filter].list = [...items[data.filter].list, ...data.items];
     items[data.filter].allItemsLoaded = data.allItemsLoaded; //IF EVERYTHINGS BEEN LOADED
@@ -116,6 +127,8 @@ socket.on('newItems', (data) => { //RECEIVES LIST, TYPE, ALLITEMSLOADED.
 
 socket.on('newMessage', (data) => {
     console.log("NEW MESSAGE RECEIVED");
+    console.log(data);
+
     //JUST TO KNOW HOW TO DEAL WITH THE OBJECTS
     const typeMapping = {
         contacts: {
@@ -135,7 +148,19 @@ socket.on('newMessage', (data) => {
     }
 
     const { listKey, dataKey } = typeMapping[itemType]; // Get the list key and data key based on the item type
-    const item = items[itemType].list.find(item => item.id === data.id); // Find the item on the local list
+    let newItemId = null;
+
+    if (itemType === 'comments') {
+        const { userId, postId } = data;
+        const newContactId = `${userId}-${postId}`;
+        newItemId = newContactId;
+
+    } else if (itemType === 'contacts') {
+        newItemId = data.id
+        
+    }
+    
+    const item = items[itemType].list.find(item => item.id === newItemId); // Find the item o the message sent, on the local list
 
 
 
@@ -160,7 +185,8 @@ socket.on('newMessage', (data) => {
         newItem[listKey].push(newEntry); // Add the new entry to the new item
 
         items[itemType].list.unshift(newItem); // Add it at the beginning of the list
-        console.log(items[itemType]);
+        console.log(items);
+
     } else {
         // UPDATE THE EXISTING ITEM
         item.interest = data.interest;

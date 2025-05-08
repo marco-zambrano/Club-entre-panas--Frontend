@@ -60,17 +60,16 @@ function generateRandomComment() {
 }
 
 //FUNC TO GENERATE RANDOM IMAGES
-function generateRandomImage() {
-    const imageUrls = [
-        'https://picsum.photos/300/200',
-        'https://picsum.photos/400/300',
-        'https://picsum.photos/500/400',
-        'https://picsum.photos/600/500',
-        'https://picsum.photos/700/600'
-    ];
-    return imageUrls[Math.floor(Math.random() * imageUrls.length)];
-}
-
+// function generateRandomImage() {
+//     const imageUrls = [
+//         'https://picsum.photos/300/200',
+//         'https://picsum.photos/400/300',
+//         'https://picsum.photos/500/400',
+//         'https://picsum.photos/600/500',
+//         'https://picsum.photos/700/600'
+//     ];
+//     return imageUrls[Math.floor(Math.random() * imageUrls.length)];
+// }
 
 
 // GENERATE A NEW CONTACT
@@ -79,12 +78,12 @@ function generateNewContact() {
         id: Math.random().toString(36).substring(2, 15),
         name: generateRandomName(),
         platform: generateRandomPlatform('contact'),
-        botEnabled: Math.random() > 0.5 ? true : false,
         interest: Math.floor(Math.random() * 11),
+        botEnabled: Math.random() > 0.5 ? true : false,
         message: {
             id: Math.random().toString(36).substring(2, 15),
-            type: 'text',
             content: generateRandomMessage(),
+            type: 'text',
             time: Date.now(),
             self: false
         }
@@ -95,21 +94,25 @@ function generateNewContact() {
 //RANDOM COMMENT
 function generateNewComment() {
     const newComment = {
-        id: Math.random().toString(36).substring(2, 15),
+        userId: Math.random().toString(36).substring(2, 15),
+        postId: Math.random().toString(36).substring(2, 15),
         name: generateRandomName(),
         platform: generateRandomPlatform('comment'),
-        interest: Math.floor(Math.random() * 11),
         botEnabled: Math.random() > 0.5 ? true : false,
+        interest: Math.floor(Math.random() * 11),
         comment: {
             id: Math.random().toString(36).substring(2, 15),
-            type: 'text',
             content: generateRandomComment(),
+            type: 'text',
             time: Date.now(),
             self: false
         }
     };
     return newComment;
 }
+
+
+
 
 
 
@@ -134,8 +137,9 @@ io.on('connection', (socket) => {
 
     // UPDATE BOT STATUS
     socket.on('botStatus', (data) => {
+        console.log(data);
         const { itemId, status } = data;
-        const item = items.contacts.list.find(item => item.id === itemId) || items.comments.list.find(item => item.id === itemId);
+        const item = items.contacts.list.find(item => item.id === itemId) || items.comments.list.find(item => `${item.userId}-${item.postId}` === itemId);
         item.botEnabled = status;
         console.log(item.name, item.botEnabled)
     })
@@ -143,7 +147,7 @@ io.on('connection', (socket) => {
     socket.on('sendManMessage', (data) => {
         console.log("Manual message sent:", data.content);
         const { metaId, content, self, type } = data;
-        const item = items.contacts.list.find(item => item.id === metaId) || items.comments.list.find(item => item.id === metaId);
+        const item = items.contacts.list.find(item => item.id === metaId) || items.comments.list.find(item => `${item.userId}-${item.postId}` === metaId);
 
         var randomalphanumericid = Math.random().toString(36).substring(2, 15);
 
@@ -159,20 +163,11 @@ io.on('connection', (socket) => {
     })
     //SEND ITEM MESSAGES
     socket.on('getItemHistory', (data) => {
-        const itemSearched = items[data.filter].list.find( item => item.id === data.itemId);
+        const itemSearched = items[data.filter].list.find( item => item.id === data.itemId) || items.comments.list.find(item => `${item.userId}-${item.userId}` === data.itemId);
         var entries = (data.filter == "contacts") ? "messages" : (data.filter == "comments") ? "comments" : null;
 
         socket.emit('itemContentHistory', itemSearched[entries]); 
     })
-
-
-    function generateRandomReplyId() {
-        // Genera un ID con prefijo 'qr-' (quick reply) + timestamp + 4 caracteres aleatorios
-        const timestamp = Date.now().toString(36); // Base36 para acortar
-        const randomPart = Math.random().toString(36).substring(2, 6); // 4 caracteres aleatorios
-        
-        return `qr-${timestamp}-${randomPart}`;
-    }
 
     //QUICK REPLIES
     const replies = ['hola guambrita', 'como te ha ido miamor', 'hola bienvenido a Buenos aires'];
@@ -208,9 +203,9 @@ io.on('connection', (socket) => {
         items.contacts.list.unshift(newContact); // Add it at the beginning of the list
 
         console.log("New contact generated")
-    }, 15000);
+    }, 10000);
 
-    //NEW COMMENTS EVERY 15 SECS
+    // NEW COMMENTS EVERY 15 SECS
     const commentInterval = setInterval(() => {
         const newComment = generateNewComment();
 
@@ -220,7 +215,8 @@ io.on('connection', (socket) => {
         //SET THE COMMENTS ARRAY TO THE NEW COMMENT
         newComment.comments = [];
         newComment.comments.push({
-            id: newComment.comment.id,
+            userId: newComment.comment.userId,
+            postId: newComment.comment.postId,
             type: newComment.comment.type,
             content: newComment.comment.content,
             time: newComment.comment.time,
