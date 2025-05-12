@@ -115,11 +115,10 @@ socket.on('newItems', (data) => { //RECEIVES LIST, TYPE, ALLITEMSLOADED.
         data.items.forEach(item => {
             item.id = `${item.userId}-${item.postId}`;
         });
-        // contentLoaded[data.filter] = true;
+        contentLoaded[data.filter] = true;
+    } else if (data.filter === 'contacts') {
+        contentLoaded[data.filter] = true;
     }
-    // } else if (data.filter === 'contacts') {
-    //     // contentLoaded[data.filter] = true;
-    // }
 
     console.log('data')
     console.log(data)
@@ -156,9 +155,9 @@ socket.on('newMessage', (data) => {
         return;
     }
 
-    // if (!contentLoaded[itemType]) {
-    //     return;
-    // }
+    if (!contentLoaded[itemType]) {
+        return;
+    }
 
     const { listKey, dataKey } = typeMapping[itemType]; // Get the list key and data key based on the item type
     
