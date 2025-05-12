@@ -170,7 +170,7 @@ io.on('connection', (socket) => {
     })
 
     //QUICK REPLIES
-    const replies = ['hola guambrita', 'como te ha ido miamor', 'hola bienvenido a Buenos aires'];
+    const replies = ['El producto en promocion es tal tal', 'Hola, muy buenas tardes, sea bienvenido a Club Entre Panas, estamos aca para servirle', 'Hola, que tal, actualmente no nos encontramos atendiendo en nuestro local'];
 
     socket.on('getQuickReps', () => {
         socket.emit('quickReps', replies); 

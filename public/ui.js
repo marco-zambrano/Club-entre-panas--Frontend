@@ -104,7 +104,7 @@ function createContactCard(contact) {
     contactInfo.appendChild(platform);
     contactInfo.appendChild(messageTime);
 
-    // Contact element <--- El preview y la informacion del contacto
+    // Contact element <--- El preview, interest y la informacion del contacto
     contactElement.appendChild(preView);
     contactElement.appendChild(contactInfo);
 

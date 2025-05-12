@@ -10,6 +10,7 @@ let lastToggleHandler = null; // referencia al ultimo addEventListener que hubo 
 
 //THIS FILTERS ITEMS BY PLATFORM, TYPE(COMMENT OR MESSAGE), AND SORTS THEM
 export function filterItems() {
+    console.log('FILTRANDO.......')
     //PREVENT FURTHER FILTERING IF NO ITEMS
     if (!items[currentFilter]){
         console.error('items[currentFilter] is not initialized yet');
@@ -45,7 +46,7 @@ export function filterItems() {
     
     //IF IT'S NOT VISIBLE, OPEN THE FIRST ITEM IN THE FILTERED LIST
     if (!currentItemStillVisible && filteredItems.length > 0) {
-        console.log('entramos')
+        // console.log('entramos')
         openItem(filteredItems[0].id);
         initilizeBotToggle();
     }
@@ -120,7 +121,7 @@ export function openItem(itemId) {
     // Si no hay ningun mensaje en el contenedor messages
     var entryKey = (currentFilter == "contacts") ? "messages" : (currentFilter == "comments") ? "comments" : null;
     if (currentItem[entryKey] && currentItem[entryKey].length > 0) {
-        console.log('Cargando mensajes existentes para el item:', currentItemId);
+        // console.log('Cargando mensajes existentes para el item:', currentItemId);
         //TO HAVE TIME IN A HH:MM AM/PM FORMAT
         currentItem[entryKey].forEach(message => {
             const timeString = new Date(message.time).toLocaleString('en-US', {
@@ -149,7 +150,7 @@ export function setCurrentFilter(value) {
     } else { //IF THERE AINT ITEMS LOADDED FOR THIS FILTER, REQUEST THEM
         getItems(currentFilter);
         // console.log('primero');
-        console.log(items)
+        // console.log(items)
         filterItems();
     }
 }
@@ -169,7 +170,7 @@ document.addEventListener('DOMContentLoaded', () => {
             isLoading = true; //stop new calls
 
             getItems(currentFilter); //wait until it finishes
-            filterItems();
+            // filterItems();
 
             isLoading = false; //liberate to allow new requests
         }else{

@@ -6,8 +6,10 @@ export const socket = io();
 
 const ITEMS_PER_PAGE = 20;
 
-let isChatsLoaded = false;
-let isCommentsLoaded = false;
+let contentLoaded = {
+    contacts: false,
+    comments: false
+};
 
 // MAY GOD BLESS THIS CODE
 export var items = {
@@ -40,8 +42,8 @@ export function getItems(filter) { //must be "contacts" or "comments" PLURAL
 
 //SEND BOT STATUS
 export function updateBotStatus(itemId, status) {
-    console.log('item ID:', itemId);
-    console.log('checkeado:', status);
+    // console.log('item ID:', itemId);
+    // console.log('checkeado:', status);
     
     socket.emit('botStatus', {
         itemId: itemId,
@@ -108,13 +110,21 @@ socket.on('newItems', (data) => { //RECEIVES LIST, TYPE, ALLITEMSLOADED.
         return;
     }
 
-    console.log(data)
-
+    // If the new item is comment, set them its respective ID in front
     if (data.filter === 'comments') {
         data.items.forEach(item => {
             item.id = `${item.userId}-${item.postId}`;
         });
+        // contentLoaded[data.filter] = true;
     }
+    // } else if (data.filter === 'contacts') {
+    //     // contentLoaded[data.filter] = true;
+    // }
+
+    console.log('data')
+    console.log(data)
+    console.log(items)
+
 
     //ADD THE ITEM TO THE FILTER LIST
     items[data.filter].list = [...items[data.filter].list, ...data.items];
@@ -128,9 +138,6 @@ socket.on('newItems', (data) => { //RECEIVES LIST, TYPE, ALLITEMSLOADED.
 
 
 socket.on('newMessage', (data) => {
-    // console.log("NEW MESSAGE RECEIVED");
-    // console.log(data);
-
     //JUST TO KNOW HOW TO DEAL WITH THE OBJECTS
     const typeMapping = {
         contacts: {
@@ -142,16 +149,21 @@ socket.on('newMessage', (data) => {
             dataKey: 'comment'
         }
     };
-    const itemType = data.message ? 'contacts' : data.comment ? 'comments' : null;
+    const itemType = data.message ? 'contacts' : data.comment ? 'comments' : null; // SHOW ITEM TYPE
 
     if (!itemType) { //IF ITEMTYPE IS UNDEFINED SHOW ERROR
         console.log("Error: itemType unclear");
         return;
     }
 
+    // if (!contentLoaded[itemType]) {
+    //     return;
+    // }
+
     const { listKey, dataKey } = typeMapping[itemType]; // Get the list key and data key based on the item type
-    let newItem = null;
-    let itemId = null;
+    
+    let newItem = null; // when you have a new item
+    let itemId = null;  // The id of the incoming item
 
     const newEntry = { // Create a new entry for the message/comment
         id: data[dataKey].id,
@@ -162,9 +174,8 @@ socket.on('newMessage', (data) => {
     };
 
     if (itemType === 'comments') {
-        itemId = `${data.userId}-${data.postId}`;
-
-        //PLACEHOLDER VAR
+        itemId = `${data.userId}-${data.postId}`; //comment id
+        //ITEM COMMENT
         newItem = {
             id: itemId,
             userId: data.userId,
@@ -177,9 +188,8 @@ socket.on('newMessage', (data) => {
         };
 
     } else if (itemType === 'contacts') {
-        itemId = data.id
-
-        //PLACEHOLDER VAR
+        itemId = data.id // contact id
+        //ITEM CONTACT
         newItem = {
             id: itemId,
             name: data.name,
@@ -193,9 +203,9 @@ socket.on('newMessage', (data) => {
     
     const item = items[itemType].list.find(item => item.id === itemId); // Find the item o the message sent, on the local list
 
-    if (!item) { //IF IT AINT THERE CREATE A NEW ITEM
+    if (!item) { //IF IT AINT THERE PUSH THE NEW ITEM
         newItem[listKey].push(newEntry); // Add the new entry to the new item
-        items[itemType].list.unshift(newItem); // Add it at the beginning of the list
+        items[itemType].list.unshift(newItem); // Add THE NEW ITEM at the beginning of the list
 
     } else {
         // UPDATE THE EXISTING ITEM
@@ -215,10 +225,10 @@ socket.on('newMessage', (data) => {
             const senderString = data[dataKey].self === true ? 'bot' : "contact"; //if true, bot, else contact
             createMessage(data[dataKey].content, timeString, senderString, data[dataKey].type); //WILL CHANGE FOR EPOCH
         }
-
     }
 
     console.log(items)
+
     filterItems(); // Filter the items and show them in front
 });
 
@@ -235,7 +245,7 @@ var newDATA = {
     },
     message: {
         id: "kKFDSlfdjs89989_32342432",
-        content: "helo bish",
+        content: "helo there",
         time: 1234567890,
         self: false,
         type: "text" //if type is image, the content is the url of the image

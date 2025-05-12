@@ -332,6 +332,27 @@ input:checked + .slider:before {
     text-overflow: ellipsis;
 }
 
+.contact-interest {
+    position: absolute;
+    font-size: .7rem;
+    font-weight: 700;
+    bottom: 5px;
+    right: 65px;
+
+    width: 17px;
+    height: 17px;
+    border-radius: 50%;
+    text-align: center;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.contact-interest.comment {
+    top: 5px;
+    right: 10px;
+}
+
 .contact-message-time {
     position: absolute;
     font-size: .6rem;
@@ -343,6 +364,7 @@ input:checked + .slider:before {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    height: 20px;
 }
 .contact.hidden {
     display: none;
@@ -369,6 +391,7 @@ input:checked + .slider:before {
     align-items: flex-start;
     justify-content: center;
     row-gap: 4px;
+    height: 35px;
 }
 .comment-header {
     display: flex;
