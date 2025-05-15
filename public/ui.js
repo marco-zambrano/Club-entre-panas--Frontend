@@ -64,6 +64,10 @@ function createContactCard(contact) {
     preView.className = 'contact-preview';
     preView.textContent = contact.messages[contact.messages.length - 1].content; // Ultimo mensaje
 
+    // Nivel de interes
+    //const interest = document.createElement('span');
+    //interest.className = 'contact-interest'
+
     // Container de la info del contacto
     const contactInfo = document.createElement('div');
     contactInfo.className = 'contact-info';
@@ -339,25 +343,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- MODALES Y BOTONES ---
     // Modal Principal
-    const botConfigButton = document.querySelector('.bot-config-button');   // Boton de configuracion
-    const mainConfigModal = document.getElementById('mainConfigModal'); // Modal principal
-    const closeMainConfig = document.getElementById('closeMainConfig'); // Cerrar modal principal
-    const openBotConfig = document.getElementById('openBotConfig'); // btn abrir bot modal
-    const openQuickRepliesConfig = document.getElementById('openQuickRepliesConfig'); // btn abrir qr modal
+    const $ = (se)=> document.querySelector(se)
+    const botConfigButton = $('.bot-config-button');   // Boton de configuracion
+    const mainConfigModal = $('#mainConfigModal'); // Modal principal
+    const closeMainConfig = $('#closeMainConfig'); // Cerrar modal principal
+    const openBotConfig = $('#openBotConfig'); // btn abrir bot modal
+    const openQuickRepliesConfig = $('#openQuickRepliesConfig'); // btn abrir qr modal
     // Bot Modal
-    const botConfigModal = document.querySelector('.bot-config-modal'); // Modal de configuracion del bot
-    const closeModalButton = document.querySelector('.close-modal'); // Cerrar modal del bot
-    const cancelModalButtton = document.querySelector('.cancel-button'); // Btn cancelar modificacion del bot
+    const botConfigModal = $('.bot-config-modal'); // Modal de configuracion del bot
+    const closeModalButton = $('.close-modal'); // Cerrar modal del bot
+    const cancelModalButtton = $('.cancel-button'); // Btn cancelar modificacion del bot
     // QRs
-    const quickRepliesModal = document.getElementById('quickRepliesModal'); // QR modal
-    const closeQuickReplies = document.getElementById('closeQuickReplies'); // Cerrar QR modal 
-    const openCreateQuickReply = document.getElementById('openCreateQuickReply'); // Abrir modal crear nueva reply
+    const quickRepliesModal = $('#quickRepliesModal'); // QR modal
+    const closeQuickReplies = $('#closeQuickReplies'); // Cerrar QR modal 
+    const openCreateQuickReply = $('#openCreateQuickReply'); // Abrir modal crear nueva reply
     // Modal crear nueva reply
-    const createQuickReplyModal = document.getElementById('createQuickReplyModal'); // Modal de crear nueva QR
-    const cancelCreateQuickReply = document.getElementById('cancelCreateQuickReply'); // Cancelar nueva QR
-    const createReplyBtn = document.querySelector('.save-create-quick-reply') // Crear nueva QR
-    const quickRepliesContainer = document.querySelector('.quick-replies-list');    // Quick reply items containers
-    const newQrTextArea = document.querySelector('.quick-reply-textarea');
+    const createQuickReplyModal = $('#createQuickReplyModal'); // Modal de crear nueva QR
+    const cancelCreateQuickReply = $('#cancelCreateQuickReply'); // Cancelar nueva QR
+    const createReplyBtn = $('.save-create-quick-reply') // Crear nueva QR
+    const quickRepliesContainer = $('.quick-replies-list');    // Quick reply items containers
+    const newQrTextArea = $('.quick-reply-textarea');
 
     // --- FUNCIONALIDAD DE MODALES ---
 
