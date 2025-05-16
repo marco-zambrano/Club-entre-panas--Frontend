@@ -304,12 +304,17 @@ input:checked + .slider:before {
 .contacts-list::-webkit-scrollbar-thumb:hover {
     background-color: #2f2f2f;
 }
+
+/* item */
 .contact {
     padding: 15px 15px 25px 15px;
     border-bottom: 1px solid #333;
     cursor: pointer;
     transition: background-color 0.3s;
     position: relative;
+
+    display: flex;
+    justify-content: space-between;
 }
 .contact:hover {
     background-color: #1e1e1e;
@@ -317,42 +322,40 @@ input:checked + .slider:before {
 .contact.active {
     background-color: #1e1e1e;
 }
+
 .contact-preview {
     position: absolute;
     left: 15px;
     bottom: 7px;
-
+    
     color: #666;
     font-size: 0.7em;
     opacity: .8;
     max-width: 130px;
-
+    
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
-.contact-interest {
-    position: absolute;
-    font-size: .7rem;
-    font-weight: 700;
-    bottom: 5px;
-    right: 65px;
-
-    width: 17px;
-    height: 17px;
-    border-radius: 50%;
-    text-align: center;
-
+.contact-info {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
+    height: 20px;
 }
-.contact-interest.comment {
-    top: 5px;
-    right: 10px;
+.contact-side {
+    display: flex;
+    column-gap: 10px;
 }
-
+.contact-interest {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    font-size: .85em;
+    font-weight: 800;
+    min-width: 18.5px;
+}
 .contact-message-time {
     position: absolute;
     font-size: .6rem;
@@ -360,12 +363,7 @@ input:checked + .slider:before {
     right: 15px;
     opacity: .8;
 }
-.contact-info {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height: 20px;
-}
+
 .contact.hidden {
     display: none;
 }
@@ -387,17 +385,16 @@ input:checked + .slider:before {
 
 /* COMENTARIOS */
 .contact-info.comment {
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: center;
+    display: flex;
+    width: 100%;
     row-gap: 4px;
     height: 35px;
 }
 .comment-header {
     display: flex;
     column-gap: 7px;
-    justify-content: center;
     align-items: center;
+    flex-grow: 1;
 }
 .type-identifier {
     background-color: #333;
@@ -409,10 +406,11 @@ input:checked + .slider:before {
 }
 .comment-details {
     display: flex;
-    width: 100%;
-    justify-content: space-between;
+    justify-content: flex-end;
+    column-gap: 6.5px;
+    flex-grow: 1;
 }
-.comment-details .post-title {
+/* .comment-details .post-title {
     color: #666;
     font-size: 0.7em;
     opacity: .8;
@@ -421,7 +419,7 @@ input:checked + .slider:before {
     overflow: hidden;
     text-overflow: ellipsis;
     max-width: 130px;
-}
+} */
 
 /* Área de chat */
 .chat-area {

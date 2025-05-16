@@ -58,15 +58,21 @@ function createContactCard(contact) {
     contactElement.dataset.platform = contact.platform;
     contactElement.dataset.itemId = contact.id;
     contactElement.dataset.type = contact.type;
-
+    
     // Preview
     const preView = document.createElement('span');
     preView.className = 'contact-preview';
     preView.textContent = contact.messages[contact.messages.length - 1].content; // Ultimo mensaje
-
-    // Nivel de interes
-    //const interest = document.createElement('span');
-    //interest.className = 'contact-interest'
+    
+    // Span del tiempo del ultimo mensaje
+    const messageTime = document.createElement('span');
+    messageTime.className = 'contact-message-time';
+    const fecha = new Date(contact.messages[contact.messages.length -1].time);
+    const horas = fecha.getHours();
+    const minutos = fecha.getMinutes().toString().padStart(2, '0');
+    const ampm = horas >= 12 ? 'p.m.' : 'a.m.';
+    const horas12 = horas % 12 || 12;
+    messageTime.textContent = `${horas12}:${minutos} ${ampm}`;
 
     // Container de la info del contacto
     const contactInfo = document.createElement('div');
@@ -76,6 +82,15 @@ function createContactCard(contact) {
     const contactName = document.createElement('span');
     contactName.className = 'contact-name';
     contactName.textContent = contact.name;
+
+    // container for platform info and interest level 
+    const contactSide = document.createElement('div');
+    contactSide.className = 'contact-side';
+
+    // Nivel de interes
+    const interest = document.createElement('span');
+    interest.className = 'contact-interest';
+    interest.textContent = contact.interest;
 
     // Container de la plataforma
     const platform = document.createElement('div');
@@ -89,28 +104,25 @@ function createContactCard(contact) {
     const platformIcon = document.createElement('i');
     platformIcon.className = `fab fa-${contact.platform} ${contact.platform}-icon`;
 
-    // Span del tiempo del ultimo mensaje
-    const messageTime = document.createElement('span');
-    messageTime.className = 'contact-message-time';
-    const fecha = new Date(contact.messages[contact.messages.length -1].time);
-    const horas = fecha.getHours();
-    const minutos = fecha.getMinutes().toString().padStart(2, '0');
-    const ampm = horas >= 12 ? 'p.m.' : 'a.m.';
-    const horas12 = horas % 12 || 12;
-    messageTime.textContent = `${horas12}:${minutos} ${ampm}`;
 
     // Platform Container <--- nombre e icono
     platform.appendChild(platformName);
     platform.appendChild(platformIcon);
 
+    // contact side <----- platform and interest
+    contactSide.appendChild(platform);
+    contactSide.appendChild(interest);
+
     // Contact info <--- nombre, plataforma, hora de ultimo mensaje
     contactInfo.appendChild(contactName);
-    contactInfo.appendChild(platform);
+    // contactInfo.appendChild(platform);
     contactInfo.appendChild(messageTime);
 
     // Contact element <--- El preview, interest y la informacion del contacto
     contactElement.appendChild(preView);
     contactElement.appendChild(contactInfo);
+    contactElement.appendChild(contactSide);
+    // contactElement.appendChild(interest);
 
     return contactElement; // Retornamos el contacto
 }
@@ -123,38 +135,39 @@ function createCommentCard(comment) {
     commentElement.dataset.itemId = comment.id;
     commentElement.dataset.type = comment.type;
 
-    // Preview
-    const preView = document.createElement('span');
-    preView.className = 'contact-preview';
-    preView.textContent = comment.comments[comment.comments.length - 1].content; // Ultimo mensaje
-
+    
     // Container del info del comentario (la clase dice contact-info porque son los mismos estilos)
     const commentInfo = document.createElement('div');
     commentInfo.className = 'contact-info';
     commentInfo.classList.add('comment');
-
+    
+    // Preview
+    const preView = document.createElement('span');
+    preView.className = 'contact-preview';
+    preView.textContent = comment.comments[comment.comments.length - 1].content; // Ultimo mensaje
+    
     // Header container
     const commentHeader = document.createElement('div');
     commentHeader.className = 'comment-header';
+    
+    // Logo con la C, para definir que es un comentario
+    const typeIdentifier = document.createElement('span');
+    typeIdentifier.className = 'type-identifier';
+    typeIdentifier.textContent = 'C';
 
     // Nombre del user del comentario
     const commentName = document.createElement('span');
     commentName.className = 'contact-name';
     commentName.textContent = comment.name;
 
-    // Logo con la C, para definir que es un comentario
-    const typeIdentifier = document.createElement('span');
-    typeIdentifier.className = 'type-identifier';
-    typeIdentifier.textContent = 'C';
-
     // comments details container
     const commentDetails = document.createElement('div');
     commentDetails.classList.add('comment-details')
     
-    // preview del titulo del post 
-    const postTitle = document.createElement('span');
-    postTitle.className = 'post-title';
-    postTitle.textContent = comment.postTitle;
+    // // preview del titulo del post 
+    // const postTitle = document.createElement('span');
+    // postTitle.className = 'post-title';
+    // postTitle.textContent = comment.postTitle;
 
     // Platform container
     const platform = document.createElement('div');
@@ -168,6 +181,11 @@ function createCommentCard(comment) {
     const platformIcon = document.createElement('i');
     platformIcon.className = `fab fa-${comment.platform} ${comment.platform}-icon`;
     
+    // Nivel de interes
+    const interest = document.createElement('span');
+    interest.className = 'contact-interest';
+    interest.textContent = comment.interest;
+
     // Tiempo del ultimo mensaje enviado
     const messageTime = document.createElement('span');
     messageTime.className = 'contact-message-time';
@@ -187,8 +205,9 @@ function createCommentCard(comment) {
     platform.appendChild(platformIcon);
 
     // Detalles <--- preview del post, plataforma, tiempo del ultimo mensaje enviado
-    commentDetails.appendChild(postTitle);
+    // commentDetails.appendChild(postTitle);
     commentDetails.appendChild(platform);
+    commentDetails.appendChild(interest);
     commentDetails.appendChild(messageTime);
     
     // Informacion del comentario <--- header, detalles, info (todos contenedores)
