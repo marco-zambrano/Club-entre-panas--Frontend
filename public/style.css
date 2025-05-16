@@ -435,6 +435,24 @@ input:checked + .slider:before {
     padding-bottom: 15px;
     border-bottom: 1px solid #333;
 }
+.chat-info-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;    
+}
+.chat-info-container a {
+    color: #fff;
+    text-decoration: none;
+    opacity: .8;
+    transition: all .3s ease;
+}
+.chat-info-container a:hover {
+    opacity: 1;
+}
+.chat-info-container a:visited, .chat-info-container a:active, .chat-info-container a:focus {
+    color: inherit;
+}
+
 .chat-title {
     font-size: 1.2em;
     font-weight: bold;

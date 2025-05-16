@@ -100,6 +100,7 @@ function generateNewComment() {
         platform: generateRandomPlatform('comment'),
         botEnabled: Math.random() > 0.5 ? true : false,
         interest: Math.floor(Math.random() * 11),
+        permalink: 'https://www.linkfalso.com/sj1n1324nj2n',
         comment: {
             id: Math.random().toString(36).substring(2, 15),
             content: generateRandomComment(),
@@ -219,6 +220,7 @@ io.on('connection', (socket) => {
             postId: newComment.comment.postId,
             type: newComment.comment.type,
             content: newComment.comment.content,
+            permalink: newComment.comment.permalink,
             time: newComment.comment.time,
             self: newComment.comment.self
         });

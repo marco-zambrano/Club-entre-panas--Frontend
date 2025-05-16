@@ -111,6 +111,7 @@ export function openItem(itemId) {
     if (!currentItem) return;
 
     document.querySelector('.chat-title').textContent = currentItem.name;
+    document.querySelector('.post-link').href = currentItem.permalink;
 
     //CLEAN MESSAGE CONTAINER BEFORE ADDING NEW MESSAGES
     const messagesContainer = document.querySelector('.messages');

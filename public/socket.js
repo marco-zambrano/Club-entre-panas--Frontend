@@ -42,9 +42,6 @@ export function getItems(filter) { //must be "contacts" or "comments" PLURAL
 
 //SEND BOT STATUS
 export function updateBotStatus(itemId, status) {
-    // console.log('item ID:', itemId);
-    // console.log('checkeado:', status);
-    
     socket.emit('botStatus', {
         itemId: itemId,
         status: status
@@ -62,7 +59,6 @@ export function sendManMessage(metaId, type, content, filter) {
 }
 //SEND WHICH ITEM IS OPENED
 export function getItemHistory(itemId, filter) {
-    console.log("GETTING ITEM HISTORY")
     socket.emit('getItemHistory', {itemId, filter});
 }
 
@@ -100,7 +96,6 @@ socket.on('itemContentHistory', (entries) => {
     //SCROLL TO THE END (DEPRECATED?)
     const messagesContainer = document.querySelector('.messages');
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
-    console.log('Received history for item:', currentItemId, 'with messages:', entries);
 })
 
 socket.on('newItems', (data) => { //RECEIVES LIST, TYPE, ALLITEMSLOADED.
@@ -120,15 +115,10 @@ socket.on('newItems', (data) => { //RECEIVES LIST, TYPE, ALLITEMSLOADED.
         contentLoaded[data.filter] = true;
     }
 
-    console.log('data')
-    console.log(data)
-    console.log(items)
-
-
     //ADD THE ITEM TO THE FILTER LIST
     items[data.filter].list = [...items[data.filter].list, ...data.items];
     items[data.filter].allItemsLoaded = data.allItemsLoaded; //IF EVERYTHINGS BEEN LOADED
-    
+
     //IF IT'S THE SAME AS THE ONES OPENED, UPDATE THE LIST
     if (currentFilter === data.filter) {
         filterItems();
@@ -183,6 +173,7 @@ socket.on('newMessage', (data) => {
             platform: data.platform,
             interest: data.interest,
             botEnabled: data.botEnabled,
+            permalink: data.permalink,
             [listKey]: [] // Dynamically set the property (messages or comments)
         };
 
@@ -233,41 +224,41 @@ socket.on('newMessage', (data) => {
 
 
 //THIS IS AN EXAMPLE DATA FOR THE SOCKET. THIS IS NOT USED
-var newDATA = {
-    itemId: "kKFDSlfdjs89989_32342432",
-    username: "John Doe",
-    platform: "whatsapp",
-    interest: 1, // FROM 0 TO 10
-    preview: {
-        content: "example",
-        timestamp: 1234567890
-    },
-    message: {
-        id: "kKFDSlfdjs89989_32342432",
-        content: "helo there",
-        time: 1234567890,
-        self: false,
-        type: "text" //if type is image, the content is the url of the image
-    }
-}
+// var newDATA = {
+//     itemId: "kKFDSlfdjs89989_32342432",
+//     username: "John Doe",
+//     platform: "whatsapp",
+//     interest: 1, // FROM 0 TO 10
+//     preview: {
+//         content: "example",
+//         timestamp: 1234567890
+//     },
+//     message: {
+//         id: "kKFDSlfdjs89989_32342432",
+//         content: "helo there",
+//         time: 1234567890,
+//         self: false,
+//         type: "text" //if type is image, the content is the url of the image
+//     }
+// }
 
 
 
-var examplecontact = {
-    id: "kKFDSlfdjs89989_32342432",
-    name: "John Doe",
-    platform: "whatsapp",
-    interest: 1, // FROM 0 TO 10
-    preview: {
-        content: "example",
-        timestamp: 1234567890
-    },
-    messages: [
-        {
-            content: "example",
-            time: 1234567890,
-            self: false,
-            type: "text" //if type is image, the content is the url of the image
-        }
-    ]
-}
+// var examplecontact = {
+//     id: "kKFDSlfdjs89989_32342432",
+//     name: "John Doe",
+//     platform: "whatsapp",
+//     interest: 1, // FROM 0 TO 10
+//     preview: {
+//         content: "example",
+//         timestamp: 1234567890
+//     },
+//     messages: [
+//         {
+//             content: "example",
+//             time: 1234567890,
+//             self: false,
+//             type: "text" //if type is image, the content is the url of the image
+//         }
+//     ]
+// }
