@@ -92,6 +92,15 @@ function createContactCard(contact) {
     interest.className = 'contact-interest';
     interest.textContent = contact.interest;
 
+    const interestNumber = Number(contact.interest);
+    if (interestNumber >= 0 && interestNumber <= 4) {
+        interest.style.color = '#FF2929';
+    } else if (interestNumber >= 5 && interestNumber <= 7) {
+        interest.style.color = '#FFD943';
+    } else {
+        interest.style.color = '#14F000';
+    }
+
     // Container de la plataforma
     const platform = document.createElement('div');
     platform.className = 'platform';

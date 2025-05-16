@@ -352,8 +352,8 @@ input:checked + .slider:before {
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    font-size: .85em;
-    font-weight: 800;
+    font-size: .9em;
+    font-weight: 700;
     min-width: 18.5px;
 }
 .contact-message-time {
