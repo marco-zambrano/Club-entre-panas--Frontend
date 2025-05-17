@@ -195,6 +195,15 @@ function createCommentCard(comment) {
     interest.className = 'contact-interest';
     interest.textContent = comment.interest;
 
+    const interestNumber = Number(comment.interest);
+    if (interestNumber >= 0 && interestNumber <= 4) {
+        interest.style.color = '#FF2929';
+    } else if (interestNumber >= 5 && interestNumber <= 7) {
+        interest.style.color = '#FFD943';
+    } else {
+        interest.style.color = '#14F000';
+    }
+
     // Tiempo del ultimo mensaje enviado
     const messageTime = document.createElement('span');
     messageTime.className = 'contact-message-time';
