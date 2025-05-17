@@ -453,7 +453,7 @@ var items = {
                 platform: "facebook",
                 botEnabled: false,
                 interest: 2,
-                permalink: "https://www.linkfalso.com/sj1n1324nj2n",
+                permalink: "https://www.linkfalso.com/sj1n1324nj2n", // new prperty for all comments
                 comments: [
                     {
                         id: "cm1f0b3e2a9c",

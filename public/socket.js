@@ -6,20 +6,20 @@ export const socket = io();
 
 const ITEMS_PER_PAGE = 20;
 
-let contentLoaded = {
-    contacts: false,
-    comments: false
-};
-
 // MAY GOD BLESS THIS CODE
 export var items = {
     contacts: {
         allItemsLoaded: false,
-        list: []
+        list: [],
+        contentLoaded: false
+        // we use contentLoaded to define, that this kind of item is saved or not locally, porque habia un problema que cuando recien entrabas
+        // y no habias los contactos aun, cuando llegaba un nuevo mensaje del evento newMessage, los comentarios igualmente se cargaban localmente
+        // Lo que hacia que cuando ibas a los comentarios por primera vez, los que estaban ya previamente cargados localmente, aparecieran duplicados
     },
     comments: {
         allItemsLoaded: false,
-        list: []
+        list: [],
+        contentLoaded: false
     }
 }
 
@@ -37,8 +37,6 @@ export function getItems(filter) { //must be "contacts" or "comments" PLURAL
         // in other words, 
     })
 }
-
-
 
 //SEND BOT STATUS
 export function updateBotStatus(itemId, status) {
@@ -110,10 +108,10 @@ socket.on('newItems', (data) => { //RECEIVES LIST, TYPE, ALLITEMSLOADED.
         data.items.forEach(item => {
             item.id = `${item.userId}-${item.postId}`;
         });
-        contentLoaded[data.filter] = true;
-    } else if (data.filter === 'contacts') {
-        contentLoaded[data.filter] = true;
     }
+
+    // set that that that kind of item as loaded
+    if (!items[data.filter].contentLoaded) items[data.filter].contentLoaded = true;
 
     //ADD THE ITEM TO THE FILTER LIST
     items[data.filter].list = [...items[data.filter].list, ...data.items];
@@ -145,7 +143,8 @@ socket.on('newMessage', (data) => {
         return;
     }
 
-    if (!contentLoaded[itemType]) {
+    // If the data type is not loaded, do not allow to save it locally <new implementation>
+    if (!items[itemType].contentLoaded) {
         return;
     }
 
@@ -154,7 +153,8 @@ socket.on('newMessage', (data) => {
     let newItem = null; // when you have a new item
     let itemId = null;  // The id of the incoming item
 
-    const newEntry = { // Create a new entry for the message/comment
+    // Create a new entry for the message/comment
+    const newEntry = { 
         id: data[dataKey].id,
         content: data[dataKey].content,
         type: data[dataKey].type,
@@ -166,14 +166,14 @@ socket.on('newMessage', (data) => {
         itemId = `${data.userId}-${data.postId}`; //comment id
         //ITEM COMMENT
         newItem = {
-            id: itemId,
+            id: itemId, // new property
             userId: data.userId,
             postId: data.postId,
             name: data.name,
             platform: data.platform,
             interest: data.interest,
             botEnabled: data.botEnabled,
-            permalink: data.permalink,
+            permalink: data.permalink,  // new property
             [listKey]: [] // Dynamically set the property (messages or comments)
         };
 
@@ -217,6 +217,7 @@ socket.on('newMessage', (data) => {
         }
     }
 
+    console.log('new item arrived, show all items:')
     console.log(items)
 
     filterItems(); // Filter the items and show them in front
