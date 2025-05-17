@@ -38,35 +38,26 @@
                     <button class="item-comment">Comentarios</button>
                 </div>
             </div>
+            <!-- boton de modal del bot -->
             <button class="bot-config-button">
-                <i class="fas fa-robot"></i>
+                <i class="fas fa-cog"></i>
             </button>
-        </div>
-
-        <!-- Modal de configuración del bot -->
-        <div class="bot-config-modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2>Configuración General del Bot</h2>
-                    <button class="close-modal">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero unde illum doloribus esse soluta quae in cumque optio at ratione. Debitis eligendi aspernatur numquam officiis, dignissimos dicta laudantium cupiditate. Harum.</p>
-                </div>
-            </div>
         </div>
 
         <!-- Contenido principal -->
         <div class="main-content">
+
             <!-- Lista de contactos -->
             <div class="contacts-list"></div>
 
             <!-- Área de chat -->
             <div class="chat-area">
                 <div class="chat-header">
-                    <h2 class="chat-title"></h2>
+                    <div class="chat-info-container">
+                        <h2 class="chat-title"></h2>
+                        <a href="#" target="_blank" class="post-link">post link</a>
+                    </div>
+                    <!-- Toggle encender/apagar bot -->
                     <div class="bot-toggle small">
                         <span>bot</span>
                         <label class="toggle">
@@ -79,6 +70,7 @@
                 <!-- Here all the messages appear -->
                 <div class="messages"></div>
 
+                <!-- input text to send manual messages -->
                 <div class="message-input-container">
                     <input type="text" class="message-input" placeholder="Escribir mensaje">
                     <button class="send-button">
@@ -94,7 +86,83 @@
         </button>
     </div>
 
-    <!-- Incluimos Socket.IO del lado del cliente -->
+    <!-- Modal de selección de configuración -->
+    <div class="main-config-modal" id="mainConfigModal">
+        <div class="main-config-content">
+            <div class="main-config-header">
+                <h2>Configuración</h2>
+                <button class="close-main-config" id="closeMainConfig">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="main-config-options">
+                <button class="main-config-option" id="openBotConfig">
+                    <i class="fas fa-robot"></i> Configurar Bot
+                </button>
+                <button class="main-config-option" id="openQuickRepliesConfig">
+                    <i class="fas fa-comment-dots"></i> Respuestas Rápidas
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de configuración del bot -->
+    <div class="bot-config-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Configuración General del Bot</h2>
+                <button class="close-modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="bot-modification">
+                    <h3>Modificar bot:</h3>
+                    <textarea id="bot-behavior" class="bot-textarea"></textarea>
+                </div>
+                <div class="modal-token-container">
+                    <div class="token-usage">
+                        <p>Uso total de tokens: x</p>
+                    </div>
+                    <div class="modal-actions">
+                        <button class="modal-button cancel-button">Cancelar</button>
+                        <button class="modal-button save-button">Guardar cambios</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Respuestas Rápidas -->
+    <div class="quick-replies-modal" id="quickRepliesModal">
+        <div class="quick-replies-content">
+            <div class="quick-replies-header">
+                <h2>Respuestas Rápidas</h2>
+                <button class="close-quick-replies" id="closeQuickReplies">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div class="quick-replies-list"></div>
+            
+            <button class="add-quick-reply-btn" id="openCreateQuickReply">
+                <i class="fas fa-plus"></i> Crear nueva respuesta rápida
+            </button>
+        </div>
+        <!-- Modal para crear nueva respuesta rápida -->
+        <div class="create-quick-reply-modal" id="createQuickReplyModal">
+            <div class="create-quick-reply-content">
+                <h3>Nueva respuesta rápida</h3>
+                <textarea class="quick-reply-textarea" placeholder="Escribe tu respuesta rápida aquí..."></textarea>
+                <div class="create-quick-reply-actions">
+                    <button class="cancel-create-quick-reply" id="cancelCreateQuickReply">Cancelar</button>
+                    <button class="save-create-quick-reply">Crear</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Fin modal respuestas rápidas -->
     <script type="module" src="/socket.io/socket.io.js"></script>
     <script type="module" src="ui.js"></script>
     <script type="module" src="script.js"></script>
