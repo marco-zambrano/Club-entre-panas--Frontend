@@ -307,6 +307,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const chatButton = document.querySelector('.item-chat');
     const commentButton = document.querySelector('.item-comment');
     const whatsAppToggle = document.getElementById('whatsapp-toggle');
+    const linkTag = document.querySelector('.post-link');
+
     // Función para actualizar el estado de los botones
     function updateFilterButtons() {
         chatButton.classList.toggle('active', currentFilter === 'contacts');
@@ -319,6 +321,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (currentFilter !== 'contacts') {
             setCurrentFilter('contacts');
             whatsAppToggle.classList.toggle('active');
+            linkTag.classList.toggle('active');
             updateFilterButtons();
             filterItems();
         }
@@ -328,6 +331,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // console.log('llegamos')
             setCurrentFilter('comments');
             whatsAppToggle.classList.toggle('active');
+            linkTag.classList.toggle('active');
             updateFilterButtons();
             filterItems();
         }

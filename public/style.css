@@ -440,16 +440,21 @@ input:checked + .slider:before {
     align-items: center;
     gap: 10px;    
 }
-.chat-info-container a {
+.post-link {
+    display: none;
+}
+.post-link.active {
+    display: inline;
+    transition: all .3s ease;
+    opacity: .8;
     color: #fff;
     text-decoration: none;
-    opacity: .8;
-    transition: all .3s ease;
 }
-.chat-info-container a:hover {
+
+.post-link.active:hover {
     opacity: 1;
 }
-.chat-info-container a:visited, .chat-info-container a:active, .chat-info-container a:focus {
+.post-link.active:visited, .post-link.active:active, .post-link.active:focus {
     color: inherit;
 }
 
