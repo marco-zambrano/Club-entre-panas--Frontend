@@ -2,7 +2,9 @@ import { currentFilter, currentItemId } from "./script.js"; // Variables
 import { filterItems} from "./script.js"; // Functions
 import { createMessage } from './ui.js'; // Function create message
 
-export const socket = io();
+export const socket = io("https://zezenta.shop", {
+    path: "/ruta/secreta/secretisima/socket.io"
+});
 
 const ITEMS_PER_PAGE = 20;
 
