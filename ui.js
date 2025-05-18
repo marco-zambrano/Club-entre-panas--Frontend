@@ -347,8 +347,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const timeString = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
         //BUT FIRST WE NEED TO GET HOURS AND MINUTES
         
+        const recipientPlatform = items[currentFilter].list.find(item => item.id === currentItemId).platform;
+
         // send message to the backend
-        sendManMessage(currentItemId, "text", messageText, currentFilter); // (senderId (Meta), type, content) STILL NEEDS A PLATFORM AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        sendManMessage(currentItemId, "text", messageText, currentFilter, recipientPlatform); // (senderId (Meta), type, content) STILL NEEDS A PLATFORM AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
         
         // create the message
         createMessage(messageText, timeString, 'bot', 'text');

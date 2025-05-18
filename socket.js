@@ -48,12 +48,13 @@ export function updateBotStatus(itemId, status) {
     });
 }
 //SEND MANUAL MESSAGE
-export function sendManMessage(metaId, type, content, filter) {
+export function sendManMessage(metaId, type, content, filter, platform) {
     socket.emit('sendManMessage', {
         metaId: metaId,
         content: content,
         type: type,
-        filter: filter
+        filter: filter,
+        platform: platform
     });
 }
 //SEND WHICH ITEM IS OPENED
