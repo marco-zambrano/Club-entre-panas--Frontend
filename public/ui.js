@@ -338,11 +338,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Send message functionality
-    function sendMessage() {
-        const input = document.querySelector('.message-input');
-        const messageText = input.value.trim();
+    function sendMessage(messageText) {
         if (!messageText) return
-        
         // Obtener hora actual
         const now = new Date();
         const hours = now.getHours();
@@ -364,9 +361,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         var entryKey = (currentFilter == "contacts") ? "messages" : (currentFilter == "comments") ? "comments" : null;
         items[currentFilter].list.find(item => item.id === currentItemId)[entryKey].push(entry);
-
-        // Limpiar input
-        input.value = '';
         
         // Scroll al final de los mensajes
         const messagesContainer = document.querySelector('.messages');
@@ -374,11 +368,20 @@ document.addEventListener('DOMContentLoaded', () => {
         filterItems();
     }
 
-    document.querySelector('.send-button').addEventListener('click', sendMessage);
+    const handeInputMessage = () => {
+        const input = document.querySelector('.message-input');
+        const messageValue = input.value.trim();
+        sendMessage(messageValue);
+        input.value = '';
+    }
 
+    document.querySelector('.send-button').addEventListener('click', () => {
+        handeInputMessage();
+    });
+    
     document.querySelector('.message-input').addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
-            sendMessage();
+            handeInputMessage();
         }
     });
 
@@ -479,6 +482,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const trashIcon = document.createElement('i');
         trashIcon.classList.add('fas');
         trashIcon.classList.add('fa-trash');
+        
+        //click event for the task
+        replyText.addEventListener('click', (e) => {
+            sendMessage(e.currentTarget.textContent);
+            quickRepliesModal.classList.remove('show');
+        })
+        
         // click event for that trash can
         trashIcon.addEventListener('click', () => {
             // remove from de DOM
