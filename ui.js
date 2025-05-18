@@ -1,6 +1,6 @@
 import { currentItemId, currentFilter } from "./script.js"; // Variables
 import { openItem, setCurrentFilter, filterItems, initilizeBotToggle } from "./script.js"; // Functions
-import { sendManMessage, items, quickReps, getQuickReps, updateQuickReps } from './socket.js';
+import { sendManMessage, items, quickReps, getQuickReps, updateQuickReps, sendBotConf } from './socket.js';
 
 export function createMessage(content, time, sender, type) {
     // create new message
@@ -338,11 +338,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Send message functionality
-    function sendMessage() {
-        const input = document.querySelector('.message-input');
-        const messageText = input.value.trim();
+    function sendMessage(messageText) {
         if (!messageText) return
-        
         // Obtener hora actual
         const now = new Date();
         const hours = now.getHours();
@@ -364,9 +361,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         var entryKey = (currentFilter == "contacts") ? "messages" : (currentFilter == "comments") ? "comments" : null;
         items[currentFilter].list.find(item => item.id === currentItemId)[entryKey].push(entry);
-
-        // Limpiar input
-        input.value = '';
         
         // Scroll al final de los mensajes
         const messagesContainer = document.querySelector('.messages');
@@ -374,11 +368,20 @@ document.addEventListener('DOMContentLoaded', () => {
         filterItems();
     }
 
-    document.querySelector('.send-button').addEventListener('click', sendMessage);
+    const handeInputMessage = () => {
+        const input = document.querySelector('.message-input');
+        const messageValue = input.value.trim();
+        sendMessage(messageValue);
+        input.value = '';
+    }
 
+    document.querySelector('.send-button').addEventListener('click', () => {
+        handeInputMessage();
+    });
+    
     document.querySelector('.message-input').addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
-            sendMessage();
+            handeInputMessage();
         }
     });
 
@@ -394,6 +397,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const botConfigModal = $('.bot-config-modal'); // Modal de configuracion del bot
     const closeModalButton = $('.close-modal'); // Cerrar modal del bot
     const cancelModalButtton = $('.cancel-button'); // Btn cancelar modificacion del bot
+    const saveChangesBtn = $('.save-button'); // btn to save and update bot configuration
+    const botTextArea = $('.bot-textarea'); // Text area value
     // QRs
     const quickRepliesModal = $('#quickRepliesModal'); // QR modal
     const closeQuickReplies = $('#closeQuickReplies'); // Cerrar QR modal 
@@ -435,6 +440,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Abrir modal de configuración del bot
         openBotConfig.addEventListener('click', () => {
             mainConfigModal.classList.remove('show');
+            botTextArea.value = ''; // cleaning the bot text area value
             botConfigModal.classList.add('show');
         });
         // Cerrar modal de configuración del bot
@@ -454,6 +460,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 botConfigModal.classList.remove('show');
             }
         });
+        // update bot configuration
+        saveChangesBtn.addEventListener('click', () => {
+            sendBotConf(botTextArea.value.trim());
+            botConfigModal.classList.remove('show');
+            console.log('sent to back: ', botTextArea.value.trim())
+        })
     }
     
 
@@ -470,6 +482,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const trashIcon = document.createElement('i');
         trashIcon.classList.add('fas');
         trashIcon.classList.add('fa-trash');
+        
+        //click event for the task
+        replyText.addEventListener('click', (e) => {
+            sendMessage(e.currentTarget.textContent);
+            quickRepliesModal.classList.remove('show');
+        })
+        
         // click event for that trash can
         trashIcon.addEventListener('click', () => {
             // remove from de DOM

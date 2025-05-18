@@ -181,6 +181,9 @@ io.on('connection', (socket) => {
         console.log(newQrs)
     });
 
+    socket.on('updateBot', (botConfig) => {
+        console.log('new bot config: ', botConfig);
+    });
 
 
 

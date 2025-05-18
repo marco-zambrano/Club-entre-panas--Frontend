@@ -1,5 +1,5 @@
 import { currentFilter, currentItemId } from "./script.js"; // Variables
-import { filterItems, openItem, initilizeBotToggle } from "./script.js"; // Functions
+import { filterItems} from "./script.js"; // Functions
 import { createMessage } from './ui.js'; // Function create message
 
 export const socket = io();
@@ -47,7 +47,6 @@ export function updateBotStatus(itemId, status) {
 }
 //SEND MANUAL MESSAGE
 export function sendManMessage(metaId, type, content, filter) {
-
     socket.emit('sendManMessage', {
         metaId: metaId,
         content: content,
@@ -71,6 +70,10 @@ export function updateQuickReps(arr){ // Actualizar QRs, tanto si eliminas o agr
     socket.emit("updateQuickReps", arr);
 }
 
+// Bot config
+export function sendBotConf(text) {
+    socket.emit('updateBot', text);
+}
 
 //SEARCH CONTENT HISTORY FOR AN ITEM
 socket.on('itemContentHistory', (entries) => {
@@ -222,44 +225,3 @@ socket.on('newMessage', (data) => {
 
     filterItems(); // Filter the items and show them in front
 });
-
-
-//THIS IS AN EXAMPLE DATA FOR THE SOCKET. THIS IS NOT USED
-// var newDATA = {
-//     itemId: "kKFDSlfdjs89989_32342432",
-//     username: "John Doe",
-//     platform: "whatsapp",
-//     interest: 1, // FROM 0 TO 10
-//     preview: {
-//         content: "example",
-//         timestamp: 1234567890
-//     },
-//     message: {
-//         id: "kKFDSlfdjs89989_32342432",
-//         content: "helo there",
-//         time: 1234567890,
-//         self: false,
-//         type: "text" //if type is image, the content is the url of the image
-//     }
-// }
-
-
-
-// var examplecontact = {
-//     id: "kKFDSlfdjs89989_32342432",
-//     name: "John Doe",
-//     platform: "whatsapp",
-//     interest: 1, // FROM 0 TO 10
-//     preview: {
-//         content: "example",
-//         timestamp: 1234567890
-//     },
-//     messages: [
-//         {
-//             content: "example",
-//             time: 1234567890,
-//             self: false,
-//             type: "text" //if type is image, the content is the url of the image
-//         }
-//     ]
-// }
