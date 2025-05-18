@@ -1,5 +1,5 @@
 import { currentFilter, currentItemId } from "./script.js"; // Variables
-import { filterItems, openItem, initilizeBotToggle } from "./script.js"; // Functions
+import { filterItems} from "./script.js"; // Functions
 import { createMessage } from './ui.js'; // Function create message
 
 export const socket = io();
