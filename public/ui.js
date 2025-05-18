@@ -1,6 +1,6 @@
 import { currentItemId, currentFilter } from "./script.js"; // Variables
 import { openItem, setCurrentFilter, filterItems, initilizeBotToggle } from "./script.js"; // Functions
-import { sendManMessage, items, quickReps, getQuickReps, updateQuickReps } from './socket.js';
+import { sendManMessage, items, quickReps, getQuickReps, updateQuickReps, sendBotConf } from './socket.js';
 
 export function createMessage(content, time, sender, type) {
     // create new message
@@ -394,6 +394,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const botConfigModal = $('.bot-config-modal'); // Modal de configuracion del bot
     const closeModalButton = $('.close-modal'); // Cerrar modal del bot
     const cancelModalButtton = $('.cancel-button'); // Btn cancelar modificacion del bot
+    const saveChangesBtn = $('.save-button'); // btn to save and update bot configuration
+    const botTextArea = $('.bot-textarea'); // Text area value
     // QRs
     const quickRepliesModal = $('#quickRepliesModal'); // QR modal
     const closeQuickReplies = $('#closeQuickReplies'); // Cerrar QR modal 
@@ -435,6 +437,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Abrir modal de configuración del bot
         openBotConfig.addEventListener('click', () => {
             mainConfigModal.classList.remove('show');
+            botTextArea.value = ''; // cleaning the bot text area value
             botConfigModal.classList.add('show');
         });
         // Cerrar modal de configuración del bot
@@ -454,6 +457,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 botConfigModal.classList.remove('show');
             }
         });
+        // update bot configuration
+        saveChangesBtn.addEventListener('click', () => {
+            sendBotConf(botTextArea.value.trim());
+            botConfigModal.classList.remove('show');
+            console.log('sent to back: ', botTextArea.value.trim())
+        })
     }
     
 
