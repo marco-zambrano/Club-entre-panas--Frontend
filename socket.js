@@ -48,13 +48,12 @@ export function updateBotStatus(itemId, status) {
     });
 }
 //SEND MANUAL MESSAGE
-export function sendManMessage(metaId, type, content, filter, platform) {
+export function sendManMessage(metaId, type, content, filter) {
     socket.emit('sendManMessage', {
         metaId: metaId,
         content: content,
         type: type,
-        filter: filter,
-        platform: platform
+        filter: filter
     });
 }
 //SEND WHICH ITEM IS OPENED
@@ -74,8 +73,25 @@ export function updateQuickReps(arr){ // Actualizar QRs, tanto si eliminas o agr
 }
 
 // Bot config
+export var botPrompt = "";
+export function getCustomPrompt() {
+    return new Promise((resolve, reject) => {
+        socket.emit('getCustomPrompt');
+        socket.once('customPrompt', (text) => { // Listen for the server response only once
+            botPrompt = text;
+            console.log("Bot conf: ", botPrompt);
+            resolve(text); // Resolve the promise with the server response
+        });
+
+        // Optional: Add a timeout to reject the promise if no response is received
+        setTimeout(() => {
+            reject(new Error("Timeout: No response from server for getCustomPrompt"));
+        }, 10000); // Adjust timeout duration as needed
+    });
+}
+
 export function sendBotConf(text) {
-    socket.emit('updateBot', text);
+    socket.emit('updatePrompt', text);
 }
 
 //SEARCH CONTENT HISTORY FOR AN ITEM
