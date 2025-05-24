@@ -226,7 +226,7 @@ socket.on('newMessage', (data) => {
 
         item[listKey].push(newEntry); // Add the new entry to the existing item
 
-        if(currentItemId === data.id) { //IF THE ITEM IS OPENED, SHOW THE MESSAGE
+        if(currentItemId === itemId) { //IF THE ITEM IS OPENED, SHOW THE MESSAGE
             const timeString = new Date(data[dataKey].time).toLocaleString('en-US', {
                 hour: '2-digit',
                 minute: '2-digit',

@@ -239,6 +239,27 @@ io.on('connection', (socket) => {
         console.log("New comment generated")
     }, 15000);
 
+
+    setInterval(() => {
+        const comment = {
+            userId: "9e2b0a1c3f7d",
+            postId: "392rh392rn39",
+            name: "Isabel Ríos",
+            platform: "instagram",
+            botEnabled: true,
+            interest: 5,
+            comment: {
+                id: "9e2b0a1c3f7d",
+                content: generateRandomComment(),
+                type: 'text',
+                time: Date.now(),
+                self: true
+            }
+        }
+        io.emit('newMessage', comment);
+    }
+    , 25000); // Send a random message every 20 seconds
+
     //ON DISCONONECT
     socket.on('disconnect', () => {
         clearInterval(contactInterval);
