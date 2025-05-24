@@ -43,10 +43,11 @@ export function createMessage(content, time, sender, type) {
     messageElement.appendChild(messageContent);
     // Agregar al main container
 
-    
-    //SET TIME INVERVAL OF 1 SECOND
     const messagesContainer = document.querySelector('.messages');
     messagesContainer.appendChild(messageElement);
+
+    // Scroll to the bottom of the container
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
 }
 
 

@@ -260,6 +260,25 @@ io.on('connection', (socket) => {
     }
     , 25000); // Send a random message every 20 seconds
 
+    setInterval(() => {
+        const message = {
+            id: "d3b0f1a6e9c2",
+            name: "Emilio Narváez",
+            platform: "faceboko",
+            botEnabled: false,
+            interest: 5,
+            message: {
+                id: "9e2b0a1c3f7d",
+                content: generateRandomComment(),
+                type: 'text',
+                time: Date.now(),
+                self: (Math.random() > 0.5 ? true : false)
+            }
+        }
+        io.emit('newMessage', message);
+    }
+    , 5000); // Send a random message every 20 seconds
+
     //ON DISCONONECT
     socket.on('disconnect', () => {
         clearInterval(contactInterval);
