@@ -1,6 +1,6 @@
 import { currentItemId, currentFilter } from "./script.js"; // Variables
 import { openItem, setCurrentFilter, filterItems, initilizeBotToggle } from "./script.js"; // Functions
-import { sendManMessage, items, quickReps, getQuickReps, updateQuickReps, sendBotConf, getCustomPrompt, botPrompt } from './socket.js';
+import { sendManMessage, items, quickReps, getQuickReps, updateQuickReps, sendBotConf, getCustomPrompt, botPrompt, tokenUsage } from './socket.js';
 
 export function createMessage(content, time, sender, type) {
     // create new message
@@ -448,6 +448,10 @@ document.addEventListener('DOMContentLoaded', () => {
             botConfigModal.classList.add('show');
             await getCustomPrompt(); // Get the bot configuration
             botTextArea.value = botPrompt; // Set the bot configuration to the text area
+            const tokenUsageLabel = document.querySelector('.token-usage p');
+            if (tokenUsageLabel) {
+                tokenUsageLabel.textContent = `Uso total de tokens: ${tokenUsage}`;
+            }
         });
         // Cerrar modal de configuración del bot
         closeModalButton.addEventListener('click', () => {

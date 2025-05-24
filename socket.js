@@ -76,19 +76,24 @@ export function updateQuickReps(arr){ // Actualizar QRs, tanto si eliminas o agr
 
 // Bot config
 export var botPrompt = "";
+export var tokenUsage = 0;
 export function getCustomPrompt() {
     return new Promise((resolve, reject) => {
-        socket.emit('getCustomPrompt');
-        socket.once('customPrompt', (text) => { // Listen for the server response only once
-            botPrompt = text;
-            console.log("Bot conf: ", botPrompt);
-            resolve(text); // Resolve the promise with the server response
-        });
+        let timeout = setTimeout(() => {
+            reject(new Error("Timeout: No response from server"));
+        }, 10000);
 
-        // Optional: Add a timeout to reject the promise if no response is received
-        setTimeout(() => {
-            reject(new Error("Timeout: No response from server for getCustomPrompt"));
-        }, 10000); // Adjust timeout duration as needed
+        socket.emit('getCustomPrompt');
+        socket.once('customPrompt', (data) => {
+            clearTimeout(timeout);
+            if (data && typeof data === 'object') {
+                botPrompt = data.prompt;
+                tokenUsage = data.tokenUsage;
+                resolve(data);
+            } else {
+                reject(new Error("Invalid data received from server"));
+            }
+        });
     });
 }
 
