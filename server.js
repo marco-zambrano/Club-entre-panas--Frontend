@@ -180,9 +180,16 @@ io.on('connection', (socket) => {
     socket.on('updateQuickReps', (newQrs) => {
         console.log(newQrs)
     });
-
-    socket.on('updateBot', (botConfig) => {
+    var customPrompt = "Hola, soy el bot de Club Entre Panas, ¿en qué puedo ayudarte?";
+    socket.on('updatePrompt', (botConfig) => {
         console.log('new bot config: ', botConfig);
+        customPrompt = botConfig;
+    });
+    socket.on("getCustomPrompt", async () => {
+        setTimeout(() => {
+            socket.emit('customPrompt', customPrompt);
+        }
+        , 2000); // Simulate a delay of 2 seconds
     });
 
 
