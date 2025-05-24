@@ -95,6 +95,11 @@ export function sendBotConf(text) {
     socket.emit('updatePrompt', text);
 }
 
+//SEND ERRORS TO BACKEND
+export function reportErrorToBackend(error) {
+    socket.emit('reportError', error);
+}
+
 //SEARCH CONTENT HISTORY FOR AN ITEM
 socket.on('itemContentHistory', (entries) => {
     const currentItem = items[currentFilter].list.find( item => item.id === currentItemId);

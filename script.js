@@ -1,5 +1,5 @@
 import { items } from './socket.js'; // variables
-import { updateBotStatus, getItemHistory, getItems } from './socket.js'; // functions
+import { updateBotStatus, getItemHistory, getItems, reportErrorToBackend } from './socket.js'; // functions
 import { updateItemsList, createMessage } from './ui.js';
 
 export let currentItemId = null; // Id of the item actived
@@ -170,4 +170,25 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log("DIDNT LOAD BECAUSE ITS ALL LOADED OR ITS ALREADY LOADING")
         }
     });
+});
+
+//CAPTURE AND REPORT ERRORS
+window.onerror = function (message, source, lineno, colno, error) {
+  reportErrorToBackend({
+    type: 'error',
+    message,
+    source,
+    lineno,
+    colno,
+    stack: error?.stack
+  });
+};
+
+// CAPTURE UNHANDLED PROMISE REJECTIONS
+window.addEventListener('unhandledrejection', function (event) {
+  reportErrorToBackend({
+    type: 'unhandledrejection',
+    message: event.reason?.message || String(event.reason),
+    stack: event.reason?.stack
+  });
 });
