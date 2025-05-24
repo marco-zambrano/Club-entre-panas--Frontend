@@ -47,6 +47,8 @@ export function createMessage(content, time, sender, type) {
     //SET TIME INVERVAL OF 1 SECOND
     const messagesContainer = document.querySelector('.messages');
     messagesContainer.appendChild(messageElement);
+
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
 }
 
 
