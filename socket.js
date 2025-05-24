@@ -44,7 +44,8 @@ export function getItems(filter) { //must be "contacts" or "comments" PLURAL
 export function updateBotStatus(itemId, status) {
     socket.emit('botStatus', {
         itemId: itemId,
-        status: status
+        status: status,
+        filter: currentFilter
     });
 }
 //SEND MANUAL MESSAGE
