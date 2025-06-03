@@ -2,7 +2,7 @@ import { currentFilter, currentItemId } from "./script.js"; // Variables
 import { filterItems} from "./script.js"; // Functions
 import { createMessage } from './ui.js'; // Function create message
 
-export const socket = io("https://zezenta.shop", {
+export const socket = io("https://panasresponde.work", {
     path: "/ruta/secreta/secretisima/socket.io"
 });
 
