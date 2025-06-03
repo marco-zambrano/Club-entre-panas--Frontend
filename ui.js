@@ -1,6 +1,6 @@
 import { currentItemId, currentFilter } from "./script.js"; // Variables
 import { openItem, setCurrentFilter, filterItems, initilizeBotToggle } from "./script.js"; // Functions
-import { sendManMessage, items, quickReps, getQuickReps, updateQuickReps, sendBotConf } from './socket.js';
+import { sendManMessage, items, quickReps, getQuickReps, updateQuickReps, sendBotConf, getCustomPrompt, botPrompt, tokenUsage } from './socket.js';
 
 export function createMessage(content, time, sender, type) {
     // create new message
@@ -47,6 +47,8 @@ export function createMessage(content, time, sender, type) {
     //SET TIME INVERVAL OF 1 SECOND
     const messagesContainer = document.querySelector('.messages');
     messagesContainer.appendChild(messageElement);
+
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
 }
 
 
@@ -347,8 +349,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const timeString = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
         //BUT FIRST WE NEED TO GET HOURS AND MINUTES
         
+        const recipientPlatform = items[currentFilter].list.find(item => item.id === currentItemId).platform;
+
         // send message to the backend
-        sendManMessage(currentItemId, "text", messageText, currentFilter); // (senderId (Meta), type, content) STILL NEEDS A PLATFORM AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        sendManMessage(currentItemId, "text", messageText, currentFilter, recipientPlatform); // (senderId (Meta), type, content, platform)
         
         // create the message
         createMessage(messageText, timeString, 'bot', 'text');
@@ -438,10 +442,16 @@ document.addEventListener('DOMContentLoaded', () => {
     // MODAL DEL BOT
     function botModalConfiguration() {
         // Abrir modal de configuración del bot
-        openBotConfig.addEventListener('click', () => {
+        openBotConfig.addEventListener('click', async () => {
             mainConfigModal.classList.remove('show');
-            botTextArea.value = ''; // cleaning the bot text area value
+            botTextArea.value = 'Cargando...'; // cleaning the bot text area value
             botConfigModal.classList.add('show');
+            await getCustomPrompt(); // Get the bot configuration
+            botTextArea.value = botPrompt; // Set the bot configuration to the text area
+            const tokenUsageLabel = document.querySelector('.token-usage p');
+            if (tokenUsageLabel) {
+                tokenUsageLabel.textContent = `Uso total de tokens: ${tokenUsage}`;
+            }
         });
         // Cerrar modal de configuración del bot
         closeModalButton.addEventListener('click', () => {

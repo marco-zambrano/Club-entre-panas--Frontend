@@ -2,7 +2,9 @@ import { currentFilter, currentItemId } from "./script.js"; // Variables
 import { filterItems} from "./script.js"; // Functions
 import { createMessage } from './ui.js'; // Function create message
 
-export const socket = io();
+export const socket = io("https://panasresponde.work", {
+    path: "/ruta/secreta/secretisima/socket.io"
+});
 
 const ITEMS_PER_PAGE = 20;
 
@@ -42,16 +44,18 @@ export function getItems(filter) { //must be "contacts" or "comments" PLURAL
 export function updateBotStatus(itemId, status) {
     socket.emit('botStatus', {
         itemId: itemId,
-        status: status
+        status: status,
+        filter: currentFilter
     });
 }
 //SEND MANUAL MESSAGE
-export function sendManMessage(metaId, type, content, filter) {
+export function sendManMessage(metaId, type, content, filter, platform) {
     socket.emit('sendManMessage', {
         metaId: metaId,
         content: content,
         type: type,
-        filter: filter
+        filter: filter,
+        platform: platform
     });
 }
 //SEND WHICH ITEM IS OPENED
@@ -71,8 +75,35 @@ export function updateQuickReps(arr){ // Actualizar QRs, tanto si eliminas o agr
 }
 
 // Bot config
+export var botPrompt = "";
+export var tokenUsage = 0;
+export function getCustomPrompt() {
+    return new Promise((resolve, reject) => {
+        let timeout = setTimeout(() => {
+            reject(new Error("Timeout: No response from server"));
+        }, 10000);
+
+        socket.emit('getCustomPrompt');
+        socket.once('customPrompt', (data) => {
+            clearTimeout(timeout);
+            if (data && typeof data === 'object') {
+                botPrompt = data.prompt;
+                tokenUsage = data.tokenUsage;
+                resolve(data);
+            } else {
+                reject(new Error("Invalid data received from server"));
+            }
+        });
+    });
+}
+
 export function sendBotConf(text) {
-    socket.emit('updateBot', text);
+    socket.emit('updatePrompt', text);
+}
+
+//SEND ERRORS TO BACKEND
+export function reportErrorToBackend(error) {
+    socket.emit('reportError', error);
 }
 
 //SEARCH CONTENT HISTORY FOR AN ITEM
@@ -209,7 +240,7 @@ socket.on('newMessage', (data) => {
 
         item[listKey].push(newEntry); // Add the new entry to the existing item
 
-        if(currentItemId === data.id) { //IF THE ITEM IS OPENED, SHOW THE MESSAGE
+        if(currentItemId === itemId) { //IF THE ITEM IS OPENED, SHOW THE MESSAGE
             const timeString = new Date(data[dataKey].time).toLocaleString('en-US', {
                 hour: '2-digit',
                 minute: '2-digit',
