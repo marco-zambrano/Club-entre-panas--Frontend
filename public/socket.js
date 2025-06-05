@@ -71,8 +71,25 @@ export function updateQuickReps(arr){ // Actualizar QRs, tanto si eliminas o agr
 }
 
 // Bot config
+export var botPrompt = "";
+export function getCustomPrompt() {
+    return new Promise((resolve, reject) => {
+        socket.emit('getCustomPrompt');
+        socket.once('customPrompt', (text) => { // Listen for the server response only once
+            botPrompt = text;
+            console.log("Bot conf: ", botPrompt);
+            resolve(text); // Resolve the promise with the server response
+        });
+
+        // Optional: Add a timeout to reject the promise if no response is received
+        setTimeout(() => {
+            reject(new Error("Timeout: No response from server for getCustomPrompt"));
+        }, 10000); // Adjust timeout duration as needed
+    });
+}
+
 export function sendBotConf(text) {
-    socket.emit('updateBot', text);
+    socket.emit('updatePrompt', text);
 }
 
 //SEARCH CONTENT HISTORY FOR AN ITEM
@@ -209,7 +226,7 @@ socket.on('newMessage', (data) => {
 
         item[listKey].push(newEntry); // Add the new entry to the existing item
 
-        if(currentItemId === data.id) { //IF THE ITEM IS OPENED, SHOW THE MESSAGE
+        if(currentItemId === itemId) { //IF THE ITEM IS OPENED, SHOW THE MESSAGE
             const timeString = new Date(data[dataKey].time).toLocaleString('en-US', {
                 hour: '2-digit',
                 minute: '2-digit',

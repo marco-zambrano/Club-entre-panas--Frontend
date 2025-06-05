@@ -132,7 +132,13 @@ var items = {
                 interest: 4,
                 messages: [
                     { id: "m2a1c0f3e9b5", content: "listo para la reunión", type: "audio", time: 1666670000, self: false },
-                    { id: "m6f3e1b2a9c0", content: "perfecto", type: "text", time: 1666670010, self: true }
+                    { id: "m6f3e1b2a9c0", content: "perfecto", type: "text", time: 1666670010, self: true },
+                    { id: "fmdasj8s9293", content: "mock", type: "text", time: 1666671111, self: false },
+                    { id: "fdsa89439530", content: "mocko", type: "text", time: 1666672222, self: true },
+                    { id: "m8g9h1j2k3l4", content: "¿Llegarás a tiempo?", type: "text", time: 1666673333, self: false },
+                    { id: "m1a2b3c4d5e6", content: "Sí, ya voy en camino", type: "text", time: 1666673340, self: true },
+                    { id: "m7n8o9p0q1r2", content: "Genial, nos vemos pronto", type: "text", time: 1666673350, self: false },
+                    { id: "m3s4t5u6v7w8", content: "Perfecto, gracias", type: "text", time: 1666673360, self: true }
                 ]
             },
             {

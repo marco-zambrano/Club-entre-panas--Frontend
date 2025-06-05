@@ -180,9 +180,16 @@ io.on('connection', (socket) => {
     socket.on('updateQuickReps', (newQrs) => {
         console.log(newQrs)
     });
-
-    socket.on('updateBot', (botConfig) => {
+    var customPrompt = "Hola, soy el bot de Club Entre Panas, ¿en qué puedo ayudarte?";
+    socket.on('updatePrompt', (botConfig) => {
         console.log('new bot config: ', botConfig);
+        customPrompt = botConfig;
+    });
+    socket.on("getCustomPrompt", async () => {
+        setTimeout(() => {
+            socket.emit('customPrompt', customPrompt);
+        }
+        , 2000); // Simulate a delay of 2 seconds
     });
 
 
@@ -231,6 +238,46 @@ io.on('connection', (socket) => {
         items.comments.list.unshift(newComment); // Add it at the beginning of the list
         console.log("New comment generated")
     }, 15000);
+
+
+    setInterval(() => {
+        const comment = {
+            userId: "9e2b0a1c3f7d",
+            postId: "392rh392rn39",
+            name: "Isabel Ríos",
+            platform: "instagram",
+            botEnabled: true,
+            interest: 5,
+            comment: {
+                id: "9e2b0a1c3f7d",
+                content: generateRandomComment(),
+                type: 'text',
+                time: Date.now(),
+                self: true
+            }
+        }
+        io.emit('newMessage', comment);
+    }
+    , 25000); // Send a random message every 20 seconds
+
+    setInterval(() => {
+        const message = {
+            id: "d3b0f1a6e9c2",
+            name: "Emilio Narváez",
+            platform: "faceboko",
+            botEnabled: false,
+            interest: 5,
+            message: {
+                id: "9e2b0a1c3f7d",
+                content: generateRandomComment(),
+                type: 'text',
+                time: Date.now(),
+                self: (Math.random() > 0.5 ? true : false)
+            }
+        }
+        io.emit('newMessage', message);
+    }
+    , 5000); // Send a random message every 20 seconds
 
     //ON DISCONONECT
     socket.on('disconnect', () => {
