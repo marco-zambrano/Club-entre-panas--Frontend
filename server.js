@@ -75,15 +75,15 @@ function generateRandomComment() {
 // GENERATE A NEW CONTACT
 function generateNewContact() {
     const newContact = {
-        id: Math.random().toString(36).substring(2, 15),
-        name: generateRandomName(),
-        platform: generateRandomPlatform('contact'),
-        interest: Math.floor(Math.random() * 11),
-        botEnabled: Math.random() > 0.5 ? true : false,
+        id: 'a9f3c2d1e0b4',
+        name: 'John Smith',
+        platform: 'facebook',
+        interest: 8,
+        botEnabled: true,
         message: {
             id: Math.random().toString(36).substring(2, 15),
-            content: generateRandomMessage(),
-            type: 'text',
+            content: 'https://picsum.photos/300/200',
+            type: 'image',
             time: Date.now(),
             self: false
         }
@@ -214,7 +214,7 @@ io.on('connection', (socket) => {
         items.contacts.list.unshift(newContact); // Add it at the beginning of the list
 
         console.log("New contact generated")
-    }, 10000);
+    }, 7000);
 
     // NEW COMMENTS EVERY 15 SECS
     const commentInterval = setInterval(() => {

@@ -850,6 +850,21 @@ input:checked + .slider:before {
     background: #1877F2;
 }
 
+/* Image notification */
+.image-notification {
+    position: absolute;
+    bottom: 5px;
+    right: 60px;
+    background-color: #ed2106;
+    color: #fff;
+    padding: 2px;
+    border-radius: 50%;
+    font-size: 0.7em;
+}
+.image-notification.hide {
+    display: none;
+}
+
 /* Media queries para responsividad */
 @media (max-width: 992px) {
     .chat-container {

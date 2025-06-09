@@ -60,6 +60,32 @@ function createContactCard(contact) {
     contactElement.dataset.itemId = contact.id;
     contactElement.dataset.type = contact.type;
     
+    // contact image notification
+    const imageMessageExits = contact.messages.find(message => message.type === 'image');
+
+    if (imageMessageExits && !contact.imageVisualized) {
+        //  SI ya existe el elemento de notificación de imagen, e imageVisualized es false, mostrar la notificación
+        const currentImageNotification = document.getElementById(`image-notification-${contact.id}`);
+        if (currentImageNotification) {
+            currentImageNotification.style.display = 'block';
+            return;
+        }
+
+        // Si no existe, creamos el elemento de notificación de imagen
+        const imageNotificationElement = document.createElement('div');
+        imageNotificationElement.className = 'image-notification';
+        imageNotificationElement.id = `image-notification-${contact.id}`;
+        imageNotificationElement.textContent = '🖼️';
+        contactElement.appendChild(imageNotificationElement);
+
+        // Añadimos la propiedad imageVisualized, diciendo que es false (recien creado)
+        items[currentFilter].list.forEach(item => {
+            if (item.id === contact.id) {
+                item.imageVisualized = false;
+            }
+        });
+    }
+
     // Preview
     const preView = document.createElement('span');
     preView.className = 'contact-preview';
@@ -247,6 +273,7 @@ export function updateItemsList(items, currentFilter) {
 
     // Create contact or comment card defined by the currentFilter
     if (currentFilter === 'contacts') {
+        // console.log(items)
         items.forEach(item => {
             const itemElement = createContactCard(item); // Creamos contacto
             itemsList.appendChild(itemElement);
