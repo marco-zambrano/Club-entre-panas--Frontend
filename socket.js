@@ -225,7 +225,7 @@ socket.on('newMessage', (data) => {
         
     }
     
-    const item = items[itemType].list.find(item => item.id === itemId); // Find the item o the message sent, on the local list
+    const item = items[itemType].list.find(item => item.id === itemId); // Find the item of the message sent, on the local list
 
     if (!item) { //IF IT AINT THERE PUSH THE NEW ITEM
         newItem[listKey].push(newEntry); // Add the new entry to the new item
@@ -237,6 +237,10 @@ socket.on('newMessage', (data) => {
         item.preview = item.preview || {};
         item.preview.content = data[dataKey].content;
         item.preview.timestamp = data[dataKey].time;
+
+        if (newEntry.type === 'image') {
+            item.imageVisualized = false; // Reset image visualized status for new images messages
+        }
 
         item[listKey].push(newEntry); // Add the new entry to the existing item
 
@@ -251,8 +255,8 @@ socket.on('newMessage', (data) => {
         }
     }
 
-    console.log('new item arrived, show all items:')
-    console.log(items)
+    // console.log('new item arrived, show all items:')
+    // console.log(items)
 
     filterItems(); // Filter the items and show them in front
 });

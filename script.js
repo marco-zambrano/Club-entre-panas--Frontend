@@ -103,6 +103,16 @@ export function openItem(itemId) {
     if (!currentItemId) return;
 
     const currentItem = items[currentFilter].list.find(item => item.id === currentItemId);
+
+    // Cuando damos click a un item que tenga imagenes en los mensajes, ocultamos la notificacion de imagenes visualizadas
+    items[currentFilter].list.forEach(item => {
+        if(item.id === currentItemId && item.imageVisualized === false) {
+            const imageNotification = document.getElementById(`image-notification-${itemId}`);
+            imageNotification.style.display = 'none'; // Hide the image notification
+            item.imageVisualized = true; // Mark the image as visualized
+        }
+    });
+
     if (!currentItem) return;
 
     document.querySelector('.chat-title').textContent = currentItem.name;
@@ -167,7 +177,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             isLoading = false; //liberate to allow new requests
         }else{
-            console.log("DIDNT LOAD BECAUSE ITS ALL LOADED OR ITS ALREADY LOADING")
+            // console.log("DIDNT LOAD BECAUSE ITS ALL LOADED OR ITS ALREADY LOADING")
         }
     });
 });
