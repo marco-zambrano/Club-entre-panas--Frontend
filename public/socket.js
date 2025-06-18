@@ -71,14 +71,23 @@ export function updateQuickReps(arr){ // Actualizar QRs, tanto si eliminas o agr
 }
 
 // Bot config
-export var botPrompt = "";
+export let botPrompts = [];
 export function getCustomPrompt() {
     return new Promise((resolve, reject) => {
         socket.emit('getCustomPrompt');
-        socket.once('customPrompt', (text) => { // Listen for the server response only once
-            botPrompt = text;
-            console.log("Bot conf: ", botPrompt);
-            resolve(text); // Resolve the promise with the server response
+        socket.once('customPrompt', (prompts) => { // Listen for the server response only once
+
+            // Validacion de si el es un JSON valido o no
+            try {
+                JSON.parse(prompts[1]);
+            } catch (e) {
+                console.error('El texto JSON entrante no es valido');
+                return;
+            }
+
+            botPrompts = [...prompts];
+            console.log("Bot prompts: ", botPrompts);
+            resolve(botPrompts); // Resolve the promise with the server response
         });
 
         // Optional: Add a timeout to reject the promise if no response is received
@@ -88,8 +97,8 @@ export function getCustomPrompt() {
     });
 }
 
-export function sendBotConf(text) {
-    socket.emit('updatePrompt', text);
+export function sendBotConf(prompt, dataTable) {
+    socket.emit('updatePrompt', prompt, dataTable);
 }
 
 //SEARCH CONTENT HISTORY FOR AN ITEM
