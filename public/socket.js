@@ -1,8 +1,11 @@
-import { currentFilter, currentItemId } from "./script.js"; // Variables
+import { currentFilter, currentItemId } from "./script.js"; // VariablesMore actions
 import { filterItems} from "./script.js"; // Functions
 import { createMessage } from './ui.js'; // Function create message
 
-export const socket = io();
+// export const socket = io("https://panasresponde.work", {
+//     path: "/ruta/secreta/secretisima/socket.io"
+// });
+const socket = io()
 
 const ITEMS_PER_PAGE = 20;
 
@@ -42,16 +45,18 @@ export function getItems(filter) { //must be "contacts" or "comments" PLURAL
 export function updateBotStatus(itemId, status) {
     socket.emit('botStatus', {
         itemId: itemId,
-        status: status
+        status: status,
+        filter: currentFilter
     });
 }
 //SEND MANUAL MESSAGE
-export function sendManMessage(metaId, type, content, filter) {
+export function sendManMessage(metaId, type, content, filter, platform) {
     socket.emit('sendManMessage', {
         metaId: metaId,
         content: content,
         type: type,
-        filter: filter
+        filter: filter,
+        platform: platform
     });
 }
 //SEND WHICH ITEM IS OPENED
@@ -70,30 +75,38 @@ export function updateQuickReps(arr){ // Actualizar QRs, tanto si eliminas o agr
     socket.emit("updateQuickReps", arr);
 }
 
-// Bot config
-export let botPrompts = [];
+export let botPrompts = {};
+export var tokenUsage = 0;
+
 export function getCustomPrompt() {
     return new Promise((resolve, reject) => {
+        let timeout = setTimeout(() => {
+            reject(new Error("Timeout: No response from server"));
+        }, 10000);
+
         socket.emit('getCustomPrompt');
-        socket.once('customPrompt', (prompts) => { // Listen for the server response only once
 
-            // Validacion de si el es un JSON valido o no
-            try {
-                JSON.parse(prompts[1]);
-            } catch (e) {
-                console.error('El texto JSON entrante no es valido');
-                return;
+        socket.once('customPrompt', (data) => {
+            clearTimeout(timeout);
+            if (data && typeof data === 'object') {
+                try {
+                    JSON.parse(data.dataTable);
+                } catch (e) {
+                    console.error('El texto JSON entrante no es valido');
+                    return;
+                }
+
+                botPrompts = {
+                    dataTable: data.dataTable,
+                    prompt: data.prompt
+                };
+
+                tokenUsage = data.tokenUsage;
+                resolve(data);
+            } else {
+                reject(new Error("Invalid data received from server"));
             }
-
-            botPrompts = [...prompts];
-            console.log("Bot prompts: ", botPrompts);
-            resolve(botPrompts); // Resolve the promise with the server response
         });
-
-        // Optional: Add a timeout to reject the promise if no response is received
-        setTimeout(() => {
-            reject(new Error("Timeout: No response from server for getCustomPrompt"));
-        }, 10000); // Adjust timeout duration as needed
     });
 }
 
@@ -101,10 +114,15 @@ export function sendBotConf(prompt, dataTable) {
     socket.emit('updatePrompt', prompt, dataTable);
 }
 
+//SEND ERRORS TO BACKENDAdd commentMore actions
+export function reportErrorToBackend(error) {
+    socket.emit('reportError', error);
+}
+
 //SEARCH CONTENT HISTORY FOR AN ITEM
 socket.on('itemContentHistory', (entries) => {
     const currentItem = items[currentFilter].list.find( item => item.id === currentItemId);
-    
+
     if (currentItem) {
         const sender = (entries[0].self) ? "bot" : (entries[0].self == false) ? "contact" : null;
         entries.forEach(entry => {
@@ -119,7 +137,7 @@ socket.on('itemContentHistory', (entries) => {
         });
     }
 
-        
+    
     //SCROLL TO THE END (DEPRECATED?)
     const messagesContainer = document.querySelector('.messages');
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
@@ -178,7 +196,7 @@ socket.on('newMessage', (data) => {
     }
 
     const { listKey, dataKey } = typeMapping[itemType]; // Get the list key and data key based on the item type
-    
+
     let newItem = null; // when you have a new item
     let itemId = null;  // The id of the incoming item
 
@@ -217,9 +235,8 @@ socket.on('newMessage', (data) => {
             botEnabled: data.botEnabled,
             [listKey]: [] // Dynamically set the property (messages or comments)
         };
-        
     }
-    
+
     const item = items[itemType].list.find(item => item.id === itemId); // Find the item of the message sent, on the local list
 
     if (!item) { //IF IT AINT THERE PUSH THE NEW ITEM
