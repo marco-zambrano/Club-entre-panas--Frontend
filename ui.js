@@ -1,6 +1,6 @@
 import { currentItemId, currentFilter } from "./script.js"; // Variables
 import { openItem, setCurrentFilter, filterItems, initilizeBotToggle } from "./script.js"; // Functions
-import { sendManMessage, items, quickReps, getQuickReps, updateQuickReps, sendBotConf, getCustomPrompt, botPrompt, tokenUsage } from './socket.js';
+import { sendManMessage, items, quickReps, getQuickReps, updateQuickReps, sendBotConf, getCustomPrompt, botPrompts, tokenUsage } from './socket.js';
 
 export function createMessage(content, time, sender, type) {
     // create new message
@@ -429,7 +429,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeModalButton = $('.close-modal'); // Cerrar modal del bot
     const cancelModalButtton = $('.cancel-button'); // Btn cancelar modificacion del bot
     const saveChangesBtn = $('.save-button'); // btn to save and update bot configuration
-    const botTextArea = $('.bot-textarea'); // Text area value
+    const botTextArea = Array.from(document.querySelectorAll('.bot-textarea')); // Text areas values
     // QRs
     const quickRepliesModal = $('#quickRepliesModal'); // QR modal
     const closeQuickReplies = $('#closeQuickReplies'); // Cerrar QR modal 
@@ -471,10 +471,12 @@ document.addEventListener('DOMContentLoaded', () => {
         // Abrir modal de configuración del bot
         openBotConfig.addEventListener('click', async () => {
             mainConfigModal.classList.remove('show');
-            botTextArea.value = 'Cargando...'; // cleaning the bot text area value
+            botTextArea[0].value = 'Cargando...'; // cleaning the bot text area value
+            botTextArea[1].value = 'Cargando...'; // cleaning the bot text area value
             botConfigModal.classList.add('show');
             await getCustomPrompt(); // Get the bot configuration
-            botTextArea.value = botPrompt; // Set the bot configuration to the text area
+            botTextArea[0].value = botPrompts.dataTable; // Set the bot configuration to the text area
+            botTextArea[1].value = botPrompts.prompt; // Set the bot configuration to the text area
             const tokenUsageLabel = document.querySelector('.token-usage p');
             if (tokenUsageLabel) {
                 tokenUsageLabel.textContent = `Uso total de tokens: ${tokenUsage}`;
@@ -499,9 +501,26 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         // update bot configuration
         saveChangesBtn.addEventListener('click', () => {
-            sendBotConf(botTextArea.value.trim());
-            botConfigModal.classList.remove('show');
-            console.log('sent to back: ', botTextArea.value.trim())
+            const botPrompt = botTextArea[0].value.trim();
+            const dataTable = botTextArea[1].value.trim();
+
+            if (botPrompt && dataTable) {
+                // Validacion de si dataTable es JSON o no
+                try {
+                    JSON.parse(dataTable);
+                } catch (e) {
+                    alert('Texto formato JSON inválido, por favor ingreselo nuevamente')
+                    console.error('dataTable, no es un JSON valido');
+                    return;
+                }
+                // enviamos la info del bot
+                sendBotConf(botPrompt, dataTable);
+                // Ocultamos el modal
+                botConfigModal.classList.remove('show');
+                console.log('sent to back: ', botTextArea[0].value.trim(), botTextArea[1].value.trim())
+            } else {
+                alert('No enviar contenido vacío, inténtelo nuevamente');
+            }
         })
     }
     

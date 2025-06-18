@@ -180,14 +180,42 @@ io.on('connection', (socket) => {
     socket.on('updateQuickReps', (newQrs) => {
         console.log(newQrs)
     });
-    var customPrompt = "Hola, soy el bot de Club Entre Panas, ¿en qué puedo ayudarte?";
-    socket.on('updatePrompt', (botConfig) => {
-        console.log('new bot config: ', botConfig);
-        customPrompt = botConfig;
+
+
+    // var customPrompt = "Hola, soy el bot de Club Entre Panas, ¿en qué puedo ayudarte?";Add commentMore actions
+
+    // BOT CONFIG PROMPT
+    let botData = {
+        prompt: "Hola, soy el bot de Club Entre Panas, ¿en qué puedo ayudarte?",
+        dataTable: `{
+            "nombre": "Bot de Club Entre Panas",
+            "version": "1.0",
+            "config": {
+                "respuestas_rapidas": ["info", "soporte", "eventos"],
+                "activo": true,
+                "modo_privado": false
+            },
+            "comandos": {
+                "/start": "Inicia la conversación",
+                "/help": "Muestra ayuda",
+                "/eventos": "Próximos eventos del club"
+            },
+            "metadata": {
+                "creador": "Equipo Club Entre Panas",
+                "fecha_creacion": "2025-06-18"
+            }
+        }`,
+        tokenUsage: 10
+    };
+
+    socket.on('updatePrompt', (prompt, dataTable) => {
+        console.log('new bot config: ', prompt, dataTable);
+        botData.prompt = prompt;
+        botData.dataTable = dataTable;
     });
     socket.on("getCustomPrompt", async () => {
         setTimeout(() => {
-            socket.emit('customPrompt', customPrompt);
+            socket.emit('customPrompt', botData);
         }
         , 2000); // Simulate a delay of 2 seconds
     });

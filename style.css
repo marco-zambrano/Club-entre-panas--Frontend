@@ -209,13 +209,23 @@ input:checked + .slider:before {
     color: white;
 }
 .bot-config-modal .modal-body {
-    padding: 20px;
+    padding: 20px 20px 80px 20px;
     overflow-y: auto;
     max-height: calc(90vh - 80px);
+    position: relative;
+}
+.bot-config-modal .modal-body::-webkit-scrollbar {
+    width: 6px;
+}
+.bot-config-modal .modal-body::-webkit-scrollbar-thumb {
+    background-color: #2a2a2a;
+}
+.bot-config-modal .modal-body::-webkit-scrollbar-thumb:hover {
+    background-color: #2f2f2f;
 }
 
 /* Estilos para el contenido del modal */
-.bot-modification {
+.bot-modification:not(:last-child) {
     margin-bottom: 20px;
 }
 .bot-modification h3 {
@@ -226,7 +236,7 @@ input:checked + .slider:before {
 
 .bot-textarea {
     width: 100%;
-    min-height: 250px;
+    min-height: 275px;
     background-color: #2a2a2a;
     border: 1px solid #444;
     border-radius: 8px;
@@ -243,6 +253,12 @@ input:checked + .slider:before {
 .modal-token-container {
     display: flex;
     justify-content: space-between;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 15px 20px;
+    background-color: #1e1e1e;
 }
 
 .modal-actions {
@@ -974,13 +990,18 @@ input:checked + .slider:before {
     }
 
     /* modal */
+    .bot-config-modal .modal-body{
+        padding: 20px 20px 170px 20px;
+    }
+
     .bot-textarea {
-        min-height: 150px;
+        min-height: 200px;
+        font-size: .8em;
     }
 
     .modal-token-container {
         flex-direction: column-reverse;
-        row-gap: 20px;
+        row-gap: 15px;
     }
 
     .modal-actions {

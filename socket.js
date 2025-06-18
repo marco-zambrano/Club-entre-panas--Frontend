@@ -75,8 +75,9 @@ export function updateQuickReps(arr){ // Actualizar QRs, tanto si eliminas o agr
 }
 
 // Bot config
-export var botPrompt = "";
+export let botPrompts = {};
 export var tokenUsage = 0;
+
 export function getCustomPrompt() {
     return new Promise((resolve, reject) => {
         let timeout = setTimeout(() => {
@@ -84,10 +85,22 @@ export function getCustomPrompt() {
         }, 10000);
 
         socket.emit('getCustomPrompt');
+
         socket.once('customPrompt', (data) => {
             clearTimeout(timeout);
             if (data && typeof data === 'object') {
-                botPrompt = data.prompt;
+                try {
+                    JSON.parse(data.dataTable);
+                } catch (e) {
+                    console.error('El texto JSON entrante no es valido');
+                    return;
+                }
+
+                botPrompts = {
+                    dataTable: data.dataTable,
+                    prompt: data.prompt
+                };
+
                 tokenUsage = data.tokenUsage;
                 resolve(data);
             } else {
@@ -97,8 +110,8 @@ export function getCustomPrompt() {
     });
 }
 
-export function sendBotConf(text) {
-    socket.emit('updatePrompt', text);
+export function sendBotConf(prompt, dataTable) {
+    socket.emit('updatePrompt', prompt, dataTable);
 }
 
 //SEND ERRORS TO BACKEND
