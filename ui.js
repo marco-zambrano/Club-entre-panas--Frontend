@@ -475,8 +475,8 @@ document.addEventListener('DOMContentLoaded', () => {
             botTextArea[1].value = 'Cargando...'; // cleaning the bot text area value
             botConfigModal.classList.add('show');
             await getCustomPrompt(); // Get the bot configuration
-            botTextArea[0].value = botPrompts.dataTable; // Set the bot configuration to the text area
-            botTextArea[1].value = botPrompts.prompt; // Set the bot configuration to the text area
+            botTextArea[0].value = botPrompts.prompt; // Set the bot configuration to the text area
+            botTextArea[1].value = botPrompts.dataTable; // Set the bot configuration to the text area
             const tokenUsageLabel = document.querySelector('.token-usage p');
             if (tokenUsageLabel) {
                 tokenUsageLabel.textContent = `Uso total de tokens: ${tokenUsage}`;
