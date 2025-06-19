@@ -251,7 +251,7 @@ socket.on('newMessage', (data) => {
         item.preview.content = data[dataKey].content;
         item.preview.timestamp = data[dataKey].time;
 
-        if (newEntry.type === 'image') {
+        if (newEntry.type === 'image' && newEntry.self === false) {
             item.imageVisualized = false; // Reset image visualized status for new images messages
         }
 
