@@ -62,7 +62,7 @@ function createContactCard(contact) {
     contactElement.dataset.type = contact.type;
 
     // contact image notificationAdd commentMore actions
-    const imageMessageExits = contact.messages.find(message => message.type === 'image');
+    const imageMessageExits = contact.messages.find(message => message.type === 'image' && !message.self); // Verifica si hay un mensaje de imagen que no sea del bot
 
     if (imageMessageExits && !contact.imageVisualized) {
         //  SI ya existe el elemento de notificación de imagen, e imageVisualized es false, mostrar la notificación
