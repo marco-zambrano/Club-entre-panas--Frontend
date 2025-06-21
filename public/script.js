@@ -1,5 +1,5 @@
 import { items } from './socket.js'; // variables
-import { updateBotStatus, getItemHistory, getItems } from './socket.js'; // functions
+import { updateBotStatus, getItemHistory, getItems, setViewedImgFalse } from './socket.js'; // functions
 import { updateItemsList, createMessage } from './ui.js';
 
 export let currentItemId = null; // Id of the item actived
@@ -105,15 +105,24 @@ export function openItem(itemId) {
     const currentItem = items[currentFilter].list.find(item => item.id === currentItemId);
     
     // Cuando damos click a un item que tenga imagenes en los mensajes, ocultamos la notificacion de imagenes visualizadas
-    items[currentFilter].list.forEach(item => {
-        if(item.id === currentItemId && item.imageVisualized === false) {
-            const imageNotification = document.getElementById(`image-notification-${itemId}`);
-            imageNotification.style.display = 'none'; // Hide the image notification
-            item.imageVisualized = true; // Mark the image as visualized
-        }
-    });
+    // items[currentFilter].list.forEach(item => {
+    //     if(item.id === currentItemId && item.imageVisualized === false) {
+    //         const imageNotification = document.getElementById(`image-notification-${itemId}`);
+    //         imageNotification.style.display = 'none'; // Hide the image notification
+    //         item.imageVisualized = true; // Mark the image as visualized
+    //     }
+    // });
 
     if (!currentItem) return;
+
+    if (currentItem.imgViewed === false) {
+        const imageNotification = document.getElementById(`image-notification-${itemId}`);
+        if (imageNotification) {
+            imageNotification.style.display = 'none'; // Hide the image notification
+        }
+        currentItem.imgViewed = true; // Mark the image as visualized
+        setViewedImgFalse(currentItemId, currentItem.platform); // Send the status to the backend
+    }
 
     document.querySelector('.chat-title').textContent = currentItem.name;
     document.querySelector('.post-link').href = currentItem.permalink; // set the permalink in the comment
