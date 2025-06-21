@@ -61,30 +61,20 @@ function createContactCard(contact) {
     contactElement.dataset.itemId = contact.id;
     contactElement.dataset.type = contact.type;
 
-    // contact image notificationAdd commentMore actions
-    const imageMessageExits = contact.messages.find(message => message.type === 'image' && message.self === false); // Verifica si hay un mensaje de imagen que no es del usuario actual
-
-    if (imageMessageExits && !contact.imageVisualized) {
+    if (contact.imgViewed === false) {
         //  SI ya existe el elemento de notificación de imagen, e imageVisualized es false, mostrar la notificación
         const currentImageNotification = document.getElementById(`image-notification-${contact.id}`);
         if (currentImageNotification) {
             currentImageNotification.style.display = 'block';
-            return;
+            // return;
+        } else {
+            // Si no existe, creamos el elemento de notificación de imagen
+            const imageNotificationElement = document.createElement('div');
+            imageNotificationElement.className = 'image-notification';
+            imageNotificationElement.id = `image-notification-${contact.id}`;
+            imageNotificationElement.textContent = '🖼️';
+            contactElement.appendChild(imageNotificationElement);
         }
-
-        // Si no existe, creamos el elemento de notificación de imagen
-        const imageNotificationElement = document.createElement('div');
-        imageNotificationElement.className = 'image-notification';
-        imageNotificationElement.id = `image-notification-${contact.id}`;
-        imageNotificationElement.textContent = '🖼️';
-        contactElement.appendChild(imageNotificationElement);
-
-        // Añadimos la propiedad imageVisualized, diciendo que es false (recien creado)
-        items[currentFilter].list.forEach(item => {
-            if (item.id === contact.id) {
-                item.imageVisualized = false;
-            }
-        });
     }
 
     

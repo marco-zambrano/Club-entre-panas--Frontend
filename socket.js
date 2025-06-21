@@ -119,6 +119,11 @@ export function reportErrorToBackend(error) {
     socket.emit('reportError', error);
 }
 
+// send the viewd image status to the backendAdd commentMore actions
+export function setViewedImgFalse(itemId, platform) {
+    socket.emit('setViewedImgFalse', { itemId, platform });
+}
+
 //SEARCH CONTENT HISTORY FOR AN ITEM
 socket.on('itemContentHistory', (entries) => {
     const currentItem = items[currentFilter].list.find( item => item.id === currentItemId);
@@ -233,7 +238,8 @@ socket.on('newMessage', (data) => {
             platform: data.platform,
             interest: data.interest,
             botEnabled: data.botEnabled,
-            [listKey]: [] // Dynamically set the property (messages or comments)
+            imgViewed: data.imgViewed,
+            [listKey]: [] // Dynamically set the property
         };
         
     }
@@ -252,7 +258,7 @@ socket.on('newMessage', (data) => {
         item.preview.timestamp = data[dataKey].time;
 
         if (newEntry.type === 'image' && newEntry.self === false) {
-            item.imageVisualized = false; // Reset image visualized status for new images messages
+            item.imgViewed = data.imgViewed; // Reset imgViewed status for new images messages
         }
 
         item[listKey].push(newEntry); // Add the new entry to the existing item
