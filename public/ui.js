@@ -34,17 +34,24 @@ export function createMessage(content, time, sender, type) {
     }
 
     // Span de tiempo
+    const currentDate = new Date(time);
+    // 00:00 
+    let horas = currentDate.getHours();
+    const minutos = currentDate.getMinutes();
+    const ampm = horas >= 12 ? 'PM' : 'AM';
+    const minutosFormateados = minutos < 10 ? '0' + minutos : minutos;
+    horas = horas % 12;
+    horas = horas ? horas : 12; // Si el resultado de % 12 es 0, significa que son las 12
+    const tiempoFormateado = `${horas}:${minutosFormateados} ${ampm}`;
+    // Creamos el span de tiempo
     const timeSpan = document.createElement('span');
     timeSpan.className = 'message-time';
-    timeSpan.textContent = time;
+    timeSpan.textContent = tiempoFormateado;
 
     // Añadir mensaje al chat
     messageContent.appendChild(timeSpan);
     messageElement.appendChild(messageContent);
     // Agregar al main container
-
-
-    //SET TIME INVERVAL OF 1 SECOND
     const messagesContainer = document.querySelector('.messages');
     messagesContainer.appendChild(messageElement);
 
@@ -76,21 +83,35 @@ function createContactCard(contact) {
         }
     }
 
-
     // Preview
     const preView = document.createElement('span');
     preView.className = 'contact-preview';
     preView.textContent = contact.messages[contact.messages.length - 1].content; // Ultimo mensaje
 
     // Span del tiempo del ultimo mensaje
+    const fecha = new Date(contact.messages[contact.messages.length -1].time);
+    // dias
+    const dia = fecha.getDate();
+    const mes = fecha.getMonth() + 1; // getMonth() devuelve 0-11, así que sumamos 1
+    const year = fecha.getFullYear().toString().slice(-2);
+    // horas
+    let horas = fecha.getHours();
+    const minutos = fecha.getMinutes();
+    const ampm = horas >= 12 ? 'PM' : 'AM';
+
+    horas = horas % 12;
+    horas = horas ? horas : 12; // Si el resultado de % 12 es 0, significa que son las 12
+
+    // Aseguramos que el día, mes y minutos tengan dos dígitos (ej: 01, 05)
+    const diaFormateado = dia < 10 ? '0' + dia : dia;
+    const mesFormateado = mes < 10 ? '0' + mes : mes;
+    const minutosFormateados = minutos < 10 ? '0' + minutos : minutos;
+
+    const tiempoFormateado = `${diaFormateado}/${mesFormateado}/${year} ${horas}:${minutosFormateados} ${ampm}`;
+    // creamos el span de tiempo del ultimo mensaje
     const messageTime = document.createElement('span');
     messageTime.className = 'contact-message-time';
-    const fecha = new Date(contact.messages[contact.messages.length -1].time);
-    const horas = fecha.getHours();
-    const minutos = fecha.getMinutes().toString().padStart(2, '0');
-    const ampm = horas >= 12 ? 'p.m.' : 'a.m.';
-    const horas12 = horas % 12 || 12;
-    messageTime.textContent = `${horas12}:${minutos} ${ampm}`;
+    messageTime.textContent = tiempoFormateado;
 
     // Container de la info del contacto
     const contactInfo = document.createElement('div');
@@ -223,14 +244,28 @@ function createCommentCard(comment) {
     }
 
     // Tiempo del ultimo mensaje enviado
+    const fecha = new Date(comment.comments[comment.comments.length -1].time);
+    // dias
+    const dia = fecha.getDate();
+    const mes = fecha.getMonth() + 1; // getMonth() devuelve 0-11, así que sumamos 1
+    const year = fecha.getFullYear().toString().slice(-2);
+    // horas
+    let horas = fecha.getHours();
+    const minutos = fecha.getMinutes();
+    const ampm = horas >= 12 ? 'PM' : 'AM';
+
+    horas = horas % 12;
+    horas = horas ? horas : 12; // Si el resultado de % 12 es 0, significa que son las 12
+
+    // Aseguramos que el día, mes y minutos tengan dos dígitos (ej: 01, 05)
+    const diaFormateado = dia < 10 ? '0' + dia : dia;
+    const mesFormateado = mes < 10 ? '0' + mes : mes;
+    const minutosFormateados = minutos < 10 ? '0' + minutos : minutos;
+    const tiempoFormateado = `${diaFormateado}/${mesFormateado}/${year} ${horas}:${minutosFormateados} ${ampm}`;
+    // Creamos span de tiempo 
     const messageTime = document.createElement('span');
     messageTime.className = 'contact-message-time';
-    const fecha = new Date(comment.comments[comment.comments.length -1].time);
-    const horas = fecha.getHours();
-    const minutos = fecha.getMinutes().toString().padStart(2, '0');
-    const ampm = horas >= 12 ? 'p.m.' : 'a.m.';
-    const horas12 = horas % 12 || 12;
-    messageTime.textContent = `${horas12}:${minutos} ${ampm}`;
+    messageTime.textContent = tiempoFormateado;
 
     // commentHeader <--- logo de C y nonbre del user
     commentHeader.appendChild(typeIdentifier);
@@ -358,27 +393,23 @@ document.addEventListener('DOMContentLoaded', () => {
     // Send message functionality
     function sendMessage(messageText) {
         if (!messageText) return
-        // Obtener hora actual
-        const now = new Date();
-        const hours = now.getHours();
-        const minutes = now.getMinutes();
-        const timeString = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
-        //BUT FIRST WE NEED TO GET HOURS AND MINUTES
 
         const recipientPlatform = items[currentFilter].list.find(item => item.id === currentItemId).platform;
+        const messageTime = Date.now();
 
         // send message to the backend
         sendManMessage(currentItemId, "text", messageText, currentFilter, recipientPlatform); // (senderId (Meta), type, content, platform)
 
         // create the message
-        createMessage(messageText, timeString, 'bot', 'text');
-
+        createMessage(messageText, messageTime, 'bot', 'text');
+        // create the entry for the message
         const entry = {
             content: messageText,
-            time: Date.now(),
+            time: messageTime,
             type: "text",
             self: true
         }
+
         var entryKey = (currentFilter == "contacts") ? "messages" : (currentFilter == "comments") ? "comments" : null;
         items[currentFilter].list.find(item => item.id === currentItemId)[entryKey].push(entry);
 
@@ -388,7 +419,7 @@ document.addEventListener('DOMContentLoaded', () => {
         filterItems();
     }
 
-    const handeInputMessage = () => {
+    const handleInputMessage = () => {
         const input = document.querySelector('.message-input');
         const messageValue = input.value.trim();
         sendMessage(messageValue);
@@ -396,12 +427,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     document.querySelector('.send-button').addEventListener('click', () => {
-        handeInputMessage();
+        handleInputMessage();
     });
 
     document.querySelector('.message-input').addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
-            handeInputMessage();
+            handleInputMessage();
         }
     });
 

@@ -10,7 +10,7 @@ let lastToggleHandler = null; // referencia al ultimo addEventListener que hubo 
 
 //THIS FILTERS ITEMS BY PLATFORM, TYPE(COMMENT OR MESSAGE), AND SORTS THEM
 export function filterItems() {
-    console.log('FILTRANDO.......')
+    // console.log('FILTRANDO.......')
     //PREVENT FURTHER FILTERING IF NO ITEMS
     if (!items[currentFilter]){
         console.error('items[currentFilter] is not initialized yet');
@@ -30,19 +30,32 @@ export function filterItems() {
     });
 
     //SORT ITEMS BY LAST SORT ITEMS BY TIME IN DESCENDING ORDER (MOST RECENT FIRST)
-    var entryKey = (currentFilter == "contacts") ? "messages" : (currentFilter == "comments") ? "comments" : null;
-    filteredItems.sort((a, b) => {
-        const msgsA = a[entryKey];
-        const msgsB = b[entryKey];
-        const lastA = msgsA.length ? msgsA[msgsA.length - 1].time : 0;
-        const lastB = msgsB.length ? msgsB[msgsB.length - 1].time : 0;
+    let entryKey = null;
+    if (currentFilter === "contacts") {
+        entryKey = "messages";
+    } else if (currentFilter === "comments") {
+        entryKey = "comments";
+    }
 
-        return lastB - lastA; // ← This reverses it (older to newer)
+    filteredItems.sort((a, b) => {
+        // Obtenemos el array de mensajes/comentarios para el elemento 'a'
+        // Si entryKey es null o el array no existe/está vacío, usamos un timestamp por defecto de 0.
+        const arrayA = entryKey && a[entryKey] ? a[entryKey] : [];
+        const ultimoItemA = arrayA.length > 0 ? arrayA[arrayA.length - 1] : { time: 0 };
+        const timestampA = ultimoItemA.time;
+
+        // Obtenemos el array de mensajes/comentarios para el elemento 'b'
+        const arrayB = entryKey && b[entryKey] ? b[entryKey] : [];
+        const ultimoItemB = arrayB.length > 0 ? arrayB[arrayB.length - 1] : { time: 0 };
+        const timestampB = ultimoItemB.time;
+
+        // Comparamos los timestamps para ordenar de más reciente a más antiguo.
+        // Restamos timestampA de timestampB para que el mayor (más reciente) vaya primero.
+        return timestampB - timestampA;
     });
 
-    //VERIFY IF CURRENTITEM IS VISIBLE AFTER FILTERING
+    //VERIFY IF CURRENT ITEM IS VISIBLE AFTER FILTERING
     const currentItemStillVisible = filteredItems.some(item => item.id === currentItemId);
-
     
     //IF IT'S NOT VISIBLE, OPEN THE FIRST ITEM IN THE FILTERED LIST
     if (!currentItemStillVisible && filteredItems.length > 0) {
@@ -104,15 +117,6 @@ export function openItem(itemId) {
 
     const currentItem = items[currentFilter].list.find(item => item.id === currentItemId);
     
-    // Cuando damos click a un item que tenga imagenes en los mensajes, ocultamos la notificacion de imagenes visualizadas
-    // items[currentFilter].list.forEach(item => {
-    //     if(item.id === currentItemId && item.imageVisualized === false) {
-    //         const imageNotification = document.getElementById(`image-notification-${itemId}`);
-    //         imageNotification.style.display = 'none'; // Hide the image notification
-    //         item.imageVisualized = true; // Mark the image as visualized
-    //     }
-    // });
-
     if (!currentItem) return;
 
     if (currentItem.imgViewed === false) {
@@ -138,13 +142,8 @@ export function openItem(itemId) {
     if (currentItem[entryKey] && currentItem[entryKey].length > 0) {
         //TO HAVE TIME IN A HH:MM AM/PM FORMAT
         currentItem[entryKey].forEach(message => {
-            const timeString = new Date(message.time).toLocaleString('en-US', {
-                hour: '2-digit',
-                minute: '2-digit',
-                hour12: true
-            });
             const senderString = message.self === true ? 'bot' : "contact"; //if true, bot, else contact
-            createMessage(message.content, timeString, senderString, message.type); //WILL CHANGE FOR EPOCH
+            createMessage(message.content, message.time, senderString, message.type); //WILL CHANGE FOR EPOCH
         });
         
         const messagesContainer = document.querySelector('.messages');

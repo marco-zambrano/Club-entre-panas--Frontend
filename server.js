@@ -1,5 +1,4 @@
 const express = require('express');
-const { stat } = require('fs');
 const http = require('http');
 const socketIo = require('socket.io');
 const items = require('./mockdata');
@@ -26,21 +25,34 @@ function generateRandomPlatform(platform) {
 }
 
 //RANDOM MESSAGES
-function generateRandomMessage() {
-    const messages = [
-        "Hola, ¿cómo estás?",
-        "¿Podrías ayudarme con una consulta?",
-        "Necesito información sobre tus pulseras",
-        "¿Tienes disponibilidad para hablar hoy? 😊",
-        "Me gustaría preguntar por el accesorio...",
-        "¿Cuál es el precio de...?",
-        "Gracias por tu ayuda ❤️",
-        "¿Podrías darme más detalles?",
-        "Perfecto, me parece bien 👌",
-        "¿A qué hora puedo hablarles mañana?"
-    ];
-    return messages[Math.floor(Math.random() * messages.length)];
-}
+// function generateRandomMessage() {
+//     const messages = [
+//         "Hola, ¿cómo estás?",
+//         "¿Podrías ayudarme con una consulta?",
+//         "Necesito información sobre tus pulseras",
+//         "¿Tienes disponibilidad para hablar hoy? 😊",
+//         "Me gustaría preguntar por el accesorio...",
+//         "¿Cuál es el precio de...?",
+//         "Gracias por tu ayuda ❤️",
+//         "¿Podrías darme más detalles?",
+//         "Perfecto, me parece bien 👌",
+//         "¿A qué hora puedo hablarles mañana?"
+//     ];
+//     return messages[Math.floor(Math.random() * messages.length)];
+// }
+
+
+//FUNC TO GENERATE RANDOM IMAGES
+// function generateRandomImage() {
+//     const imageUrls = [
+//         'https://picsum.photos/300/200',
+//         'https://picsum.photos/400/300',
+//         'https://picsum.photos/500/400',
+//         'https://picsum.photos/600/500',
+//         'https://picsum.photos/700/600'
+//     ];
+//     return imageUrls[Math.floor(Math.random() * imageUrls.length)];
+// }
 
 //RANDOM COMMENTS
 function generateRandomComment() {
@@ -58,20 +70,7 @@ function generateRandomComment() {
     ];
     return comments[Math.floor(Math.random() * comments.length)];
 }
-
-//FUNC TO GENERATE RANDOM IMAGES
-// function generateRandomImage() {
-//     const imageUrls = [
-//         'https://picsum.photos/300/200',
-//         'https://picsum.photos/400/300',
-//         'https://picsum.photos/500/400',
-//         'https://picsum.photos/600/500',
-//         'https://picsum.photos/700/600'
-//     ];
-//     return imageUrls[Math.floor(Math.random() * imageUrls.length)];
-// }
-
-
+        
 // GENERATE A NEW CONTACT
 function generateNewContact() {
     const newContact = {
@@ -119,8 +118,6 @@ function generateNewComment() {
 
 
 io.on('connection', (socket) => {
-    console.log('Nuevo cliente conectado:', socket.id);
-
     socket.on('getItems', (data) => { // SEND ITEMS
         const fullList = items[data.filter].list;
         const selectItems = items[data.filter].list.slice(data.count, data.count + 12); //slice gets items from that index, UP TO that index
@@ -138,16 +135,15 @@ io.on('connection', (socket) => {
 
     // UPDATE BOT STATUS
     socket.on('botStatus', (data) => {
-        // console.log(data);
         const { itemId, status } = data;
         const item = items.contacts.list.find(item => item.id === itemId) || items.comments.list.find(item => `${item.userId}-${item.postId}` === itemId);
         item.botEnabled = status;
-        console.log(item.name, item.botEnabled)
     })
+
+
     //TO RECEIVE MANUAL MESSAGE
     socket.on('sendManMessage', (data) => {
-        console.log("Manual message sent:", data.content);
-        const { metaId, content, self, type } = data;
+        const { metaId, content, type } = data;
         const item = items.contacts.list.find(item => item.id === metaId) || items.comments.list.find(item => `${item.userId}-${item.postId}` === metaId);
 
         var randomalphanumericid = Math.random().toString(36).substring(2, 15);
@@ -161,27 +157,33 @@ io.on('connection', (socket) => {
         }
         var entryKey = (data.filter == "contacts") ? "messages" : (data.filter == "comments") ? "comments" : null;
         item[entryKey].push(entry);
-    })
-    //SEND ITEM MESSAGES
+    });
+
+
+    //SEND ITEM History
     socket.on('getItemHistory', (data) => {
         const itemSearched = items[data.filter].list.find( item => item.id === data.itemId) || items.comments.list.find(item => `${item.userId}-${item.userId}` === data.itemId);
-        var entries = (data.filter == "contacts") ? "messages" : (data.filter == "comments") ? "comments" : null;
+        let entries = (data.filter == "contacts") ? "messages" : (data.filter == "comments") ? "comments" : null;
 
         socket.emit('itemContentHistory', itemSearched[entries]); 
     })
 
+
     //QUICK REPLIES
-    const replies = ['El producto en promocion es tal tal', 'Hola, muy buenas tardes, sea bienvenido a Club Entre Panas, estamos aca para servirle', 'Hola, que tal, actualmente no nos encontramos atendiendo en nuestro local'];
+    let replies = [
+        'El producto en promocion es tal tal',
+        'Hola, muy buenas tardes, sea bienvenido a Club Entre Panas, estamos aca para servirle',
+        'Hola, que tal, actualmente no nos encontramos atendiendo en nuestro local'
+    ];
 
     socket.on('getQuickReps', () => {
         socket.emit('quickReps', replies); 
     });
-
     socket.on('updateQuickReps', (newQrs) => {
-        console.log(newQrs)
+        replies = newQrs;
     });
 
-    // var customPrompt = "Hola, soy el bot de Club Entre Panas, ¿en qué puedo ayudarte?";Add commentMore actionsAdd commentMore actions
+
 
     // BOT CONFIG PROMPT
     let botData = {
@@ -208,7 +210,6 @@ io.on('connection', (socket) => {
     };
 
     socket.on('updatePrompt', (prompt, dataTable) => {
-        console.log('new bot config: ', prompt, dataTable);
         botData.prompt = prompt;
         botData.dataTable = dataTable;
     });
@@ -223,93 +224,93 @@ io.on('connection', (socket) => {
 
     //TIME TESTING
     //NEW MESSAGES EVERY 15 SECS
-    const contactInterval = setInterval(() => {
-        var newContact = generateNewContact();
+    // const contactInterval = setInterval(() => {
+    //     var newContact = generateNewContact();
     
-        io.emit('newMessage', newContact);
+    //     io.emit('newMessage', newContact);
 
-        //THIS IS JUST TO SAVE IT ON THE SERVER SIDE AND KEEP CONSISTENCY AND REDUNDANCY
-        newContact.messages = [];
-        newContact.messages.push({
-            id: newContact.message.id, 
-            type: newContact.message.type, 
-            content: newContact.message.content, 
-            time: newContact.message.time, 
-            self: newContact.message.self
-        });
-        delete newContact.message; // Remove the message property from the contact object
-        items.contacts.list.unshift(newContact); // Add it at the beginning of the list
+    //     //THIS IS JUST TO SAVE IT ON THE SERVER SIDE AND KEEP CONSISTENCY AND REDUNDANCY
+    //     newContact.messages = [];
+    //     newContact.messages.push({
+    //         id: newContact.message.id, 
+    //         type: newContact.message.type, 
+    //         content: newContact.message.content, 
+    //         time: newContact.message.time, 
+    //         self: newContact.message.self
+    //     });
+    //     delete newContact.message; // Remove the message property from the contact object
+    //     items.contacts.list.unshift(newContact); // Add it at the beginning of the list
 
-        console.log("New contact generated")
-    }, 7000);
+    //     console.log("New contact generated")
+    // }, 7000);
 
     // NEW COMMENTS EVERY 15 SECS
-    const commentInterval = setInterval(() => {
-        const newComment = generateNewComment();
+    // const commentInterval = setInterval(() => {
+    //     const newComment = generateNewComment();
 
-        io.emit('newMessage', newComment);
-
-
-        //SET THE COMMENTS ARRAY TO THE NEW COMMENT
-        newComment.comments = [];
-        newComment.comments.push({
-            userId: newComment.comment.userId,
-            postId: newComment.comment.postId,
-            type: newComment.comment.type,
-            content: newComment.comment.content,
-            permalink: newComment.comment.permalink, // new property
-            time: newComment.comment.time,
-            self: newComment.comment.self
-        });
-        delete newComment.comment; // Remove the comment property from the comment object
-        items.comments.list.unshift(newComment); // Add it at the beginning of the list
-        console.log("New comment generated")
-    }, 15000);
+    //     io.emit('newMessage', newComment);
 
 
-    setInterval(() => {
-        const comment = {
-            userId: "9e2b0a1c3f7d",
-            postId: "392rh392rn39",
-            name: "Isabel Ríos",
-            platform: "instagram",
-            botEnabled: true,
-            interest: 5,
-            comment: {
-                id: "9e2b0a1c3f7d",
-                content: generateRandomComment(),
-                type: 'text',
-                time: Date.now(),
-                self: true
-            }
-        }
-        io.emit('newMessage', comment);
-    }
-    , 25000); // Send a random message every 20 seconds
+    //     //SET THE COMMENTS ARRAY TO THE NEW COMMENT
+    //     newComment.comments = [];
+    //     newComment.comments.push({
+    //         userId: newComment.comment.userId,
+    //         postId: newComment.comment.postId,
+    //         type: newComment.comment.type,
+    //         content: newComment.comment.content,
+    //         permalink: newComment.comment.permalink, // new property
+    //         time: newComment.comment.time,
+    //         self: newComment.comment.self
+    //     });
+    //     delete newComment.comment; // Remove the comment property from the comment object
+    //     items.comments.list.unshift(newComment); // Add it at the beginning of the list
+    //     console.log("New comment generated")
+    // }, 15000);
 
-    setInterval(() => {
-        const message = {
-            id: "d3b0f1a6e9c2",
-            name: "Emilio Narváez",
-            platform: "faceboko",
-            botEnabled: false,
-            interest: 5,
-            message: {
-                id: "9e2b0a1c3f7d",
-                content: generateRandomComment(),
-                type: 'text',
-                time: Date.now(),
-                self: (Math.random() > 0.5 ? true : false)
-            }
-        }
-        io.emit('newMessage', message);
-    }
-    , 5000); // Send a random message every 20 seconds
+
+    // setInterval(() => {
+    //     const comment = {
+    //         userId: "9e2b0a1c3f7d",
+    //         postId: "392rh392rn39",
+    //         name: "Isabel Ríos",
+    //         platform: "instagram",
+    //         botEnabled: true,
+    //         interest: 5,
+    //         comment: {
+    //             id: "9e2b0a1c3f7d",
+    //             content: generateRandomComment(),
+    //             type: 'text',
+    //             time: Date.now(),
+    //             self: true
+    //         }
+    //     }
+    //     io.emit('newMessage', comment);
+    // }
+    // , 25000); // Send a random comment every 25 seconds
+
+    // setInterval(() => {
+    //     const message = {
+    //         id: "d3b0f1a6e9c2",
+    //         name: "Emilio Narváez",
+    //         platform: "faceboko",
+    //         botEnabled: false,
+    //         interest: 5,
+    //         message: {
+    //             id: "9e2b0a1c3f7d",
+    //             content: generateRandomComment(),
+    //             type: 'text',
+    //             time: Date.now(),
+    //             self: (Math.random() > 0.5 ? true : false)
+    //         }
+    //     }
+    //     io.emit('newMessage', message);
+    // }
+    // , 5000); // Send a random message every 20 seconds
 
     //ON DISCONONECT
     socket.on('disconnect', () => {
-        clearInterval(contactInterval);
-        clearInterval(commentInterval);
+        // clearInterval(contactInterval);
+        // clearInterval(commentInterval);
         console.log('Cliente desconectado:', socket.id);
     });
 });

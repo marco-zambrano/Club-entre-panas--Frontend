@@ -1,4 +1,4 @@
-var items = {
+const items = {
     contacts: {
         allItemsLoaded: false,
         list: [
@@ -9,8 +9,8 @@ var items = {
                 botEnabled: true,
                 interest: 8,
                 messages: [
-                    { id: "m1a8d4c9b7f0", content: "salam aukjdfsajl", type: "audio", time: 123456000, self: false },
-                    { id: "m4b7c2f1a3d9", content: "hello again", type: "text", time: 123456001, self: true }
+                    { id: "m1a8d4c9b7f0", content: "salam aukjdfsajl", type: "audio", time: 1672576800000, self: false }, // 01/01/2023 10:00:00 UTC
+                    { id: "m4b7c2f1a3d9", content: "hello again", type: "text", time: 1672576860000, self: true }  // +1 minuto
                 ]
             },
             {
@@ -20,9 +20,9 @@ var items = {
                 botEnabled: false,
                 interest: 6,
                 messages: [
-                    { id: "m8e9a3b1f2d4", content: "example cnotent", time: 1234566777, self: false, type: "text" },
-                    { id: "m0c2d5a7b3e1", content: "https://picsum.photos/300/200", type: "image", time: 1234567890, self: false },
-                    { id: "m6b1f2e9a4d3", content: "ola si bolbiendo mireina", type: "text", time: 1234567890, self: false }
+                    { id: "m8e9a3b1f2d4", content: "example cnotent", time: 1672580400000, self: false, type: "text" }, // +1 hora desde el anterior
+                    { id: "m0c2d5a7b3e1", content: "https://picsum.photos/300/200", type: "image", time: 1672580460000, self: false }, // +1 minuto
+                    { id: "m6b1f2e9a4d3", content: "ola si bolbiendo mireina", type: "text", time: 1672580520000, self: false } // +1 minuto
                 ]
             },
             {
@@ -32,8 +32,8 @@ var items = {
                 botEnabled: true,
                 interest: 9,
                 messages: [
-                    { id: "m9a6b3c2f1e7", content: "hi alice", type: "text", time: 1666660000, self: true },
-                    { id: "m4f8e1b9c3d2", content: "hello!", type: "text", time: 1666660001, self: false }
+                    { id: "m9a6b3c2f1e7", content: "hi alice", type: "text", time: 1672584000000, self: true }, // +1 hora
+                    { id: "m4f8e1b9c3d2", content: "hello!", type: "text", time: 1672584060000, self: false }  // +1 minuto
                 ]
             },
             {
@@ -43,9 +43,9 @@ var items = {
                 botEnabled: false,
                 interest: 4,
                 messages: [
-                    { id: "m3e2a9f6b0c1", content: "are you there?", type: "text", time: 1666662222, self: true },
-                    { id: "m1c7b3e8a4f0", content: "yes I am", type: "text", time: 1666662230, self: false },
-                    { id: "m2a0f9b6e1c5", content: "cool", type: "text", time: 1666662240, self: true }
+                    { id: "m3e2a9f6b0c1", content: "are you there?", type: "text", time: 1672587600000, self: true }, // +1 hora
+                    { id: "m1c7b3e8a4f0", content: "yes I am", type: "text", time: 1672587660000, self: false }, // +1 minuto
+                    { id: "m2a0f9b6e1c5", content: "cool", type: "text", time: 1672587720000, self: true }  // +1 minuto
                 ]
             },
             {
@@ -55,8 +55,8 @@ var items = {
                 botEnabled: true,
                 interest: 7,
                 messages: [
-                    { id: "m8c3f1e0b7a2", content: "buenos días", type: "text", time: 1666663000, self: false },
-                    { id: "m2b5e1f9a4c3", content: "¿cómo estás?", type: "text", time: 1666663010, self: false }
+                    { id: "m8c3f1e0b7a2", content: "buenos días", type: "text", time: 1672591200000, self: false }, // +1 hora
+                    { id: "m2b5e1f9a4c3", content: "¿cómo estás?", type: "text", time: 1672591260000, self: false }  // +1 minuto
                 ]
             },
             {
@@ -66,7 +66,7 @@ var items = {
                 botEnabled: false,
                 interest: 5,
                 messages: [
-                    { id: "m1f0a9c3e2b6", content: "me interesa mucho", type: "text", time: 1666664000, self: false }
+                    { id: "m1f0a9c3e2b6", content: "me interesa mucho", type: "text", time: 1672594800000, self: false } // +1 hora
                 ]
             },
             {
@@ -76,8 +76,8 @@ var items = {
                 botEnabled: true,
                 interest: 6,
                 messages: [
-                    { id: "m5e9a0f3c2b7", content: "¿está disponible aún?", type: "text", time: 1666665000, self: false },
-                    { id: "m9b1f3a6c0e2", content: "sí, claro", type: "text", time: 1666665010, self: true }
+                    { id: "m5e9a0f3c2b7", content: "¿está disponible aún?", type: "text", time: 1672598400000, self: false }, // +1 hora
+                    { id: "m9b1f3a6c0e2", content: "sí, claro", type: "text", time: 1672598460000, self: true }  // +1 minuto
                 ]
             },
             {
@@ -87,7 +87,7 @@ var items = {
                 botEnabled: false,
                 interest: 2,
                 messages: [
-                    { id: "m3c9f1a0e2b4", content: "necesito más info", type: "text", time: 1666666000, self: false }
+                    { id: "m3c9f1a0e2b4", content: "necesito más info", type: "text", time: 1672602000000, self: false } // +1 hora
                 ]
             },
             {
@@ -97,9 +97,9 @@ var items = {
                 botEnabled: true,
                 interest: 8,
                 messages: [
-                    { id: "m0f1e3a9b6c4", content: "buenas noches", type: "text", time: 1666667000, self: false },
-                    { id: "m0f1e3a9b423", content: "https://picsum.photos/400/300", type: "image", time: 1666667000, self: false },
-                    { id: "m5a7c3f0e1b2", content: "igualmente", type: "text", time: 1666667010, self: true }
+                    { id: "m0f1e3a9b6c4", content: "buenas noches", type: "text", time: 1672605600000, self: false }, // +1 hora
+                    { id: "m0f1e3a9b423", content: "https://picsum.photos/400/300", type: "image", time: 1672605600000, self: false }, // +0 minutos (mismo tiempo que anterior)
+                    { id: "m5a7c3f0e1b2", content: "igualmente", type: "text", time: 1672605660000, self: true } // +1 minuto
                 ]
             },
             {
@@ -109,7 +109,7 @@ var items = {
                 botEnabled: false,
                 interest: 3,
                 messages: [
-                    { id: "m6b2f3e1a0c7", content: "me puedes llamar?", type: "text", time: 1666668000, self: false }
+                    { id: "m6b2f3e1a0c7", content: "me puedes llamar?", type: "text", time: 1672609200000, self: false } // +1 hora
                 ]
             },
             {
@@ -119,9 +119,9 @@ var items = {
                 botEnabled: true,
                 interest: 7,
                 messages: [
-                    { id: "m1c9a3f2e0b7", content: "te mandé mensaje", type: "text", time: 1666669000, self: false },
-                    { id: "m1c9a3san230", content: "https://picsum.photos/500/400", type: "image", time: 1666669000, self: false },
-                    { id: "m4f1e2b3c7a9", content: "lo vi, gracias", type: "text", time: 1666669010, self: true }
+                    { id: "m1c9a3f2e0b7", content: "te mandé mensaje", type: "text", time: 1672612800000, self: false }, // +1 hora
+                    { id: "m1c9a3san230", content: "https://picsum.photos/500/400", type: "image", time: 1672612800000, self: false }, // +0 minutos
+                    { id: "m4f1e2b3c7a9", content: "lo vi, gracias", type: "text", time: 1672612860000, self: true }  // +1 minuto
                 ]
             },
             {
@@ -131,14 +131,14 @@ var items = {
                 botEnabled: false,
                 interest: 4,
                 messages: [
-                    { id: "m2a1c0f3e9b5", content: "listo para la reunión", type: "audio", time: 1666670000, self: false },
-                    { id: "m6f3e1b2a9c0", content: "perfecto", type: "text", time: 1666670010, self: true },
-                    { id: "fmdasj8s9293", content: "mock", type: "text", time: 1666671111, self: false },
-                    { id: "fdsa89439530", content: "mocko", type: "text", time: 1666672222, self: true },
-                    { id: "m8g9h1j2k3l4", content: "¿Llegarás a tiempo?", type: "text", time: 1666673333, self: false },
-                    { id: "m1a2b3c4d5e6", content: "Sí, ya voy en camino", type: "text", time: 1666673340, self: true },
-                    { id: "m7n8o9p0q1r2", content: "Genial, nos vemos pronto", type: "text", time: 1666673350, self: false },
-                    { id: "m3s4t5u6v7w8", content: "Perfecto, gracias", type: "text", time: 1666673360, self: true }
+                    { id: "m2a1c0f3e9b5", content: "listo para la reunión", type: "audio", time: 1672616400000, self: false }, // +1 hora
+                    { id: "m6f3e1b2a9c0", content: "perfecto", type: "text", time: 1672616460000, self: true }, // +1 minuto
+                    { id: "fmdasj8s9293", content: "mock", type: "text", time: 1672616520000, self: false }, // +1 minuto
+                    { id: "fdsa89439530", content: "mocko", type: "text", time: 1672616580000, self: true }, // +1 minuto
+                    { id: "m8g9h1j2k3l4", content: "¿Llegarás a tiempo?", type: "text", time: 1672616640000, self: false }, // +1 minuto
+                    { id: "m1a2b3c4d5e6", content: "Sí, ya voy en camino", type: "text", time: 1672616700000, self: true }, // +1 minuto
+                    { id: "m7n8o9p0q1r2", content: "Genial, nos vemos pronto", type: "text", time: 1672616760000, self: false }, // +1 minuto
+                    { id: "m3s4t5u6v7w8", content: "Perfecto, gracias", type: "text", time: 1672616820000, self: true }  // +1 minuto
                 ]
             },
             {
@@ -148,7 +148,7 @@ var items = {
                 botEnabled: true,
                 interest: 6,
                 messages: [
-                    { id: "m0e3f1a2c6b9", content: "me interesa el producto", type: "text", time: 1666671000, self: false }
+                    { id: "m0e3f1a2c6b9", content: "me interesa el producto", type: "text", time: 1672620000000, self: false } // +1 hora (aprox)
                 ]
             },
             {
@@ -158,8 +158,8 @@ var items = {
                 botEnabled: false,
                 interest: 5,
                 messages: [
-                    { id: "m7a2c0e1f3b6", content: "gracias por responder", type: "audio", time: 1666672000, self: false },
-                    { id: "m3b9f1e2a0c8", content: "a la orden", type: "text", time: 1666672010, self: true }
+                    { id: "m7a2c0e1f3b6", content: "gracias por responder", type: "audio", time: 1672623600000, self: false }, // +1 hora
+                    { id: "m3b9f1e2a0c8", content: "a la orden", type: "text", time: 1672623660000, self: true }  // +1 minuto
                 ]
             },
             {
@@ -169,8 +169,8 @@ var items = {
                 botEnabled: true,
                 interest: 9,
                 messages: [
-                    { id: "m1e9a3f0b7c2", content: "hay descuento?", type: "text", time: 1666673000, self: false },
-                    { id: "m4c0f1e2b6a3", content: "sí, del 10%", type: "text", time: 1666673010, self: true }
+                    { id: "m1e9a3f0b7c2", content: "hay descuento?", type: "text", time: 1672627200000, self: false }, // +1 hora
+                    { id: "m4c0f1e2b6a3", content: "sí, del 10%", type: "text", time: 1672627260000, self: true }  // +1 minuto
                 ]
             },
             {
@@ -180,7 +180,7 @@ var items = {
                 botEnabled: false,
                 interest: 4,
                 messages: [
-                    { id: "m3f9e1a0b2c6", content: "cuándo llega el pedido?", type: "audio", time: 1666674000, self: false }
+                    { id: "m3f9e1a0b2c6", content: "cuándo llega el pedido?", type: "audio", time: 1672630800000, self: false } // +1 hora
                 ]
             },
             {
@@ -190,8 +190,8 @@ var items = {
                 botEnabled: true,
                 interest: 6,
                 messages: [
-                    { id: "m9c2b1f0e3a7", content: "recibí el producto", type: "text", time: 1666675000, self: false },
-                    { id: "m2f0e3a6b1c9", content: "¡qué bueno!", type: "text", time: 1666675010, self: true }
+                    { id: "m9c2b1f0e3a7", content: "recibí el producto", type: "text", time: 1672634400000, self: false }, // +1 hora
+                    { id: "m2f0e3a6b1c9", content: "¡qué bueno!", type: "text", time: 1672634460000, self: true }  // +1 minuto
                 ]
             },
             {
@@ -201,8 +201,8 @@ var items = {
                 botEnabled: true,
                 interest: 8,
                 messages: [
-                    { id: "m7d9e2c1b0a3", content: "hola, estoy interesada en el servicio", type: "text", time: 1666676000, self: false },
-                    { id: "m0a3b7c2e9f1", content: "¡Hola! ¿En qué puedo ayudarte?", type: "text", time: 1666676010, self: true }
+                    { id: "m7d9e2c1b0a3", content: "hola, estoy interesada en el servicio", type: "text", time: 1672638000000, self: false }, // +1 hora
+                    { id: "m0a3b7c2e9f1", content: "¡Hola! ¿En qué puedo ayudarte?", type: "text", time: 1672638060000, self: true }  // +1 minuto
                 ]
             },
             {
@@ -212,7 +212,7 @@ var items = {
                 botEnabled: false,
                 interest: 5,
                 messages: [
-                    { id: "m2c9f0a3e1b7", content: "tienes stock?", type: "text", time: 1666677000, self: false }
+                    { id: "m2c9f0a3e1b7", content: "tienes stock?", type: "text", time: 1672641600000, self: false } // +1 hora
                 ]
             },
             {
@@ -222,8 +222,8 @@ var items = {
                 botEnabled: true,
                 interest: 9,
                 messages: [
-                    { id: "m8b0d2e1f9a3", content: "gracias por la información", type: "text", time: 1666678000, self: false },
-                    { id: "m1a9f3e0c2b8", content: "de nada!", type: "text", time: 1666678010, self: true }
+                    { id: "m8b0d2e1f9a3", content: "gracias por la información", type: "text", time: 1672645200000, self: false }, // +1 hora
+                    { id: "m1a9f3e0c2b8", content: "de nada!", type: "text", time: 1672645260000, self: true }  // +1 minuto
                 ]
             },
             {
@@ -233,7 +233,7 @@ var items = {
                 botEnabled: false,
                 interest: 3,
                 messages: [
-                    { id: "m5f0a2c9e1b3", content: "ok, entendido", type: "text", time: 1666679000, self: false }
+                    { id: "m5f0a2c9e1b3", content: "ok, entendido", type: "text", time: 1672648800000, self: false } // +1 hora
                 ]
             },
             {
@@ -243,8 +243,8 @@ var items = {
                 botEnabled: true,
                 interest: 7,
                 messages: [
-                    { id: "m9a1c3f0e2b7", content: "cuando envías?", type: "text", time: 1666680000, self: false },
-                    { id: "m4e2b0a1f9c3", content: "mañana mismo", type: "text", time: 1666680010, self: true }
+                    { id: "m9a1c3f0e2b7", content: "cuando envías?", type: "text", time: 1672652400000, self: false }, // +1 hora
+                    { id: "m4e2b0a1f9c3", content: "mañana mismo", type: "text", time: 1672652460000, self: true }  // +1 minuto
                 ]
             },
             {
@@ -254,7 +254,7 @@ var items = {
                 botEnabled: false,
                 interest: 6,
                 messages: [
-                    { id: "m1f9e3a0c2b6", content: "¿cómo hago el pago?", type: "text", time: 1666681000, self: false }
+                    { id: "m1f9e3a0c2b6", content: "¿cómo hago el pago?", type: "text", time: 1672656000000, self: false } // +1 hora
                 ]
             },
             {
@@ -264,8 +264,8 @@ var items = {
                 botEnabled: true,
                 interest: 8,
                 messages: [
-                    { id: "m7c0b1f9e2a3", content: "me confirmas la dirección?", type: "text", time: 1666682000, self: false },
-                    { id: "m0e2a9f3c1b7", content: "claro, es...", type: "text", time: 1666682010, self: true }
+                    { id: "m7c0b1f9e2a3", content: "me confirmas la dirección?", type: "text", time: 1672659600000, self: false }, // +1 hora
+                    { id: "m0e2a9f3c1b7", content: "claro, es...", type: "text", time: 1672659660000, self: true }  // +1 minuto
                 ]
             },
             {
@@ -275,7 +275,7 @@ var items = {
                 botEnabled: false,
                 interest: 4,
                 messages: [
-                    { id: "m3b6f1e0a9c2", content: "gracias por tu tiempo", type: "text", time: 1666683000, self: false }
+                    { id: "m3c9f1a0e2b4", content: "gracias por tu tiempo", type: "text", time: 1672663200000, self: false } // +1 hora
                 ]
             },
             {
@@ -285,8 +285,8 @@ var items = {
                 botEnabled: true,
                 interest: 9,
                 messages: [
-                    { id: "m6c9a0f3e1b2", content: "excelente servicio!", type: "text", time: 1666684000, self: false },
-                    { id: "m2e1b7f0a9c3", content: "nos alegra mucho!", type: "text", time: 1666684010, self: true }
+                    { id: "m6c9a0f3e1b2", content: "excelente servicio!", type: "text", time: 1672666800000, self: false }, // +1 hora
+                    { id: "m2e1b7f0a9c3", content: "nos alegra mucho!", type: "text", time: 1672666860000, self: true }  // +1 minuto
                 ]
             },
             {
@@ -295,9 +295,8 @@ var items = {
                 platform: "instagram",
                 botEnabled: false,
                 interest: 5,
-                messages:
-                [
-                    { id: "m9f3e1b2a0c6", content: "tienen alguna promoción?", type: "text", time: 1666685000, self: false }
+                messages: [
+                    { id: "m9f3e1b2a0c6", content: "tienen alguna promoción?", type: "text", time: 1672670400000, self: false } // +1 hora
                 ]
             },
             {
@@ -307,8 +306,8 @@ var items = {
                 botEnabled: true,
                 interest: 7,
                 messages: [
-                    { id: "m1a0c6f9e2b3", content: "ya hice la transferencia", type: "text", time: 1666686000, self: false },
-                    { id: "m4d9e3b1c0a2", content: "perfecto, lo reviso", type: "text", time: 1666686010, self: true }
+                    { id: "m1a0c6f9e2b3", content: "ya hice la transferencia", type: "text", time: 1672674000000, self: false }, // +1 hora
+                    { id: "m4d9e3b1c0a2", content: "perfecto, lo reviso", type: "text", time: 1672674060000, self: true }  // +1 minuto
                 ]
             },
             {
@@ -318,7 +317,7 @@ var items = {
                 botEnabled: false,
                 interest: 3,
                 messages: [
-                    { id: "m7e2b0a1f3c9", content: "necesito ayuda con la instalación", type: "text", time: 1666687000, self: false }
+                    { id: "m7e2b0a1f3c9", content: "necesito ayuda con la instalación", type: "text", time: 1672677600000, self: false } // +1 hora
                 ]
             },
             {
@@ -328,8 +327,8 @@ var items = {
                 botEnabled: true,
                 interest: 6,
                 messages: [
-                    { id: "m2c0f3a9e1b8", content: "me encantó el producto, gracias!", type: "text", time: 1666688000, self: false },
-                    { id: "m5a8b1c0f3e2", content: "¡Qué bueno que te gustó!", type: "text", time: 1666688010, self: true }
+                    { id: "m2c0f3a9e1b8", content: "me encantó el producto, gracias!", type: "text", time: 1672681200000, self: false }, // +1 hora
+                    { id: "m5a8b1c0f3e2", content: "¡Qué bueno que te gustó!", type: "text", time: 1672681260000, self: true }  // +1 minuto
                 ]
             },
             {
@@ -339,7 +338,7 @@ var items = {
                 botEnabled: false,
                 interest: 5,
                 messages: [
-                    { id: "m8e1c3f0a9b2", content: "cuando abren mañana?", type: "text", time: 1666689000, self: false }
+                    { id: "m8e1c3f0a9b2", content: "cuando abren mañana?", type: "text", time: 1672684800000, self: false } // +1 hora
                 ]
             },
             {
@@ -349,8 +348,8 @@ var items = {
                 botEnabled: true,
                 interest: 8,
                 messages: [
-                    { id: "m3a6f0e1c9b2", content: "tienen servicio a domicilio?", type: "text", time: 1666690000, self: false },
-                    { id: "m6b9c2f1a0e3", content: "sí, con costo adicional", type: "text", time: 1666690010, self: true }
+                    { id: "m3a6f0e1c9b2", content: "tienen servicio a domicilio?", type: "text", time: 1672688400000, self: false }, // +1 hora
+                    { id: "m6b9c2f1a0e3", content: "sí, con costo adicional", type: "text", time: 1672688460000, self: true }  // +1 minuto
                 ]
             },
             {
@@ -360,7 +359,7 @@ var items = {
                 botEnabled: false,
                 interest: 4,
                 messages: [
-                    { id: "m1b7d0a2c9f3", content: "no me llegó la confirmación", type: "text", time: 1666691000, self: false }
+                    { id: "m1b7d0a2c9f3", content: "no me llegó la confirmación", type: "text", time: 1672692000000, self: false } // +1 hora
                 ]
             },
             {
@@ -370,8 +369,8 @@ var items = {
                 botEnabled: true,
                 interest: 9,
                 messages: [
-                    { id: "m4a9c3f0e1b7", content: "todo perfecto, muchas gracias!", type: "text", time: 1666692000, self: false },
-                    { id: "m7e1b0a2f9c3", content: "a ti por tu compra!", type: "text", time: 1666692010, self: true }
+                    { id: "m4a9c3f0e1b7", content: "todo perfecto, muchas gracias!", type: "text", time: 1672695600000, self: false }, // +1 hora
+                    { id: "m7e1b0a2f9c3", content: "a ti por tu compra!", type: "text", time: 1672695660000, self: true }  // +1 minuto
                 ]
             },
             {
@@ -381,7 +380,7 @@ var items = {
                 botEnabled: false,
                 interest: 2,
                 messages: [
-                    { id: "m9c3f0a1e2b7", content: "no entiendo cómo funciona", type: "text", time: 1666693000, self: false }
+                    { id: "m9c3f0a1e2b7", content: "no entiendo cómo funciona", type: "text", time: 1672699200000, self: false } // +1 hora
                 ]
             },
             {
@@ -391,8 +390,8 @@ var items = {
                 botEnabled: true,
                 interest: 7,
                 messages: [
-                    { id: "m2f0e1b9c3a7", content: "puedo pagar con tarjeta?", type: "text", time: 1666694000, self: false },
-                    { id: "m5b1c7f0a9e2", content: "sí, aceptamos tarjetas", type: "text", time: 1666694010, self: true }
+                    { id: "m2f0e1b9c3a7", content: "puedo pagar con tarjeta?", type: "text", time: 1672702800000, self: false }, // +1 hora
+                    { id: "m5b1c7f0a9e2", content: "sí, aceptamos tarjetas", type: "text", time: 1672702860000, self: true }  // +1 minuto
                 ]
             },
             {
@@ -402,7 +401,7 @@ var items = {
                 botEnabled: false,
                 interest: 6,
                 messages: [
-                    { id: "m1c0f9a3e2b7", content: "cuando tienen nuevos modelos?", type: "text", time: 1666695000, self: false }
+                    { id: "m1c0f9a3e2b7", content: "cuando tienen nuevos modelos?", type: "text", time: 1672706400000, self: false } // +1 hora
                 ]
             },
             {
@@ -412,8 +411,8 @@ var items = {
                 botEnabled: true,
                 interest: 8,
                 messages: [
-                    { id: "m4b7c0f1e9a2", content: "ya recomendé su página a mis amigos", type: "text", time: 1666696000, self: false },
-                    { id: "m7a2f9e0c1b3", content: "¡Muchas gracias!", type: "text", time: 1666696010, self: true }
+                    { id: "m4b7c0f1e9a2", content: "ya recomendé su página a mis amigos", type: "text", time: 1672710000000, self: false }, // +1 hora
+                    { id: "m7a2f9e0c1b3", content: "¡Muchas gracias!", type: "text", time: 1672710060000, self: true }  // +1 minuto
                 ]
             },
             {
@@ -423,7 +422,7 @@ var items = {
                 botEnabled: false,
                 interest: 4,
                 messages: [
-                    { id: "m9e2c0f1b7a3", content: "no me responden los mensajes", type: "text", time: 1666697000, self: false }
+                    { id: "m9e2c0f1b7a3", content: "no me responden los mensajes", type: "text", time: 1672713600000, self: false } // +1 hora
                 ]
             },
             {
@@ -433,8 +432,8 @@ var items = {
                 botEnabled: true,
                 interest: 9,
                 messages: [
-                    { id: "m2b7f0a1e9c3", content: "me llegó antes de lo esperado, genial!", type: "text", time: 1666698000, self: false },
-                    { id: "m5c0a9f3e1b2", content: "¡Nos alegramos mucho!", type: "text", time: 1666698010, self: true }
+                    { id: "m2b7f0a1e9c3", content: "me llegó antes de lo esperado, genial!", type: "text", time: 1672717200000, self: false }, // +1 hora
+                    { id: "m5c0a9f3e1b2", content: "¡Nos alegramos mucho!", type: "text", time: 1672717260000, self: true }  // +1 minuto
                 ]
             },
             {
@@ -444,7 +443,7 @@ var items = {
                 botEnabled: false,
                 interest: 5,
                 messages: [
-                    { id: "m8f3e1b0a2c7", content: "tienen tienda física?", type: "text", time: 1666699000, self: false }
+                    { id: "m8f3e1b0a2c7", content: "tienen tienda física?", type: "text", time: 1672720800000, self: false } // +1 hora
                 ]
             }
         ]
@@ -459,20 +458,20 @@ var items = {
                 platform: "facebook",
                 botEnabled: false,
                 interest: 2,
-                permalink: "https://www.linkfalso.com/sj1n1324nj2n", // new prperty for all comments
+                permalink: "https://www.linkfalso.com/sj1n1324nj2n",
                 comments: [
                     {
                         id: "cm1f0b3e2a9c",
                         content: "hola me interesa",
                         type: "text",
-                        time: 1234567890,
+                        time: 1672724400000, // +1 hora (desde el último contacto)
                         self: false
                     },
                     {
                         id: "cm9a6c1f0b3e",
                         content: "todavía lo tienes?",
                         type: "text",
-                        time: 1234567900,
+                        time: 1672724410000, // +10 segundos
                         self: false
                     }
                 ]
@@ -490,14 +489,14 @@ var items = {
                         id: "cm4f8a9b2c0e",
                         content: "precio?",
                         type: "text",
-                        time: 1666676000,
+                        time: 1672728000000, // +1 hora
                         self: false
                     },
                     {
                         id: "cm3b7f0e1a2c",
                         content: "¿envías a Quito?",
                         type: "text",
-                        time: 1666676010,
+                        time: 1672728010000, // +10 segundos
                         self: false
                     }
                 ]
@@ -515,7 +514,7 @@ var items = {
                         id: "cm2e1a0f9b4c",
                         content: "¿tienes más colores?",
                         type: "text",
-                        time: 1666676020,
+                        time: 1672731600000, // +1 hora
                         self: false
                     }
                 ]
@@ -533,7 +532,7 @@ var items = {
                         id: "cm0b1f3e6a2c",
                         content: "me encanta 😍",
                         type: "text",
-                        time: 1666676030,
+                        time: 1672735200000, // +1 hora
                         self: false
                     }
                 ]
@@ -551,14 +550,14 @@ var items = {
                         id: "cm5a3e1b0f9c",
                         content: "quiero uno",
                         type: "text",
-                        time: 1666676040,
+                        time: 1672738800000, // +1 hora
                         self: false
                     },
                     {
                         id: "cm8c9f0a2e1b",
                         content: "responde porfa",
                         type: "text",
-                        time: 1666676045,
+                        time: 1672738810000, // +10 segundos
                         self: false
                     }
                 ]
@@ -576,14 +575,14 @@ var items = {
                         id: "cm1b0c3f2a9e",
                         content: "¡Está hermoso!",
                         type: "text",
-                        time: 1666676050,
+                        time: 1672742400000, // +1 hora
                         self: false
                     },
                     {
                         id: "cm2c8e1f3a0b",
                         content: "¿aceptas transferencias?",
                         type: "text",
-                        time: 1666676060,
+                        time: 1672742410000, // +10 segundos
                         self: false
                     }
                 ]
@@ -601,7 +600,7 @@ var items = {
                         id: "cm7e2b9f0c1a",
                         content: "¿Dónde estás ubicado?",
                         type: "text",
-                        time: 1666676070,
+                        time: 1672746000000, // +1 hora
                         self: false
                     }
                 ]
@@ -619,14 +618,14 @@ var items = {
                         id: "cm3a6f1b0e9c",
                         content: "Me interesa para regalo",
                         type: "text",
-                        time: 1666676080,
+                        time: 1672749600000, // +1 hora
                         self: false
                     },
                     {
                         id: "cm6b0c1f2a9e",
                         content: "¿Tienes en otros tamaños?",
                         type: "text",
-                        time: 1666676090,
+                        time: 1672749610000, // +10 segundos
                         self: false
                     }
                 ]
@@ -644,7 +643,7 @@ var items = {
                         id: "cm9e1b0a2f3c",
                         content: "revisé mi inbox",
                         type: "text",
-                        time: 1666676100,
+                        time: 1672753200000, // +1 hora
                         self: false
                     }
                 ]
@@ -662,7 +661,7 @@ var items = {
                         id: "cm2f0e3a6b1c",
                         content: "te acabo de escribir",
                         type: "text",
-                        time: 1666676110,
+                        time: 1672756800000, // +1 hora
                         self: false
                     }
                 ]
@@ -680,7 +679,7 @@ var items = {
                         id: "cm7d2e9f0a1b",
                         content: "se ve interesante",
                         type: "text",
-                        time: 1666676120,
+                        time: 1672760400000, // +1 hora
                         self: false
                     }
                 ]
@@ -698,14 +697,14 @@ var items = {
                         id: "cm3f0a2c9e1b",
                         content: "quiero saber más",
                         type: "text",
-                        time: 1666676130,
+                        time: 1672764000000, // +1 hora
                         self: false
                     },
                     {
                         id: "cm6a1c9f0b3e",
                         content: "algún número de contacto?",
                         type: "text",
-                        time: 1666676140,
+                        time: 1672764010000, // +10 segundos
                         self: false
                     }
                 ]
@@ -720,10 +719,10 @@ var items = {
                 permalink: "https://www.linkfalso.com/hf239f239f23",
                 comments: [
                     {
-                        id: "cm0b9f3e1a2c",
+                        id: "cm0b1f3e6a2c",
                         content: "no me convence mucho",
                         type: "text",
-                        time: 1666676150,
+                        time: 1672767600000, // +1 hora
                         self: false
                     }
                 ]
@@ -741,7 +740,7 @@ var items = {
                         id: "cm5e1a0f9b2c",
                         content: "gracias por la atención",
                         type: "text",
-                        time: 1666676160,
+                        time: 1672771200000, // +1 hora
                         self: false
                     }
                 ]
@@ -759,7 +758,7 @@ var items = {
                         id: "cm8b2f0e1a9c",
                         content: "necesito ver más fotos",
                         type: "text",
-                        time: 1666676170,
+                        time: 1672774800000, // +1 hora
                         self: false
                     }
                 ]
@@ -777,7 +776,7 @@ var items = {
                         id: "cm1a6f3e0b2c",
                         content: "es justo lo que buscaba!",
                         type: "text",
-                        time: 1666676180,
+                        time: 1672778400000, // +1 hora
                         self: false
                     }
                 ]
@@ -795,7 +794,7 @@ var items = {
                         id: "cm4c9f0a1e2b",
                         content: "algún video del producto?",
                         type: "text",
-                        time: 1666676190,
+                        time: 1672782000000, // +1 hora
                         self: false
                     }
                 ]
@@ -813,7 +812,7 @@ var items = {
                         id: "cm7f0a2c9e1b",
                         content: "me avisas si hay novedades",
                         type: "text",
-                        time: 1666676200,
+                        time: 1672785600000, // +1 hora
                         self: false
                     }
                 ]
@@ -831,7 +830,7 @@ var items = {
                         id: "cm0e2b9f1a3c",
                         content: "gracias por la info!",
                         type: "text",
-                        time: 1666676210,
+                        time: 1672789200000, // +1 hora
                         self: false
                     }
                 ]
@@ -849,7 +848,7 @@ var items = {
                         id: "cm3a9f0e1c2b",
                         content: "ya compartí con mis amigos",
                         type: "text",
-                        time: 1666676220,
+                        time: 1672792800000, // +1 hora
                         self: false
                     }
                 ]
@@ -867,7 +866,7 @@ var items = {
                         id: "cm6c1f0a9e2b",
                         content: "no es lo que esperaba",
                         type: "text",
-                        time: 1666676230,
+                        time: 1672796400000, // +1 hora
                         self: false
                     }
                 ]
@@ -885,7 +884,7 @@ var items = {
                         id: "cm9f0a2c1b3e",
                         content: "cuando llega mi pedido?",
                         type: "text",
-                        time: 1666676240,
+                        time: 1672800000000, // +1 hora
                         self: false
                     }
                 ]
@@ -903,7 +902,7 @@ var items = {
                         id: "cm2e0b9f1a3c",
                         content: "tienen alguna garantía?",
                         type: "text",
-                        time: 1666676250,
+                        time: 1672803600000, // +1 hora
                         self: false
                     }
                 ]
@@ -921,7 +920,7 @@ var items = {
                         id: "cm5b1f0a2c9e",
                         content: "me encanta su atención!",
                         type: "text",
-                        time: 1666676260,
+                        time: 1672807200000, // +1 hora
                         self: false
                     }
                 ]
@@ -939,7 +938,7 @@ var items = {
                         id: "cm8a2f0e1b9c",
                         content: "no encuentro lo que busco",
                         type: "text",
-                        time: 1666676270,
+                        time: 1672810800000, // +1 hora
                         self: false
                     }
                 ]
@@ -957,7 +956,7 @@ var items = {
                         id: "cm1c9f0a2e3b",
                         content: "ya les escribí al inbox",
                         type: "text",
-                        time: 1666676280,
+                        time: 1672814400000, // +1 hora
                         self: false
                     }
                 ]
@@ -975,7 +974,7 @@ var items = {
                         id: "cm4f0a2c9b1e",
                         content: "tienen ofertas especiales?",
                         type: "text",
-                        time: 1666676290,
+                        time: 1672818000000, // +1 hora
                         self: false
                     }
                 ]
@@ -993,13 +992,13 @@ var items = {
                         id: "cm7b2f0e1a9c",
                         content: "gracias por la ayuda!",
                         type: "text",
-                        time: 1666676300,
+                        time: 1672821600000, // +1 hora
                         self: false
                     }
                 ]
             },
             {
-                userId: "b4a0f9c1e2d3",
+                userId: "b4f0a2c9e1d3",
                 postId: "cj19cd1nc91n",
                 name: "Oscar Paz",
                 platform: "facebook",
@@ -1011,13 +1010,13 @@ var items = {
                         id: "cm0c9f1a2e3b",
                         content: "no me gustó mucho",
                         type: "text",
-                        time: 1666676310,
+                        time: 1672825200000, // +1 hora
                         self: false
                     }
                 ]
             },
             {
-                userId: "e7f3b0a1c2d9",
+                userId: "e7c3b0a1c2d9",
                 postId: "fkpjfpdgj0fd",
                 name: "Paola Castro",
                 platform: "instagram",
@@ -1029,7 +1028,7 @@ var items = {
                         id: "cm3a2f0e1b9c",
                         content: "cuando tienen nuevos productos?",
                         type: "text",
-                        time: 1666676320,
+                        time: 1672828800000, // +1 hora
                         self: false
                     }
                 ]
@@ -1047,7 +1046,7 @@ var items = {
                         id: "cm6f0a2c9b1e",
                         content: "necesito factura",
                         type: "text",
-                        time: 1666676330,
+                        time: 1672832400000, // +1 hora
                         self: false
                     }
                 ]
@@ -1065,7 +1064,7 @@ var items = {
                         id: "cm9b2f0e1a3c",
                         content: "son los mejores!",
                         type: "text",
-                        time: 1666676340,
+                        time: 1672836000000, // +1 hora
                         self: false
                     }
                 ]
@@ -1083,7 +1082,7 @@ var items = {
                         id: "cm2c9f0a1e3b",
                         content: "no responden rápido",
                         type: "text",
-                        time: 1666676350,
+                        time: 1672839600000, // +1 hora
                         self: false
                     }
                 ]
@@ -1101,7 +1100,7 @@ var items = {
                         id: "cm5f0a2c9b1e",
                         content: "me ayudan con una duda?",
                         type: "text",
-                        time: 1666676360,
+                        time: 1672843200000, // +1 hora
                         self: false
                     }
                 ]
@@ -1119,7 +1118,7 @@ var items = {
                         id: "cm8c9f0a2e1b",
                         content: "tienen catálogo?",
                         type: "text",
-                        time: 1666676370,
+                        time: 1672846800000, // +1 hora
                         self: false
                     }
                 ]
@@ -1137,7 +1136,7 @@ var items = {
                         id: "cm1b9f0a2c3e",
                         content: "excelente atención al cliente!",
                         type: "text",
-                        time: 1666676380,
+                        time: 1672850400000, // +1 hora
                         self: false
                     }
                 ]
@@ -1155,7 +1154,7 @@ var items = {
                         id: "cm4e2b9f0a1c",
                         content: "no me funciona el link",
                         type: "text",
-                        time: 1666676390,
+                        time: 1672854000000, // +1 hora
                         self: false
                     }
                 ]
@@ -1173,7 +1172,7 @@ var items = {
                         id: "cm7a2f0e1b9c",
                         content: "gracias por su paciencia",
                         type: "text",
-                        time: 1666676400,
+                        time: 1672857600000, // +1 hora
                         self: false
                     }
                 ]
@@ -1191,7 +1190,7 @@ var items = {
                         id: "cm0f9a2c1b3e",
                         content: "tienen página web?",
                         type: "text",
-                        time: 1666676410,
+                        time: 1672861200000, // +1 hora
                         self: false
                     }
                 ]
@@ -1199,7 +1198,5 @@ var items = {
         ]
     }
 };
-
-
 
 module.exports = items;

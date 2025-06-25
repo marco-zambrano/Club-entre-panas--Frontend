@@ -7,7 +7,7 @@ import { createMessage } from './ui.js'; // Function create message
 // });
 const socket = io()
 
-const ITEMS_PER_PAGE = 20;
+// const ITEMS_PER_PAGE = 20;
 
 // MAY GOD BLESS THIS CODE
 export var items = {
@@ -15,9 +15,6 @@ export var items = {
         allItemsLoaded: false,
         list: [],
         contentLoaded: false
-        // we use contentLoaded to define, that this kind of item is saved or not locally, porque habia un problema que cuando recien entrabas
-        // y no habias los contactos aun, cuando llegaba un nuevo mensaje del evento newMessage, los comentarios igualmente se cargaban localmente
-        // Lo que hacia que cuando ibas a los comentarios por primera vez, los que estaban ya previamente cargados localmente, aparecieran duplicados
     },
     comments: {
         allItemsLoaded: false,
@@ -28,8 +25,12 @@ export var items = {
 
 export let quickReps = [];
 
+//SEND ERRORS TO BACKEND
+export function reportErrorToBackend(error) {
+    socket.emit('reportError', error);
+}
 
-// AND YOU KNOW I'M THE LORD WHEN I SAY THIS
+// GET ITEMS FROM THE BACKEND
 export function getItems(filter) { //must be "contacts" or "comments" PLURAL
     socket.emit('getItems', {
         filter: filter,
@@ -59,8 +60,11 @@ export function sendManMessage(metaId, type, content, filter, platform) {
         platform: platform
     });
 }
-//SEND WHICH ITEM IS OPENED
+
+//GET ITEM MESSAGES HISTORY
 export function getItemHistory(itemId, filter) {
+    console.log('estamos');
+    
     socket.emit('getItemHistory', {itemId, filter});
 }
 
@@ -80,15 +84,19 @@ export var tokenUsage = 0;
 
 export function getCustomPrompt() {
     return new Promise((resolve, reject) => {
+        // In case the server does not respond within 10 seconds, reject the promise
         let timeout = setTimeout(() => {
             reject(new Error("Timeout: No response from server"));
         }, 10000);
 
+        // Request the custom prompt from the server
         socket.emit('getCustomPrompt');
 
+        // Listen for the 'customPrompt' event from the server
         socket.once('customPrompt', (data) => {
             clearTimeout(timeout);
             if (data && typeof data === 'object') {
+                // Validate the data structure is JSON compatible
                 try {
                     JSON.parse(data.dataTable);
                 } catch (e) {
@@ -96,11 +104,12 @@ export function getCustomPrompt() {
                     return;
                 }
 
+                // set the botPrompts object with the received data
                 botPrompts = {
                     dataTable: data.dataTable,
                     prompt: data.prompt
                 };
-
+                // Set the token usage
                 tokenUsage = data.tokenUsage;
                 resolve(data);
             } else {
@@ -114,17 +123,13 @@ export function sendBotConf(prompt, dataTable) {
     socket.emit('updatePrompt', prompt, dataTable);
 }
 
-//SEND ERRORS TO BACKENDAdd commentMore actions
-export function reportErrorToBackend(error) {
-    socket.emit('reportError', error);
-}
 
 // send the viewd image status to the backend
 export function setViewedImgFalse(itemId, platform) {
     socket.emit('setViewedImgFalse', { itemId, platform });
 }
 
-//SEARCH CONTENT HISTORY FOR AN ITEM
+//SEARCH CONTENT MESSAGE HISTORY FOR AN ITEM
 socket.on('itemContentHistory', (entries) => {
     const currentItem = items[currentFilter].list.find( item => item.id === currentItemId);
 
@@ -133,17 +138,11 @@ socket.on('itemContentHistory', (entries) => {
         entries.forEach(entry => {
             var entryKey = (currentFilter == "contacts") ? "messages" : (currentFilter == "comments") ? "comments" : null;
             currentItem[entryKey].push(entry);
-            const timeString = new Date(entry.time).toLocaleString('en-US', {
-                hour: '2-digit',
-                minute: '2-digit',
-                hour12: true
-            });
-            createMessage(entry.content, timeString, sender, entry.type);
+            createMessage(entry.content, entry.time, sender, entry.type);
         });
     }
 
-    
-    //SCROLL TO THE END (DEPRECATED?)
+    //SCROLL TO THE END
     const messagesContainer = document.querySelector('.messages');
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
 })
@@ -151,7 +150,7 @@ socket.on('itemContentHistory', (entries) => {
 socket.on('newItems', (data) => { //RECEIVES LIST, TYPE, ALLITEMSLOADED.
     //IF DATA FILTER IS UNDEFINED, RETURN
     if (!items[data.filter]){
-        console.log('Data.type undefined when sending newItems: ', data.filter);
+        // console.log('Data.type undefined when sending newItems: ', data.filter);
         return;
     }
 
@@ -263,18 +262,10 @@ socket.on('newMessage', (data) => {
         item[listKey].push(newEntry); // Add the new entry to the existing item
 
         if(currentItemId === itemId) { //IF THE ITEM IS OPENED, SHOW THE MESSAGE
-            const timeString = new Date(data[dataKey].time).toLocaleString('en-US', {
-                hour: '2-digit',
-                minute: '2-digit',
-                hour12: true
-            });
             const senderString = data[dataKey].self === true ? 'bot' : "contact"; //if true, bot, else contact
-            createMessage(data[dataKey].content, timeString, senderString, data[dataKey].type); //WILL CHANGE FOR EPOCH
+            createMessage(data[dataKey].content, data[dataKey].time, senderString, data[dataKey].type); //WILL CHANGE FOR EPOCH
         }
     }
-
-    // console.log('new item arrived, show all items:')
-    // console.log(items)
-
+    
     filterItems(); // Filter the items and show them in front
 });
