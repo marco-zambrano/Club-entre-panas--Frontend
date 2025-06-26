@@ -129,6 +129,10 @@ export function setViewedImgFalse(itemId, platform) {
     socket.emit('setViewedImgFalse', { itemId, platform });
 }
 
+export function setTagBtnStatus(tag, itemId) {
+    socket.emit('setTagBtnStatus', tag, itemId);
+}
+
 //SEARCH CONTENT MESSAGE HISTORY FOR AN ITEM
 socket.on('itemContentHistory', (entries) => {
     const currentItem = items[currentFilter].list.find( item => item.id === currentItemId);

@@ -2,6 +2,7 @@ const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
 const items = require('./mockdata');
+const { log } = require('console');
 
 const app = express();
 const server = http.createServer(app);
@@ -220,7 +221,9 @@ io.on('connection', (socket) => {
         , 2000); // Simulate a delay of 2 seconds
     });
 
-
+    socket.on('setTagBtnStatus', (status, itemId) => {
+        console.log(status, itemId);
+    }) 
 
     //TIME TESTING
     //NEW MESSAGES EVERY 15 SECS
