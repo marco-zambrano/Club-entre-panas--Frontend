@@ -2,6 +2,25 @@ import { currentItemId, currentFilter } from "./script.js"; // Variables
 import { openItem, setCurrentFilter, filterItems, initilizeBotToggle } from "./script.js"; // Functions
 import { sendManMessage, items, quickReps, getQuickReps, updateQuickReps, sendBotConf, getCustomPrompt, botPrompts, tokenUsage } from './socket.js';
 
+// DOM Elements
+const messageInput = document.querySelector('.message-input');
+const sendButton = document.querySelector('.send-button');
+const attachButton = document.querySelector('.attach-button');
+const imageFileInput = document.getElementById('image-file-input');
+const imagePreviewContainer = document.querySelector('.image-preview-container');
+const imagePreviewThumbnail = document.querySelector('.image-preview-thumbnail');
+const imagePreviewFilename = document.querySelector('.image-preview-filename');
+const imagePreviewCancelButton = document.querySelector('.image-preview-cancel-button');
+const messagesContainer = document.querySelector('.messages');
+const messageInputContainer = document.querySelector('.message-input-container');
+
+let stagedImageFile = null; // To hold the image file before sending
+
+export const tagColors = {
+    'Venta': '#4CAF50',
+    'Terminada': '#dd7d39'
+}
+
 export function createMessage(content, time, sender, type) {
     // create new message
     const messageElement = document.createElement('div');
@@ -12,7 +31,6 @@ export function createMessage(content, time, sender, type) {
     // Contenido del mensaje
     const messageContent = document.createElement('div');
     messageContent.className = 'message-content';
-    
 
     // Si es una imagen, crear el elemento img
     if (type === 'image') {
@@ -34,21 +52,88 @@ export function createMessage(content, time, sender, type) {
     }
 
     // Span de tiempo
+    const currentDate = new Date(time);
+    // 00:00 
+    let horas = currentDate.getHours();
+    const minutos = currentDate.getMinutes();
+    const ampm = horas >= 12 ? 'PM' : 'AM';
+    const minutosFormateados = minutos < 10 ? '0' + minutos : minutos;
+    horas = horas % 12;
+    horas = horas ? horas : 12; // Si el resultado de % 12 es 0, significa que son las 12
+    const tiempoFormateado = `${horas}:${minutosFormateados} ${ampm}`;
+    // Creamos el span de tiempo
     const timeSpan = document.createElement('span');
     timeSpan.className = 'message-time';
-    timeSpan.textContent = time;
-    
+    timeSpan.textContent = tiempoFormateado;
+
     // Añadir mensaje al chat
     messageContent.appendChild(timeSpan);
     messageElement.appendChild(messageContent);
     // Agregar al main container
-
-    
-    //SET TIME INVERVAL OF 1 SECOND
-    const messagesContainer = document.querySelector('.messages');
     messagesContainer.appendChild(messageElement);
 
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
+}
+
+// Function to handle image file (from input or drag-and-drop)
+function handleImageFile(file) {
+    if (!file || !file.type.startsWith('image/')) {
+        alert('Please select an image file.');
+        return;
+    }
+
+    stagedImageFile = file; // Store the file
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        imagePreviewThumbnail.src = e.target.result;
+        imagePreviewFilename.textContent = file.name;
+        messageInput.style.display = 'none';
+        imagePreviewContainer.style.display = 'flex';
+    };
+    reader.readAsDataURL(file);
+}
+
+// Function to send image message
+function sendImageMessage() {
+    if (!stagedImageFile) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        const base64Image = e.target.result;
+        const recipientPlatform = items[currentFilter].list.find(item => item.id === currentItemId).platform;
+        const messageTime = Date.now();
+
+        sendManMessage(currentItemId, "image", base64Image, currentFilter, recipientPlatform);
+
+        createMessage(base64Image, messageTime, 'bot', 'image');
+        const entry = {
+            content: base64Image,
+            time: messageTime,
+            type: "image",
+            self: true
+        }
+
+        var entryKey = (currentFilter == "contacts") ? "messages" : (currentFilter == "comments") ? "comments" : null;
+        items[currentFilter].list.find(item => item.id === currentItemId)[entryKey].push(entry);
+
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        filterItems();
+        
+        // Clear the staged image and revert UI
+        clearImagePreview();
+    };
+    reader.readAsDataURL(stagedImageFile);
+}
+
+// Function to clear image preview and revert UI
+function clearImagePreview() {
+    stagedImageFile = null;
+    imagePreviewThumbnail.src = '';
+    imagePreviewFilename.textContent = '';
+    imagePreviewContainer.style.display = 'none';
+    messageInput.style.display = 'block';
+    messageInput.value = ''; // Clear any text that might have been there
 }
 
 
@@ -61,12 +146,20 @@ function createContactCard(contact) {
     contactElement.dataset.itemId = contact.id;
     contactElement.dataset.type = contact.type;
 
-    if (contact.imgViewed === false) {
+    // Agregamos la etiqueta de categoría si existe
+    if (contact.tag !== 'default') {
+        const tagElement = document.createElement('span');
+        tagElement.className = 'contact-tag'; // Le damos una clase para estilizarla
+        tagElement.textContent = contact.tag;
+        tagElement.style.backgroundColor = `${tagColors[contact.tag]}`
+        contactElement.appendChild(tagElement);
+    }
+
+    if (contact.imgViewed === false) { // Si el contacto no ha visto la imagen, creamos un elemento de notificación de imagen
         //  SI ya existe el elemento de notificación de imagen, e imageVisualized es false, mostrar la notificación
         const currentImageNotification = document.getElementById(`image-notification-${contact.id}`);
         if (currentImageNotification) {
             currentImageNotification.style.display = 'block';
-            // return;
         } else {
             // Si no existe, creamos el elemento de notificación de imagen
             const imageNotificationElement = document.createElement('div');
@@ -77,21 +170,35 @@ function createContactCard(contact) {
         }
     }
 
-    
     // Preview
     const preView = document.createElement('span');
     preView.className = 'contact-preview';
     preView.textContent = contact.messages[contact.messages.length - 1].content; // Ultimo mensaje
-    
+
     // Span del tiempo del ultimo mensaje
+    const fecha = new Date(contact.messages[contact.messages.length -1].time);
+    // dias
+    const dia = fecha.getDate();
+    const mes = fecha.getMonth() + 1; // getMonth() devuelve 0-11, así que sumamos 1
+    const year = fecha.getFullYear().toString().slice(-2);
+    // horas
+    let horas = fecha.getHours();
+    const minutos = fecha.getMinutes();
+    const ampm = horas >= 12 ? 'PM' : 'AM';
+
+    horas = horas % 12;
+    horas = horas ? horas : 12; // Si el resultado de % 12 es 0, significa que son las 12
+
+    // Aseguramos que el día, mes y minutos tengan dos dígitos (ej: 01, 05)
+    const diaFormateado = dia < 10 ? '0' + dia : dia;
+    const mesFormateado = mes < 10 ? '0' + mes : mes;
+    const minutosFormateados = minutos < 10 ? '0' + minutos : minutos;
+
+    const tiempoFormateado = `${diaFormateado}/${mesFormateado}/${year} - ${horas}:${minutosFormateados} ${ampm}`;
+    // creamos el span de tiempo del ultimo mensaje
     const messageTime = document.createElement('span');
     messageTime.className = 'contact-message-time';
-    const fecha = new Date(contact.messages[contact.messages.length -1].time);
-    const horas = fecha.getHours();
-    const minutos = fecha.getMinutes().toString().padStart(2, '0');
-    const ampm = horas >= 12 ? 'p.m.' : 'a.m.';
-    const horas12 = horas % 12 || 12;
-    messageTime.textContent = `${horas12}:${minutos} ${ampm}`;
+    messageTime.textContent = tiempoFormateado;
 
     // Container de la info del contacto
     const contactInfo = document.createElement('div');
@@ -123,11 +230,11 @@ function createContactCard(contact) {
     // Container de la plataforma
     const platform = document.createElement('div');
     platform.className = 'platform';
-    
+
     // Span de la plataforma
     const platformName = document.createElement('span');
     platformName.textContent = contact.platform.charAt(0).toUpperCase() + contact.platform.slice(1);
-    
+
     // Icono de la plataforma
     const platformIcon = document.createElement('i');
     platformIcon.className = `fab fa-${contact.platform} ${contact.platform}-icon`;
@@ -163,21 +270,21 @@ function createCommentCard(comment) {
     commentElement.dataset.itemId = comment.id;
     commentElement.dataset.type = comment.type;
 
-    
+
     // Container del info del comentario (la clase dice contact-info porque son los mismos estilos)
     const commentInfo = document.createElement('div');
     commentInfo.className = 'contact-info';
     commentInfo.classList.add('comment');
-    
+
     // Preview
     const preView = document.createElement('span');
     preView.className = 'contact-preview';
     preView.textContent = comment.comments[comment.comments.length - 1].content; // Ultimo mensaje
-    
+
     // Header container
     const commentHeader = document.createElement('div');
     commentHeader.className = 'comment-header';
-    
+
     // Logo con la C, para definir que es un comentario
     const typeIdentifier = document.createElement('span');
     typeIdentifier.className = 'type-identifier';
@@ -191,7 +298,7 @@ function createCommentCard(comment) {
     // comments details container
     const commentDetails = document.createElement('div');
     commentDetails.classList.add('comment-details')
-    
+
     // // preview del titulo del post 
     // const postTitle = document.createElement('span');
     // postTitle.className = 'post-title';
@@ -200,15 +307,15 @@ function createCommentCard(comment) {
     // Platform container
     const platform = document.createElement('div');
     platform.className = 'platform';
-    
+
     // Nombre de la plataforma de la que viene el comment
     const platformName = document.createElement('span');
     platformName.textContent = comment.platform.charAt(0).toUpperCase() + comment.platform.slice(1);
-    
+
     // Logo de la plataforma
     const platformIcon = document.createElement('i');
     platformIcon.className = `fab fa-${comment.platform} ${comment.platform}-icon`;
-    
+
     // Nivel de interes
     const interest = document.createElement('span');
     interest.className = 'contact-interest';
@@ -224,14 +331,28 @@ function createCommentCard(comment) {
     }
 
     // Tiempo del ultimo mensaje enviado
+    const fecha = new Date(comment.comments[comment.comments.length -1].time);
+    // dias
+    const dia = fecha.getDate();
+    const mes = fecha.getMonth() + 1; // getMonth() devuelve 0-11, así que sumamos 1
+    const year = fecha.getFullYear().toString().slice(-2);
+    // horas
+    let horas = fecha.getHours();
+    const minutos = fecha.getMinutes();
+    const ampm = horas >= 12 ? 'PM' : 'AM';
+
+    horas = horas % 12;
+    horas = horas ? horas : 12; // Si el resultado de % 12 es 0, significa que son las 12
+
+    // Aseguramos que el día, mes y minutos tengan dos dígitos (ej: 01, 05)
+    const diaFormateado = dia < 10 ? '0' + dia : dia;
+    const mesFormateado = mes < 10 ? '0' + mes : mes;
+    const minutosFormateados = minutos < 10 ? '0' + minutos : minutos;
+    const tiempoFormateado = `${diaFormateado}/${mesFormateado}/${year} - ${horas}:${minutosFormateados} ${ampm}`;
+    // Creamos span de tiempo 
     const messageTime = document.createElement('span');
     messageTime.className = 'contact-message-time';
-    const fecha = new Date(comment.comments[comment.comments.length -1].time);
-    const horas = fecha.getHours();
-    const minutos = fecha.getMinutes().toString().padStart(2, '0');
-    const ampm = horas >= 12 ? 'p.m.' : 'a.m.';
-    const horas12 = horas % 12 || 12;
-    messageTime.textContent = `${horas12}:${minutos} ${ampm}`;
+    messageTime.textContent = tiempoFormateado;
 
     // commentHeader <--- logo de C y nonbre del user
     commentHeader.appendChild(typeIdentifier);
@@ -246,7 +367,7 @@ function createCommentCard(comment) {
     commentDetails.appendChild(platform);
     commentDetails.appendChild(interest);
     commentDetails.appendChild(messageTime);
-    
+
     // Informacion del comentario <--- header, detalles, info (todos contenedores)
     commentInfo.appendChild(preView);
     commentInfo.appendChild(commentHeader);
@@ -281,11 +402,12 @@ export function updateItemsList(items, currentFilter) {
     // Si no hay items visibles, mostrar mensaje
     if (!currentItem && items.length === 0){
         document.querySelector('.chat-title').textContent = 'Selecciona un contacto o comentario';
-        document.querySelector('.messages').innerHTML = '';
+        messagesContainer.innerHTML = '';
         document.querySelector('.bot-toggle').style.display = 'none';
         openItem(null);
     }
 }
+
 
 document.addEventListener('DOMContentLoaded', () => {
     // event listener for the contact or comment list
@@ -300,7 +422,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Activar el elemento clicked, ya sea comentario o contacto
         clicked.classList.add('active');
         openItem(clicked.dataset.itemId);
-        
+
         // Actualizar el título del chat con el nombre del contacto/comentario
         const contactName = clicked.querySelector('.contact-name').textContent;
         document.querySelector('.chat-title').textContent = contactName;
@@ -320,7 +442,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.platform-toggle').forEach(toggle => {
         toggle.addEventListener('change', filterItems);
     });
-    
+
 
     // Manejar el filtro de tipo (chat / comentario)
     const chatButton = document.querySelector('.item-chat');
@@ -332,6 +454,23 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateFilterButtons() {
         chatButton.classList.toggle('active', currentFilter === 'contacts');
         commentButton.classList.toggle('active', currentFilter === 'comments');
+        
+        // Hide/show attach button based on filter
+        if (currentFilter === 'comments') {
+            messageInputContainer.classList.add('hide-attach');
+            clearImagePreview(); // Clear any staged image if switching to comments
+        } else {
+            messageInputContainer.classList.remove('hide-attach');
+        }
+    
+        
+        // Hide/show attach button based on filter
+        if (currentFilter === 'comments') {
+            messageInputContainer.classList.add('hide-attach');
+            clearImagePreview(); // Clear any staged image if switching to comments
+        } else {
+            messageInputContainer.classList.remove('hide-attach');
+        }
     }
 
     updateFilterButtons();
@@ -358,53 +497,102 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Send message functionality
     function sendMessage(messageText) {
+        if (stagedImageFile) {
+            sendImageMessage();
+            return;
+        }
+
         if (!messageText) return
-        // Obtener hora actual
-        const now = new Date();
-        const hours = now.getHours();
-        const minutes = now.getMinutes();
-        const timeString = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
-        //BUT FIRST WE NEED TO GET HOURS AND MINUTES
-        
+
         const recipientPlatform = items[currentFilter].list.find(item => item.id === currentItemId).platform;
+        const messageTime = Date.now();
 
         // send message to the backend
         sendManMessage(currentItemId, "text", messageText, currentFilter, recipientPlatform); // (senderId (Meta), type, content, platform)
-        
+
         // create the message
-        createMessage(messageText, timeString, 'bot', 'text');
-        
+        createMessage(messageText, messageTime, 'bot', 'text');
+        // create the entry for the message
         const entry = {
             content: messageText,
-            time: Date.now(),
+            time: messageTime,
             type: "text",
             self: true
         }
+
         var entryKey = (currentFilter == "contacts") ? "messages" : (currentFilter == "comments") ? "comments" : null;
         items[currentFilter].list.find(item => item.id === currentItemId)[entryKey].push(entry);
-        
+
         // Scroll al final de los mensajes
-        const messagesContainer = document.querySelector('.messages');
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
         filterItems();
     }
 
-    const handeInputMessage = () => {
-        const input = document.querySelector('.message-input');
-        const messageValue = input.value.trim();
+    const handleInputMessage = () => {
+        const messageValue = messageInput.value.trim();
         sendMessage(messageValue);
-        input.value = '';
+        messageInput.value = '';
     }
 
-    document.querySelector('.send-button').addEventListener('click', () => {
-        handeInputMessage();
+    sendButton.addEventListener('click', () => {
+        handleInputMessage();
     });
-    
-    document.querySelector('.message-input').addEventListener('keypress', function(e) {
+
+    messageInput.addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
-            handeInputMessage();
+            handleInputMessage();
         }
     });
+
+    // Image attachment and drag-and-drop
+    const attachmentMenu = document.querySelector('.attachment-menu');
+    const uploadImageBtn = document.getElementById('upload-image-btn');
+    const takePhotoBtn = document.getElementById('take-photo-btn');
+
+    attachButton.addEventListener('click', () => {
+        attachmentMenu.style.display = attachmentMenu.style.display === 'block' ? 'none' : 'block';
+    });
+
+    uploadImageBtn.addEventListener('click', () => {
+        imageFileInput.removeAttribute('capture');
+        imageFileInput.click();
+        attachmentMenu.style.display = 'none';
+    });
+
+    takePhotoBtn.addEventListener('click', () => {
+        imageFileInput.setAttribute('capture', 'camera');
+        imageFileInput.click();
+        attachmentMenu.style.display = 'none';
+    });
+
+    imageFileInput.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        handleImageFile(file);
+    });
+
+    imagePreviewCancelButton.addEventListener('click', clearImagePreview);
+
+    messageInputContainer.addEventListener('dragover', (event) => {
+        event.preventDefault();
+        if (currentFilter === 'contacts') { // Only allow drag-over for contacts
+            messageInputContainer.classList.add('drag-over');
+        }
+    });
+
+    messageInputContainer.addEventListener('dragleave', (event) => {
+        event.preventDefault();
+        messageInputContainer.classList.remove('drag-over');
+    });
+
+    messageInputContainer.addEventListener('drop', (event) => {
+        event.preventDefault();
+        messageInputContainer.classList.remove('drag-over');
+        if (currentFilter === 'contacts') { // Only process drop for contacts
+            const file = event.dataTransfer.files[0];
+            handleImageFile(file);
+        }
+    });
+
 
     // --- MODALES Y BOTONES ---
     // Modal Principal
@@ -420,6 +608,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const cancelModalButtton = $('.cancel-button'); // Btn cancelar modificacion del bot
     const saveChangesBtn = $('.save-button'); // btn to save and update bot configuration
     const botTextArea = Array.from(document.querySelectorAll('.bot-textarea')); // Text areas values
+    // console.log(botTextArea);
+    
+
     // QRs
     const quickRepliesModal = $('#quickRepliesModal'); // QR modal
     const closeQuickReplies = $('#closeQuickReplies'); // Cerrar QR modal 
@@ -462,7 +653,7 @@ document.addEventListener('DOMContentLoaded', () => {
         openBotConfig.addEventListener('click', async () => {
             mainConfigModal.classList.remove('show');
             botTextArea[0].value = 'Cargando...'; // cleaning the bot text area value
-            botTextArea[1].value = 'Cargando...'; // cleaning the bot text area value
+            botTextArea[1].value = 'Cargando...'; // cleaning the json table text area value
             botConfigModal.classList.add('show');
             await getCustomPrompt(); // Get the bot configuration
             botTextArea[0].value = botPrompts.prompt; // Set the bot configuration to the text area
@@ -472,6 +663,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 tokenUsageLabel.textContent = `Uso total de tokens: ${tokenUsage}`;
             }
         });
+
         // Cerrar modal de configuración del bot
         closeModalButton.addEventListener('click', () => {
             botConfigModal.classList.remove('show');
@@ -528,13 +720,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const trashIcon = document.createElement('i');
         trashIcon.classList.add('fas');
         trashIcon.classList.add('fa-trash');
-        
+
         //click event for the task
         replyText.addEventListener('click', (e) => {
             sendMessage(e.currentTarget.textContent);
             quickRepliesModal.classList.remove('show');
         })
-        
+
         // click event for that trash can
         trashIcon.addEventListener('click', () => {
             // remove from de DOM
@@ -545,7 +737,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Update QRs as deletion
             updateQuickReps(quickReps);
         })
-        
+
         // Agregamos paragraph en el contenedor
         newReply.appendChild(replyText);
         // Agregamos trash-can en el contenedor
@@ -559,7 +751,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Genera un ID con prefijo 'qr-' (quick reply) + timestamp + 4 caracteres aleatorios
         const timestamp = Date.now().toString(36); // Base36 para acortar
         const randomPart = Math.random().toString(36).substring(2, 6); // 4 caracteres aleatorios
-        
+
         return `qr-${timestamp}-${randomPart}`;
     }
 
@@ -599,7 +791,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-    
+
     function repliesModalConfiguration() {
         // Abrir modal de respuestas rápidas desde el modal principal
         openQuickRepliesConfig.addEventListener('click', () => {
@@ -625,10 +817,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 quickRepliesModal.classList.remove('show');
             }
         });
-        
+
         getQuickReps();
     }
-    
+
     GeneralModalConfiguration();
     botModalConfiguration();
     repliesModalConfiguration();

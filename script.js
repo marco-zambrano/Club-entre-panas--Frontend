@@ -1,16 +1,18 @@
 import { items } from './socket.js'; // variables
-import { updateBotStatus, getItemHistory, getItems, reportErrorToBackend, setViewedImgFalse  } from './socket.js'; // functions
-import { updateItemsList, createMessage } from './ui.js';
+import { updateBotStatus, getItemHistory, getItems, reportErrorToBackend, setViewedImgFalse, setTagBtnStatus } from './socket.js'; // functions
+import { updateItemsList, createMessage, tagColors } from './ui.js';
 
 export let currentItemId = null; // Id of the item actived
 export let currentFilter = null; // define (Chat or Comment)
 let lastToggle = null; // referencia al ultimo toggle que hubo
 let lastToggleHandler = null; // referencia al ultimo addEventListener que hubo (para borrarlo y no acumular eventos)
+let lastTagBtn = null;
+let lastTagBtnHandler = null;
 
 
 //THIS FILTERS ITEMS BY PLATFORM, TYPE(COMMENT OR MESSAGE), AND SORTS THEM
 export function filterItems() {
-    console.log('FILTRANDO.......')
+    // console.log('FILTRANDO.......')
     //PREVENT FURTHER FILTERING IF NO ITEMS
     if (!items[currentFilter]){
         console.error('items[currentFilter] is not initialized yet');
@@ -20,7 +22,7 @@ export function filterItems() {
     //IF BOT TOGGLE IS NOT VISIBLE, SHOW IT
     const botToggle = document.querySelector('.bot-toggle');
     const computedStyle = window.getComputedStyle(botToggle);
-    if (computedStyle.display === 'none') botToggle.style.display = 'block';
+    if (computedStyle.display === 'none') botToggle.style.display = 'flex';
 
     //FILTER THEM BY THE ACTIVATED PLATFORM TOGGLE
     const filteredItems = items[currentFilter].list.filter(item => {
@@ -30,19 +32,32 @@ export function filterItems() {
     });
 
     //SORT ITEMS BY LAST SORT ITEMS BY TIME IN DESCENDING ORDER (MOST RECENT FIRST)
-    var entryKey = (currentFilter == "contacts") ? "messages" : (currentFilter == "comments") ? "comments" : null;
-    filteredItems.sort((a, b) => {
-        const msgsA = a[entryKey];
-        const msgsB = b[entryKey];
-        const lastA = msgsA.length ? msgsA[msgsA.length - 1].time : 0;
-        const lastB = msgsB.length ? msgsB[msgsB.length - 1].time : 0;
+    let entryKey = null;
+    if (currentFilter === "contacts") {
+        entryKey = "messages";
+    } else if (currentFilter === "comments") {
+        entryKey = "comments";
+    }
 
-        return lastB - lastA; // ← This reverses it (older to newer)
+    filteredItems.sort((a, b) => {
+        // Obtenemos el array de mensajes/comentarios para el elemento 'a'
+        // Si entryKey es null o el array no existe/está vacío, usamos un timestamp por defecto de 0.
+        const arrayA = entryKey && a[entryKey] ? a[entryKey] : [];
+        const ultimoItemA = arrayA.length > 0 ? arrayA[arrayA.length - 1] : { time: 0 };
+        const timestampA = ultimoItemA.time;
+
+        // Obtenemos el array de mensajes/comentarios para el elemento 'b'
+        const arrayB = entryKey && b[entryKey] ? b[entryKey] : [];
+        const ultimoItemB = arrayB.length > 0 ? arrayB[arrayB.length - 1] : { time: 0 };
+        const timestampB = ultimoItemB.time;
+
+        // Comparamos los timestamps para ordenar de más reciente a más antiguo.
+        // Restamos timestampA de timestampB para que el mayor (más reciente) vaya primero.
+        return timestampB - timestampA;
     });
 
-    //VERIFY IF CURRENTITEM IS VISIBLE AFTER FILTERING
+    //VERIFY IF CURRENT ITEM IS VISIBLE AFTER FILTERING
     const currentItemStillVisible = filteredItems.some(item => item.id === currentItemId);
-
     
     //IF IT'S NOT VISIBLE, OPEN THE FIRST ITEM IN THE FILTERED LIST
     if (!currentItemStillVisible && filteredItems.length > 0) {
@@ -96,6 +111,60 @@ export function initilizeBotToggle() {
     }
 }
 
+let selectedTagButton = null;
+let currentActiveHandler = null;
+
+const handleTagBtn = currentItem => {
+    // --- PASO 1: Limpiar los listeners ANTERIORES ---
+    // Recorremos todos los botones y, si existe un handler previo, lo removemos.
+    document.querySelectorAll(".tag-btn").forEach(btn => {
+        if (currentActiveHandler) {
+            btn.removeEventListener("click", currentActiveHandler);
+        }
+    });
+
+    // --- Lógica de reseteo visual ---
+    const resetAllTagButtons = () => {
+        document.querySelectorAll(".tag-btn").forEach(btn => {
+            btn.style.backgroundColor = "transparent";
+        });
+        selectedTagButton = null;
+    };
+
+    // Reseteamos el estado visual al iniciar
+    resetAllTagButtons();
+
+    // Establecemos el estado inicial basado en el nuevo `currentItem`
+    if (currentItem.tag !== "default") {
+        const tagElement = document.querySelector(`.tag-btn--${currentItem.tag.toLowerCase()}`);
+        if (tagElement) {
+            tagElement.style.backgroundColor = tagColors[currentItem.tag];
+            selectedTagButton = tagElement;
+        }
+    }
+
+    // --- PASO 2: Crear el NUEVO handler para el `currentItem` actual ---
+    // Creamos la función del listener aquí. Al hacerlo, "captura" el `currentItem`
+    // de esta llamada específica (esto es una clausura o closure).
+    currentActiveHandler = e => {
+        const btnElement = e.currentTarget; // Usar currentTarget es más seguro
+        const tagName = btnElement.textContent;
+
+        if (btnElement === selectedTagButton) {
+            resetAllTagButtons();
+            setTagBtnStatus("default", currentItem.id);
+        } else {
+            resetAllTagButtons();
+            btnElement.style.backgroundColor = tagColors[tagName];
+            setTagBtnStatus(btnElement.textContent, currentItem.id);
+            selectedTagButton = btnElement;
+        }
+    };
+
+    document.querySelectorAll(".tag-btn").forEach(btn => {
+        btn.addEventListener("click", currentActiveHandler);
+    });
+};
 
 //TO OPEN A NEW ITEM
 export function openItem(itemId) {
@@ -124,18 +193,15 @@ export function openItem(itemId) {
         messagesContainer.innerHTML = '';
     }
 
+    handleTagBtn(currentItem);
+
     // Si no hay ningun mensaje en el contenedor messages
     var entryKey = (currentFilter == "contacts") ? "messages" : (currentFilter == "comments") ? "comments" : null;
     if (currentItem[entryKey] && currentItem[entryKey].length > 0) {
         //TO HAVE TIME IN A HH:MM AM/PM FORMAT
         currentItem[entryKey].forEach(message => {
-            const timeString = new Date(message.time).toLocaleString('en-US', {
-                hour: '2-digit',
-                minute: '2-digit',
-                hour12: true
-            });
             const senderString = message.self === true ? 'bot' : "contact"; //if true, bot, else contact
-            createMessage(message.content, timeString, senderString, message.type); //WILL CHANGE FOR EPOCH
+            createMessage(message.content, message.time, senderString, message.type); //WILL CHANGE FOR EPOCH
         });
         
         const messagesContainer = document.querySelector('.messages');
