@@ -144,6 +144,7 @@ io.on('connection', (socket) => {
     //TO RECEIVE MANUAL MESSAGE
     socket.on('sendManMessage', (data) => {
         const { metaId, content, type } = data;
+        console.log(content)
         const item = items.contacts.list.find(item => item.id === metaId) || items.comments.list.find(item => `${item.userId}-${item.postId}` === metaId);
 
         var randomalphanumericid = Math.random().toString(36).substring(2, 15);
