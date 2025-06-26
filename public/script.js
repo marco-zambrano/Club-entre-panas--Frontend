@@ -1,11 +1,13 @@
 import { items } from './socket.js'; // variables
-import { updateBotStatus, getItemHistory, getItems, setViewedImgFalse } from './socket.js'; // functions
-import { updateItemsList, createMessage } from './ui.js';
+import { updateBotStatus, getItemHistory, getItems, setViewedImgFalse, setTagBtnStatus } from './socket.js'; // functions
+import { updateItemsList, createMessage, tagColors } from './ui.js';
 
 export let currentItemId = null; // Id of the item actived
 export let currentFilter = null; // define (Chat or Comment)
 let lastToggle = null; // referencia al ultimo toggle que hubo
 let lastToggleHandler = null; // referencia al ultimo addEventListener que hubo (para borrarlo y no acumular eventos)
+let lastTagBtn = null;
+let lastTagBtnHandler = null;
 
 
 //THIS FILTERS ITEMS BY PLATFORM, TYPE(COMMENT OR MESSAGE), AND SORTS THEM
@@ -20,7 +22,7 @@ export function filterItems() {
     //IF BOT TOGGLE IS NOT VISIBLE, SHOW IT
     const botToggle = document.querySelector('.bot-toggle');
     const computedStyle = window.getComputedStyle(botToggle);
-    if (computedStyle.display === 'none') botToggle.style.display = 'block';
+    if (computedStyle.display === 'none') botToggle.style.display = 'flex';
 
     //FILTER THEM BY THE ACTIVATED PLATFORM TOGGLE
     const filteredItems = items[currentFilter].list.filter(item => {
@@ -109,6 +111,60 @@ export function initilizeBotToggle() {
     }
 }
 
+let selectedTagButton = null;
+let currentActiveHandler = null;
+
+const handleTagBtn = currentItem => {
+    // --- PASO 1: Limpiar los listeners ANTERIORES ---
+    // Recorremos todos los botones y, si existe un handler previo, lo removemos.
+    document.querySelectorAll(".tag-btn").forEach(btn => {
+        if (currentActiveHandler) {
+            btn.removeEventListener("click", currentActiveHandler);
+        }
+    });
+
+    // --- Lógica de reseteo visual ---
+    const resetAllTagButtons = () => {
+        document.querySelectorAll(".tag-btn").forEach(btn => {
+            btn.style.backgroundColor = "transparent";
+        });
+        selectedTagButton = null;
+    };
+
+    // Reseteamos el estado visual al iniciar
+    resetAllTagButtons();
+
+    // Establecemos el estado inicial basado en el nuevo `currentItem`
+    if (currentItem.tag !== "default") {
+        const tagElement = document.querySelector(`.tag-btn--${currentItem.tag.toLowerCase()}`);
+        if (tagElement) {
+            tagElement.style.backgroundColor = tagColors[currentItem.tag];
+            selectedTagButton = tagElement;
+        }
+    }
+
+    // --- PASO 2: Crear el NUEVO handler para el `currentItem` actual ---
+    // Creamos la función del listener aquí. Al hacerlo, "captura" el `currentItem`
+    // de esta llamada específica (esto es una clausura o closure).
+    currentActiveHandler = e => {
+        const btnElement = e.currentTarget; // Usar currentTarget es más seguro
+        const tagName = btnElement.textContent;
+
+        if (btnElement === selectedTagButton) {
+            resetAllTagButtons();
+            setTagBtnStatus("default", currentItem.id);
+        } else {
+            resetAllTagButtons();
+            btnElement.style.backgroundColor = tagColors[tagName];
+            setTagBtnStatus(btnElement.textContent, currentItem.id);
+            selectedTagButton = btnElement;
+        }
+    };
+
+    document.querySelectorAll(".tag-btn").forEach(btn => {
+        btn.addEventListener("click", currentActiveHandler);
+    });
+};
 
 //TO OPEN A NEW ITEM
 export function openItem(itemId) {
@@ -136,6 +192,8 @@ export function openItem(itemId) {
     if (messagesContainer) {
         messagesContainer.innerHTML = '';
     }
+
+    handleTagBtn(currentItem);
 
     // Si no hay ningun mensaje en el contenedor messages
     var entryKey = (currentFilter == "contacts") ? "messages" : (currentFilter == "comments") ? "comments" : null;
