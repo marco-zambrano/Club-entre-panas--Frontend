@@ -3,7 +3,7 @@ import { openItem, setCurrentFilter, filterItems, initilizeBotToggle } from "./s
 import { sendManMessage, items, quickReps, getQuickReps, updateQuickReps, sendBotConf, getCustomPrompt, botPrompts, tokenUsage } from './socket.js';
 
 
-const tagColors = {
+export const tagColors = {
     'Venta': '#4CAF50',
     'Terminada': '#dd7d39'
 }

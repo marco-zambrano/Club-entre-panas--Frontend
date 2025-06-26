@@ -1,11 +1,13 @@
 import { items } from './socket.js'; // variables
 import { updateBotStatus, getItemHistory, getItems, setViewedImgFalse } from './socket.js'; // functions
-import { updateItemsList, createMessage } from './ui.js';
+import { updateItemsList, createMessage, tagColors } from './ui.js';
 
 export let currentItemId = null; // Id of the item actived
 export let currentFilter = null; // define (Chat or Comment)
 let lastToggle = null; // referencia al ultimo toggle que hubo
 let lastToggleHandler = null; // referencia al ultimo addEventListener que hubo (para borrarlo y no acumular eventos)
+let lastTagBtn = null;
+let lastTagBtnHandler = null;
 
 
 //THIS FILTERS ITEMS BY PLATFORM, TYPE(COMMENT OR MESSAGE), AND SORTS THEM
@@ -20,7 +22,7 @@ export function filterItems() {
     //IF BOT TOGGLE IS NOT VISIBLE, SHOW IT
     const botToggle = document.querySelector('.bot-toggle');
     const computedStyle = window.getComputedStyle(botToggle);
-    if (computedStyle.display === 'none') botToggle.style.display = 'block';
+    if (computedStyle.display === 'none') botToggle.style.display = 'flex';
 
     //FILTER THEM BY THE ACTIVATED PLATFORM TOGGLE
     const filteredItems = items[currentFilter].list.filter(item => {
@@ -109,6 +111,44 @@ export function initilizeBotToggle() {
     }
 }
 
+const handleTagBtn = (currentItem) => {
+    let selectedTagButton = null;
+
+    // Función para resetear todos los botones de etiqueta a transparente
+    const resetAllTagButtons = () => {
+        document.querySelectorAll('.tag-btn').forEach(btn => {
+            btn.style.backgroundColor = 'transparent';
+        });
+        selectedTagButton = null; // Aseguramos que no haya ningún botón seleccionado activamente
+    };
+
+    if (currentItem.tag !== 'default') {
+        resetAllTagButtons();
+        const tagElement = document.querySelector(`.tag-btn--${currentItem.tag.toLowerCase()}`);
+        tagElement.style.backgroundColor = tagColors[currentItem.tag];
+        selectedTagButton = tagElement; // Guardamos la referencia de este botón como seleccionado
+    }
+    
+    // Lógica para manejar el clic en los botones de etiqueta
+    document.querySelectorAll('.tag-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const btnElement = e.target;
+            const tagName = btnElement.textContent;
+
+            // Si se hace clic en el botón que ya estaba seleccionado, lo deseleccionamos
+            if (btnElement === selectedTagButton) {
+                resetAllTagButtons(); // Limpiamos todos los botones
+            } else {
+                // Si hay un botón previamente seleccionado, lo reseteamos
+                if (selectedTagButton) {
+                    selectedTagButton.style.backgroundColor = 'transparent';
+                }
+                btnElement.style.backgroundColor = tagColors[tagName];
+                selectedTagButton = btnElement; // Actualizamos el botón seleccionado
+            }
+        });
+    });
+}
 
 //TO OPEN A NEW ITEM
 export function openItem(itemId) {
@@ -136,6 +176,8 @@ export function openItem(itemId) {
     if (messagesContainer) {
         messagesContainer.innerHTML = '';
     }
+
+    handleTagBtn(currentItem);
 
     // Si no hay ningun mensaje en el contenedor messages
     var entryKey = (currentFilter == "contacts") ? "messages" : (currentFilter == "comments") ? "comments" : null;

@@ -484,6 +484,51 @@ input:checked + .slider:before {
     font-size: 1.2em;
     font-weight: bold;
 }
+.bot-toggle.small {
+    display: flex;
+    column-gap: 30px;
+    justify-content: center;
+    align-items: center;
+    
+}
+.tag-btn-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+.tag-btn {
+    padding: 7px 15px;
+    border: .5px solid transparent;
+    border-radius: 15px;
+    background-color: transparent;
+    color: #fff;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.tag-btn--venta {
+    border-color: #4CAF50;
+}
+.tag-btn--venta:hover {
+    background-color: #4caf4f64;
+}
+.tag-btn--terminada {
+    border-color: #DD7D39;
+}
+.tag-btn--terminada:hover {
+    background-color: #dd7d3958;
+}
+.bot-toggle-options {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+.bot-toggle-options span {
+    font-size: 1.15rem;
+}
 .bot-toggle.small .toggle {
     width: 40px;
     height: 20px;
