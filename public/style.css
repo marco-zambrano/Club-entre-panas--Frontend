@@ -16,8 +16,8 @@ body {
 
 .chat-container {
     width: 90%;
-    max-width: 1200px;
-    height: 80vh;
+    max-width: 1300px;
+    height: 90vh;
     background-color: #121212;
     border-radius: 10px;
     overflow: hidden;
@@ -323,11 +323,12 @@ input:checked + .slider:before {
 
 /* item */
 .contact {
-    padding: 15px 15px 25px 15px;
+    padding: 15px 10px 25px 10px;
     border-bottom: 1px solid #333;
     cursor: pointer;
     transition: background-color 0.3s;
     position: relative;
+    min-height: 70px;
 
     display: flex;
     justify-content: space-between;
@@ -339,10 +340,24 @@ input:checked + .slider:before {
     background-color: #1e1e1e;
 }
 
+.contact-tag {
+    position: absolute;
+    top: 2px; 
+    right: 0px; 
+
+    /* background-color: #4CAF50; */
+    color: white;
+    padding: 3px 8px;
+    border-radius: 4px 0px 0px 4px;
+    font-size: 0.58em;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
 .contact-preview {
     position: absolute;
-    left: 15px;
-    bottom: 7px;
+    left: 10px;
+    bottom: 12px;
     
     color: #666;
     font-size: 0.7em;
@@ -356,28 +371,29 @@ input:checked + .slider:before {
 
 .contact-info {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
-    height: 20px;
+    /* height: 20px; */
 }
 .contact-side {
     display: flex;
-    column-gap: 10px;
+    column-gap: 5px;
 }
 .contact-interest {
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
     align-items: center;
-    font-size: .9em;
+    font-size: .8em;
     font-weight: 700;
-    min-width: 18.5px;
+    min-width: 17px;
 }
 .contact-message-time {
     position: absolute;
-    font-size: .6rem;
-    bottom: 5px;
-    right: 15px;
+    font-size: .7rem;
+    bottom: 12px;
+    right: 10px;
     opacity: .8;
+    font-weight: 700;
 }
 
 .contact.hidden {
@@ -426,16 +442,6 @@ input:checked + .slider:before {
     column-gap: 6.5px;
     flex-grow: 1;
 }
-/* .comment-details .post-title {
-    color: #666;
-    font-size: 0.7em;
-    opacity: .8;
-    margin: 4px 0;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 130px;
-} */
 
 /* Área de chat */
 .chat-area {

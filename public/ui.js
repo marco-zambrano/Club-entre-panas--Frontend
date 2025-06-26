@@ -2,6 +2,12 @@ import { currentItemId, currentFilter } from "./script.js"; // Variables
 import { openItem, setCurrentFilter, filterItems, initilizeBotToggle } from "./script.js"; // Functions
 import { sendManMessage, items, quickReps, getQuickReps, updateQuickReps, sendBotConf, getCustomPrompt, botPrompts, tokenUsage } from './socket.js';
 
+
+const tagColors = {
+    'Venta': '#4CAF50',
+    'Terminada': '#dd7d39'
+}
+
 export function createMessage(content, time, sender, type) {
     // create new message
     const messageElement = document.createElement('div');
@@ -12,7 +18,6 @@ export function createMessage(content, time, sender, type) {
     // Contenido del mensaje
     const messageContent = document.createElement('div');
     messageContent.className = 'message-content';
-
 
     // Si es una imagen, crear el elemento img
     if (type === 'image') {
@@ -68,6 +73,15 @@ function createContactCard(contact) {
     contactElement.dataset.itemId = contact.id;
     contactElement.dataset.type = contact.type;
 
+    // Agregamos la etiqueta de categoría si existe
+    if (contact.tag !== 'default') {
+        const tagElement = document.createElement('span');
+        tagElement.className = 'contact-tag'; // Le damos una clase para estilizarla
+        tagElement.textContent = contact.tag;
+        tagElement.style.backgroundColor = `${tagColors[contact.tag]}`
+        contactElement.appendChild(tagElement);
+    }
+
     if (contact.imgViewed === false) { // Si el contacto no ha visto la imagen, creamos un elemento de notificación de imagen
         //  SI ya existe el elemento de notificación de imagen, e imageVisualized es false, mostrar la notificación
         const currentImageNotification = document.getElementById(`image-notification-${contact.id}`);
@@ -107,7 +121,7 @@ function createContactCard(contact) {
     const mesFormateado = mes < 10 ? '0' + mes : mes;
     const minutosFormateados = minutos < 10 ? '0' + minutos : minutos;
 
-    const tiempoFormateado = `${diaFormateado}/${mesFormateado}/${year} ${horas}:${minutosFormateados} ${ampm}`;
+    const tiempoFormateado = `${diaFormateado}/${mesFormateado}/${year} - ${horas}:${minutosFormateados} ${ampm}`;
     // creamos el span de tiempo del ultimo mensaje
     const messageTime = document.createElement('span');
     messageTime.className = 'contact-message-time';
@@ -261,7 +275,7 @@ function createCommentCard(comment) {
     const diaFormateado = dia < 10 ? '0' + dia : dia;
     const mesFormateado = mes < 10 ? '0' + mes : mes;
     const minutosFormateados = minutos < 10 ? '0' + minutos : minutos;
-    const tiempoFormateado = `${diaFormateado}/${mesFormateado}/${year} ${horas}:${minutosFormateados} ${ampm}`;
+    const tiempoFormateado = `${diaFormateado}/${mesFormateado}/${year} - ${horas}:${minutosFormateados} ${ampm}`;
     // Creamos span de tiempo 
     const messageTime = document.createElement('span');
     messageTime.className = 'contact-message-time';
