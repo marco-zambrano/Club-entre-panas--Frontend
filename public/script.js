@@ -193,7 +193,7 @@ export function openItem(itemId) {
         messagesContainer.innerHTML = '';
     }
 
-    handleTagBtn(currentItem);
+    if (currentFilter === 'contacts') handleTagBtn(currentItem);
 
     // Si no hay ningun mensaje en el contenedor messages
     var entryKey = (currentFilter == "contacts") ? "messages" : (currentFilter == "comments") ? "comments" : null;

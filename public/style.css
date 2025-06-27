@@ -990,8 +990,8 @@ input:checked + .slider:before {
 /* Image notification */
 .image-notification {
     position: absolute;
-    bottom: 5px;
-    right: 100px;
+    bottom: 17px;
+    right: 115px;
     background-color: #ed2106;
     color: #fff;
     padding: 2px;
