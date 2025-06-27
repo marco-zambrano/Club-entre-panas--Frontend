@@ -21,7 +21,7 @@ const items = {
                 platform: "facebook",
                 botEnabled: false,
                 interest: 6,
-                imgViewed: true,
+                imgViewed: false,
                 tag: 'default', 
                 messages: [
                     { id: "m8e9a3b1f2d4", content: "example cnotent", type: "text", time: 1672580400000, self: false, type: "text" },

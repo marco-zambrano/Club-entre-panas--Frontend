@@ -496,6 +496,9 @@ input:checked + .slider:before {
     align-items: center;
     gap: 10px;
 }
+.tag-btn-container.active {
+    display: none;
+}
 .tag-btn {
     padding: 7px 15px;
     border: .5px solid transparent;

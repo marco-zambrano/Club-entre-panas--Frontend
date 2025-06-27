@@ -150,6 +150,7 @@ function createContactCard(contact) {
     if (contact.tag !== 'default') {
         const tagElement = document.createElement('span');
         tagElement.className = 'contact-tag'; // Le damos una clase para estilizarla
+        tagElement.id = `contact-tag-${contact.id}`
         tagElement.textContent = contact.tag;
         tagElement.style.backgroundColor = `${tagColors[contact.tag]}`
         contactElement.appendChild(tagElement);
@@ -447,6 +448,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Manejar el filtro de tipo (chat / comentario)
     const chatButton = document.querySelector('.item-chat');
     const commentButton = document.querySelector('.item-comment');
+    const tagBtnsContainer = document.querySelector('.tag-btn-container');
     const whatsAppToggle = document.getElementById('whatsapp-toggle');
     const linkTag = document.querySelector('.post-link');
 
@@ -478,6 +480,7 @@ document.addEventListener('DOMContentLoaded', () => {
     chatButton.addEventListener('click', () => {
         if (currentFilter !== 'contacts') {
             setCurrentFilter('contacts');
+            tagBtnsContainer.classList.toggle('active');
             whatsAppToggle.classList.toggle('active');
             linkTag.classList.toggle('active');
             updateFilterButtons();
@@ -486,8 +489,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     commentButton.addEventListener('click', () => {
         if (currentFilter !== 'comments') {
-            // console.log('llegamos')
             setCurrentFilter('comments');
+            tagBtnsContainer.classList.toggle('active');
             whatsAppToggle.classList.toggle('active');
             linkTag.classList.toggle('active');
             updateFilterButtons();
