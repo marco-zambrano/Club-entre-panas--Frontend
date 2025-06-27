@@ -59,11 +59,17 @@
                     </div>
                     <!-- Toggle encender/apagar bot -->
                     <div class="bot-toggle small">
-                        <span>bot</span>
-                        <label class="toggle">
-                            <input type="checkbox" checked class="individual-bot-toggle">
-                            <span class="slider"></span>
-                        </label>
+                        <div class="tag-btn-container">
+                            <button class="tag-btn tag-btn--venta">Venta</button>
+                            <button class="tag-btn tag-btn--terminada">Terminada</button>
+                        </div>
+                        <div class="bot-toggle-options">
+                            <span>Bot</span>
+                            <label class="toggle">
+                                <input type="checkbox" checked class="individual-bot-toggle">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
                     </div>
                 </div>
 
@@ -73,6 +79,23 @@
                 <!-- input text to send manual messages -->
                 <div class="message-input-container">
                     <input type="text" class="message-input" placeholder="Escribir mensaje">
+                    <div class="image-preview-container" style="display: none;">
+                        <img src="" alt="Image preview" class="image-preview-thumbnail">
+                        <span class="image-preview-filename"></span>
+                        <button class="image-preview-cancel-button">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <input type="file" id="image-file-input" accept="image/*" capture="camera" style="display: none;">
+                    <div class="attachment-container">
+                        <button class="attach-button">
+                            <i class="fas fa-paperclip"></i>
+                        </button>
+                        <div class="attachment-menu">
+                            <button id="upload-image-btn"><i class="fas fa-upload"></i></button>
+                            <button id="take-photo-btn"><i class="fas fa-camera"></i></button>
+                        </div>
+                    </div>
                     <button class="send-button">
                         <i class="fas fa-arrow-right"></i>
                     </button>
