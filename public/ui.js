@@ -428,6 +428,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const contactName = clicked.querySelector('.contact-name').textContent;
         document.querySelector('.chat-title').textContent = contactName;
 
+        // ocultamos la item list, al darle click al item, en caso que estemos en vista de telefono
+        const mediaQuery = window.matchMedia('(max-width: 768px)');
+        if (mediaQuery.matches) {
+            document.querySelector('.contacts-list').classList.toggle('show');
+        }
+
         //actualizar el bot toggle
         initilizeBotToggle();
     });
