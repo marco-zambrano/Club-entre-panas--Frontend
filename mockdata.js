@@ -268,7 +268,7 @@ const items = {
             },
             {
                 id: "3d9e1b7f0a2c",
-                name: "Martín Rueda",
+                name: "Martín Rueda +593 98 4973 460",
                 platform: "whatsapp",
                 botEnabled: false,
                 interest: 3,
@@ -330,7 +330,7 @@ const items = {
             },
             {
                 id: "d8b3f2a1c0e9",
-                name: "Elena Flores",
+                name: "Elena Flores +593 98 4973 460",
                 platform: "whatsapp",
                 botEnabled: true,
                 interest: 9,
@@ -380,7 +380,7 @@ const items = {
             },
             {
                 id: "d1e9b0a2c3f7",
-                name: "Liliana Castro",
+                name: "Liliana Castro +593 98 4973 460",
                 platform: "whatsapp",
                 botEnabled: true,
                 interest: 6,
@@ -430,7 +430,7 @@ const items = {
             },
             {
                 id: "f0d6b1a2c9e3",
-                name: "Silvia Guzmán",
+                name: "Silvia Guzmán\n+593 98 4973 460",
                 platform: "whatsapp",
                 botEnabled: true,
                 interest: 9,
@@ -480,7 +480,7 @@ const items = {
             },
             {
                 id: "e1f0a9c3b2d8",
-                name: "Wendy Guzmán",
+                name: "Wendy Guzmán +593 98 4973 460",
                 platform: "whatsapp",
                 botEnabled: true,
                 interest: 8,

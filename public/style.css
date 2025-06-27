@@ -1212,6 +1212,16 @@ input:checked + .slider:before {
     .bot-modification h3 {
         font-size: 1em;
     }
+
+    .tag-btn {
+        padding: 5px 12px;
+    }
+}
+
+@media (max-width: 470px) {
+    .chat-title {
+        display: none;
+    }
 }
 
 /* Estilos para cuando la pantalla está en modo vertical (móvil) */
