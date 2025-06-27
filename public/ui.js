@@ -2,6 +2,19 @@ import { currentItemId, currentFilter } from "./script.js"; // Variables
 import { openItem, setCurrentFilter, filterItems, initilizeBotToggle } from "./script.js"; // Functions
 import { sendManMessage, items, quickReps, getQuickReps, updateQuickReps, sendBotConf, getCustomPrompt, botPrompts, tokenUsage } from './socket.js';
 
+// DOM Elements
+const messageInput = document.querySelector('.message-input');
+const sendButton = document.querySelector('.send-button');
+const attachButton = document.querySelector('.attach-button');
+const imageFileInput = document.getElementById('image-file-input');
+const imagePreviewContainer = document.querySelector('.image-preview-container');
+const imagePreviewThumbnail = document.querySelector('.image-preview-thumbnail');
+const imagePreviewFilename = document.querySelector('.image-preview-filename');
+const imagePreviewCancelButton = document.querySelector('.image-preview-cancel-button');
+const messagesContainer = document.querySelector('.messages');
+const messageInputContainer = document.querySelector('.message-input-container');
+
+let stagedImageFile = null; // To hold the image file before sending
 
 export const tagColors = {
     'Venta': '#4CAF50',
@@ -57,10 +70,70 @@ export function createMessage(content, time, sender, type) {
     messageContent.appendChild(timeSpan);
     messageElement.appendChild(messageContent);
     // Agregar al main container
-    const messagesContainer = document.querySelector('.messages');
     messagesContainer.appendChild(messageElement);
 
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
+}
+
+// Function to handle image file (from input or drag-and-drop)
+function handleImageFile(file) {
+    if (!file || !file.type.startsWith('image/')) {
+        alert('Please select an image file.');
+        return;
+    }
+
+    stagedImageFile = file; // Store the file
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        imagePreviewThumbnail.src = e.target.result;
+        imagePreviewFilename.textContent = file.name;
+        messageInput.style.display = 'none';
+        imagePreviewContainer.style.display = 'flex';
+    };
+    reader.readAsDataURL(file);
+}
+
+// Function to send image message
+function sendImageMessage() {
+    if (!stagedImageFile) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        const base64Image = e.target.result;
+        const recipientPlatform = items[currentFilter].list.find(item => item.id === currentItemId).platform;
+        const messageTime = Date.now();
+
+        sendManMessage(currentItemId, "image", base64Image, currentFilter, recipientPlatform);
+
+        createMessage(base64Image, messageTime, 'bot', 'image');
+        const entry = {
+            content: base64Image,
+            time: messageTime,
+            type: "image",
+            self: true
+        }
+
+        var entryKey = (currentFilter == "contacts") ? "messages" : (currentFilter == "comments") ? "comments" : null;
+        items[currentFilter].list.find(item => item.id === currentItemId)[entryKey].push(entry);
+
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        filterItems();
+        
+        // Clear the staged image and revert UI
+        clearImagePreview();
+    };
+    reader.readAsDataURL(stagedImageFile);
+}
+
+// Function to clear image preview and revert UI
+function clearImagePreview() {
+    stagedImageFile = null;
+    imagePreviewThumbnail.src = '';
+    imagePreviewFilename.textContent = '';
+    imagePreviewContainer.style.display = 'none';
+    messageInput.style.display = 'block';
+    messageInput.value = ''; // Clear any text that might have been there
 }
 
 
@@ -329,11 +402,12 @@ export function updateItemsList(items, currentFilter) {
     // Si no hay items visibles, mostrar mensaje
     if (!currentItem && items.length === 0){
         document.querySelector('.chat-title').textContent = 'Selecciona un contacto o comentario';
-        document.querySelector('.messages').innerHTML = '';
+        messagesContainer.innerHTML = '';
         document.querySelector('.bot-toggle').style.display = 'none';
         openItem(null);
     }
 }
+
 
 document.addEventListener('DOMContentLoaded', () => {
     // event listener for the contact or comment list
@@ -380,6 +454,23 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateFilterButtons() {
         chatButton.classList.toggle('active', currentFilter === 'contacts');
         commentButton.classList.toggle('active', currentFilter === 'comments');
+        
+        // Hide/show attach button based on filter
+        if (currentFilter === 'comments') {
+            messageInputContainer.classList.add('hide-attach');
+            clearImagePreview(); // Clear any staged image if switching to comments
+        } else {
+            messageInputContainer.classList.remove('hide-attach');
+        }
+    
+        
+        // Hide/show attach button based on filter
+        if (currentFilter === 'comments') {
+            messageInputContainer.classList.add('hide-attach');
+            clearImagePreview(); // Clear any staged image if switching to comments
+        } else {
+            messageInputContainer.classList.remove('hide-attach');
+        }
     }
 
     updateFilterButtons();
@@ -406,6 +497,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Send message functionality
     function sendMessage(messageText) {
+        if (stagedImageFile) {
+            sendImageMessage();
+            return;
+        }
+
         if (!messageText) return
 
         const recipientPlatform = items[currentFilter].list.find(item => item.id === currentItemId).platform;
@@ -428,27 +524,75 @@ document.addEventListener('DOMContentLoaded', () => {
         items[currentFilter].list.find(item => item.id === currentItemId)[entryKey].push(entry);
 
         // Scroll al final de los mensajes
-        const messagesContainer = document.querySelector('.messages');
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
         filterItems();
     }
 
     const handleInputMessage = () => {
-        const input = document.querySelector('.message-input');
-        const messageValue = input.value.trim();
+        const messageValue = messageInput.value.trim();
         sendMessage(messageValue);
-        input.value = '';
+        messageInput.value = '';
     }
 
-    document.querySelector('.send-button').addEventListener('click', () => {
+    sendButton.addEventListener('click', () => {
         handleInputMessage();
     });
 
-    document.querySelector('.message-input').addEventListener('keypress', function(e) {
+    messageInput.addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
             handleInputMessage();
         }
     });
+
+    // Image attachment and drag-and-drop
+    const attachmentMenu = document.querySelector('.attachment-menu');
+    const uploadImageBtn = document.getElementById('upload-image-btn');
+    const takePhotoBtn = document.getElementById('take-photo-btn');
+
+    attachButton.addEventListener('click', () => {
+        attachmentMenu.style.display = attachmentMenu.style.display === 'block' ? 'none' : 'block';
+    });
+
+    uploadImageBtn.addEventListener('click', () => {
+        imageFileInput.removeAttribute('capture');
+        imageFileInput.click();
+        attachmentMenu.style.display = 'none';
+    });
+
+    takePhotoBtn.addEventListener('click', () => {
+        imageFileInput.setAttribute('capture', 'camera');
+        imageFileInput.click();
+        attachmentMenu.style.display = 'none';
+    });
+
+    imageFileInput.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        handleImageFile(file);
+    });
+
+    imagePreviewCancelButton.addEventListener('click', clearImagePreview);
+
+    messageInputContainer.addEventListener('dragover', (event) => {
+        event.preventDefault();
+        if (currentFilter === 'contacts') { // Only allow drag-over for contacts
+            messageInputContainer.classList.add('drag-over');
+        }
+    });
+
+    messageInputContainer.addEventListener('dragleave', (event) => {
+        event.preventDefault();
+        messageInputContainer.classList.remove('drag-over');
+    });
+
+    messageInputContainer.addEventListener('drop', (event) => {
+        event.preventDefault();
+        messageInputContainer.classList.remove('drag-over');
+        if (currentFilter === 'contacts') { // Only process drop for contacts
+            const file = event.dataTransfer.files[0];
+            handleImageFile(file);
+        }
+    });
+
 
     // --- MODALES Y BOTONES ---
     // Modal Principal
@@ -512,7 +656,7 @@ document.addEventListener('DOMContentLoaded', () => {
             botTextArea[1].value = 'Cargando...'; // cleaning the json table text area value
             botConfigModal.classList.add('show');
             await getCustomPrompt(); // Get the bot configuration
-            botTextArea[0].value = botPrompts.prompt; // Set the bot configuration to the text areaAdd commentMore actions
+            botTextArea[0].value = botPrompts.prompt; // Set the bot configuration to the text area
             botTextArea[1].value = botPrompts.dataTable; // Set the bot configuration to the text area
             const tokenUsageLabel = document.querySelector('.token-usage p');
             if (tokenUsageLabel) {

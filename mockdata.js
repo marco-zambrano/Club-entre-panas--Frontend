@@ -8,6 +8,7 @@ const items = {
                 platform: "facebook",
                 botEnabled: true,
                 interest: 8,
+                imgViewed: true,
                 tag: 'Venta', 
                 messages: [
                     { id: "m1a8d4c9b7f0", content: "salam aukjdfsajl", type: "audio", time: 1672576800000, self: false },
@@ -20,6 +21,7 @@ const items = {
                 platform: "facebook",
                 botEnabled: false,
                 interest: 6,
+                imgViewed: true,
                 tag: 'default', 
                 messages: [
                     { id: "m8e9a3b1f2d4", content: "example cnotent", type: "text", time: 1672580400000, self: false, type: "text" },
@@ -33,6 +35,7 @@ const items = {
                 platform: "facebook",
                 botEnabled: true,
                 interest: 9,
+                imgViewed: true,
                 tag: 'Terminada', 
                 messages: [
                     { id: "m9a6b3c2f1e7", content: "hi alice", type: "text", time: 1672584000000, self: true },
@@ -45,6 +48,7 @@ const items = {
                 platform: "instagram",
                 botEnabled: false,
                 interest: 4,
+                imgViewed: true,
                 tag: 'Venta', 
                 messages: [
                     { id: "m3e2a9f6b0c1", content: "are you there?", type: "text", time: 1672587600000, self: true },
@@ -58,6 +62,7 @@ const items = {
                 platform: "facebook",
                 botEnabled: true,
                 interest: 7,
+                imgViewed: true,
                 tag: 'default', 
                 messages: [
                     { id: "m8c3f1e0b7a2", content: "buenos días", type: "text", time: 1672591200000, self: false },
@@ -70,6 +75,7 @@ const items = {
                 platform: "facebook",
                 botEnabled: false,
                 interest: 5,
+                imgViewed: true,
                 tag: 'Terminada', 
                 messages: [
                     { id: "m1f0a9c3e2b6", content: "me interesa mucho", type: "text", time: 1672594800000, self: false }
@@ -81,6 +87,7 @@ const items = {
                 platform: "instagram",
                 botEnabled: true,
                 interest: 6,
+                imgViewed: true,
                 tag: 'Venta', 
                 messages: [
                     { id: "m5e9a0f3c2b7", content: "¿está disponible aún?", type: "text", time: 1672598400000, self: false },
@@ -93,6 +100,7 @@ const items = {
                 platform: "facebook",
                 botEnabled: false,
                 interest: 2,
+                imgViewed: true,
                 tag: 'default', 
                 messages: [
                     { id: "m3c9f1a0e2b4", content: "necesito más info", type: "text", time: 1672602000000, self: false }
@@ -104,6 +112,7 @@ const items = {
                 platform: "facebook",
                 botEnabled: true,
                 interest: 8,
+                imgViewed: true,
                 tag: 'Terminada', 
                 messages: [
                     { id: "m0f1e3a9b6c4", content: "buenas noches", type: "text", time: 1672605600000, self: false },
@@ -117,6 +126,7 @@ const items = {
                 platform: "instagram",
                 botEnabled: false,
                 interest: 3,
+                imgViewed: true,
                 tag: 'Venta', 
                 messages: [
                     { id: "m6b2f3e1a0c7", content: "me puedes llamar?", type: "text", time: 1672609200000, self: false }
@@ -128,6 +138,7 @@ const items = {
                 platform: "facebook",
                 botEnabled: true,
                 interest: 7,
+                imgViewed: false,
                 tag: 'default', 
                 messages: [
                     { id: "m1c9a3f2e0b7", content: "te mandé mensaje", type: "text", time: 1672612800000, self: false },
@@ -141,6 +152,7 @@ const items = {
                 platform: "facebook",
                 botEnabled: false,
                 interest: 4,
+                imgViewed: true,
                 tag: 'Terminada', 
                 messages: [
                     { id: "m2a1c0f3e9b5", content: "listo para la reunión", type: "audio", time: 1672616400000, self: false },
@@ -159,6 +171,7 @@ const items = {
                 platform: "instagram",
                 botEnabled: true,
                 interest: 6,
+                imgViewed: true,
                 tag: 'Venta', 
                 messages: [
                     { id: "m0e3f1a2c6b9", content: "me interesa el producto", type: "text", time: 1672620000000, self: false }
@@ -170,6 +183,7 @@ const items = {
                 platform: "facebook",
                 botEnabled: false,
                 interest: 5,
+                imgViewed: true,
                 tag: 'default', 
                 messages: [
                     { id: "m7a2c0e1f3b6", content: "gracias por responder", type: "audio", time: 1672623600000, self: false },
@@ -182,6 +196,7 @@ const items = {
                 platform: "facebook",
                 botEnabled: true,
                 interest: 9,
+                imgViewed: true,
                 tag: 'Terminada', 
                 messages: [
                     { id: "m1e9a3f0b7c2", content: "hay descuento?", type: "text", time: 1672627200000, self: false },
@@ -194,6 +209,7 @@ const items = {
                 platform: "instagram",
                 botEnabled: false,
                 interest: 4,
+                imgViewed: true,
                 tag: 'Venta', 
                 messages: [
                     { id: "m3f9e1a0b2c6", content: "cuándo llega el pedido?", type: "audio", time: 1672630800000, self: false }
@@ -205,6 +221,7 @@ const items = {
                 platform: "facebook",
                 botEnabled: true,
                 interest: 6,
+                imgViewed: true,
                 tag: 'default', 
                 messages: [
                     { id: "m9c2b1f0e3a7", content: "recibí el producto", type: "text", time: 1672634400000, self: false },
@@ -217,6 +234,7 @@ const items = {
                 platform: "messenger",
                 botEnabled: true,
                 interest: 8,
+                imgViewed: true,
                 tag: 'Terminada', 
                 messages: [
                     { id: "m7d9e2c1b0a3", content: "hola, estoy interesada en el servicio", type: "text", time: 1672638000000, self: false },
@@ -229,6 +247,7 @@ const items = {
                 platform: "instagram",
                 botEnabled: false,
                 interest: 5,
+                imgViewed: true,
                 tag: 'Venta', 
                 messages: [
                     { id: "m2c9f0a3e1b7", content: "tienes stock?", type: "text", time: 1672641600000, self: false }
@@ -240,6 +259,7 @@ const items = {
                 platform: "facebook",
                 botEnabled: true,
                 interest: 9,
+                imgViewed: true,
                 tag: 'default', 
                 messages: [
                     { id: "m8b0d2e1f9a3", content: "gracias por la información", type: "text", time: 1672645200000, self: false },
@@ -252,6 +272,7 @@ const items = {
                 platform: "whatsapp",
                 botEnabled: false,
                 interest: 3,
+                imgViewed: true,
                 tag: 'Terminada', 
                 messages: [
                     { id: "m5f0a2c9e1b3", content: "ok, entendido", type: "text", time: 1672648800000, self: false }
@@ -263,6 +284,7 @@ const items = {
                 platform: "facebook",
                 botEnabled: true,
                 interest: 7,
+                imgViewed: true,
                 tag: 'Venta', 
                 messages: [
                     { id: "m9a1c3f0e2b7", content: "cuando envías?", type: "text", time: 1672652400000, self: false },
@@ -275,6 +297,7 @@ const items = {
                 platform: "instagram",
                 botEnabled: false,
                 interest: 6,
+                imgViewed: true,
                 tag: 'default', 
                 messages: [
                     { id: "m1f9e3a0c2b6", content: "¿cómo hago el pago?", type: "text", time: 1672656000000, self: false }
@@ -286,6 +309,7 @@ const items = {
                 platform: "messenger",
                 botEnabled: true,
                 interest: 8,
+                imgViewed: true,
                 tag: 'Terminada', 
                 messages: [
                     { id: "m7c0b1f9e2a3", content: "me confirmas la dirección?", type: "text", time: 1672659600000, self: false },
@@ -298,6 +322,7 @@ const items = {
                 platform: "facebook",
                 botEnabled: false,
                 interest: 4,
+                imgViewed: true,
                 tag: 'Venta', 
                 messages: [
                     { id: "m3c9f1a0e2b4", content: "gracias por tu tiempo", type: "text", time: 1672663200000, self: false }
@@ -309,6 +334,7 @@ const items = {
                 platform: "whatsapp",
                 botEnabled: true,
                 interest: 9,
+                imgViewed: true,
                 tag: 'default', 
                 messages: [
                     { id: "m6c9a0f3e1b2", content: "excelente servicio!", type: "text", time: 1672666800000, self: false },
@@ -321,6 +347,7 @@ const items = {
                 platform: "instagram",
                 botEnabled: false,
                 interest: 5,
+                imgViewed: true,
                 tag: 'Terminada', 
                 messages: [
                     { id: "m9f3e1b2a0c6", content: "tienen alguna promoción?", type: "text", time: 1672670400000, self: false }
@@ -332,6 +359,7 @@ const items = {
                 platform: "facebook",
                 botEnabled: true,
                 interest: 7,
+                imgViewed: true,
                 tag: 'Venta', 
                 messages: [
                     { id: "m1a0c6f9e2b3", content: "ya hice la transferencia", type: "text", time: 1672674000000, self: false },
@@ -344,6 +372,7 @@ const items = {
                 platform: "messenger",
                 botEnabled: false,
                 interest: 3,
+                imgViewed: true,
                 tag: 'default', 
                 messages: [
                     { id: "m7e2b0a1f3c9", content: "necesito ayuda con la instalación", type: "text", time: 1672677600000, self: false }
@@ -355,6 +384,7 @@ const items = {
                 platform: "whatsapp",
                 botEnabled: true,
                 interest: 6,
+                imgViewed: true,
                 tag: 'Terminada', 
                 messages: [
                     { id: "m2c0f3a9e1b8", content: "me encantó el producto, gracias!", type: "text", time: 1672681200000, self: false },
@@ -367,6 +397,7 @@ const items = {
                 platform: "facebook",
                 botEnabled: false,
                 interest: 5,
+                imgViewed: true,
                 tag: 'Venta', 
                 messages: [
                     { id: "m8e1c3f0a9b2", content: "cuando abren mañana?", type: "text", time: 1672684800000, self: false }
@@ -378,6 +409,7 @@ const items = {
                 platform: "instagram",
                 botEnabled: true,
                 interest: 8,
+                imgViewed: true,
                 tag: 'default', 
                 messages: [
                     { id: "m3a6f0e1c9b2", content: "tienen servicio a domicilio?", type: "text", time: 1672688400000, self: false },
@@ -390,6 +422,7 @@ const items = {
                 platform: "messenger",
                 botEnabled: false,
                 interest: 4,
+                imgViewed: true,
                 tag: 'Terminada', 
                 messages: [
                     { id: "m1b7d0a2c9f3", content: "no me llegó la confirmación", type: "text", time: 1672692000000, self: false }
@@ -401,6 +434,7 @@ const items = {
                 platform: "whatsapp",
                 botEnabled: true,
                 interest: 9,
+                imgViewed: true,
                 tag: 'Venta', 
                 messages: [
                     { id: "m4a9c3f0e1b7", content: "todo perfecto, muchas gracias!", type: "text", time: 1672695600000, self: false },
@@ -413,6 +447,7 @@ const items = {
                 platform: "facebook",
                 botEnabled: false,
                 interest: 2,
+                imgViewed: true,
                 tag: 'default', 
                 messages: [
                     { id: "m9c3f0a1e2b7", content: "no entiendo cómo funciona", type: "text", time: 1672699200000, self: false }
@@ -424,6 +459,7 @@ const items = {
                 platform: "instagram",
                 botEnabled: true,
                 interest: 7,
+                imgViewed: true,
                 tag: 'Terminada', 
                 messages: [
                     { id: "m2f0e1b9c3a7", content: "puedo pagar con tarjeta?", type: "text", time: 1672702800000, self: false },
@@ -436,6 +472,7 @@ const items = {
                 platform: "messenger",
                 botEnabled: false,
                 interest: 6,
+                imgViewed: true,
                 tag: 'Venta', 
                 messages: [
                     { id: "m1c0f9a3e2b7", content: "cuando tienen nuevos modelos?", type: "text", time: 1672706400000, self: false }
@@ -447,6 +484,7 @@ const items = {
                 platform: "whatsapp",
                 botEnabled: true,
                 interest: 8,
+                imgViewed: true,
                 tag: 'default', 
                 messages: [
                     { id: "m4b7c0f1e9a2", content: "ya recomendé su página a mis amigos", type: "text", time: 1672710000000, self: false },
@@ -459,6 +497,7 @@ const items = {
                 platform: "facebook",
                 botEnabled: false,
                 interest: 4,
+                imgViewed: true,
                 tag: 'Terminada', 
                 messages: [
                     { id: "m9e2c0f1b7a3", content: "no me responden los mensajes", type: "text", time: 1672713600000, self: false }
@@ -470,6 +509,7 @@ const items = {
                 platform: "instagram",
                 botEnabled: true,
                 interest: 9,
+                imgViewed: true,
                 tag: 'Venta', 
                 messages: [
                     { id: "m2b7f0a1e9c3", content: "me llegó antes de lo esperado, genial!", type: "text", time: 1672717200000, self: false },
@@ -482,6 +522,7 @@ const items = {
                 platform: "messenger",
                 botEnabled: false,
                 interest: 5,
+                imgViewed: true,
                 tag: 'default', 
                 messages: [
                     { id: "m8f3e1b0a2c7", content: "tienen tienda física?", type: "text", time: 1672720800000, self: false }
