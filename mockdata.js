@@ -330,7 +330,7 @@ const items = {
             },
             {
                 id: "d8b3f2a1c0e9",
-                name: "Elena Flores +593 98 4973 460",
+                name: "Elena Flores Elena Zambrano +593 98 4973 460",
                 platform: "whatsapp",
                 botEnabled: true,
                 interest: 9,
