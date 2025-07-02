@@ -6,7 +6,7 @@ export const socket = io("https://panasresponde.work", {
     path: "/ruta/secreta/secretisima/socket.io"
 });
 
-const ITEMS_PER_PAGE = 20;
+// const ITEMS_PER_PAGE = 20;
 
 // MAY GOD BLESS THIS CODE
 export var items = {
@@ -62,8 +62,7 @@ export function sendManMessage(metaId, type, content, filter, platform) {
 
 //GET ITEM MESSAGES HISTORY
 export function getItemHistory(itemId, filter) {
-    console.error('getItemHistory used, very rare, should investigate');
-    console.error(items.contacts.list);
+    console.log('estamos');
     
     socket.emit('getItemHistory', {itemId, filter});
 }
@@ -79,7 +78,6 @@ export function updateQuickReps(arr){ // Actualizar QRs, tanto si eliminas o agr
     socket.emit("updateQuickReps", arr);
 }
 
-// Bot config
 export let botPrompts = {};
 export var tokenUsage = 0;
 
@@ -155,7 +153,7 @@ socket.on('itemContentHistory', (entries) => {
 socket.on('newItems', (data) => { //RECEIVES LIST, TYPE, ALLITEMSLOADED.
     //IF DATA FILTER IS UNDEFINED, RETURN
     if (!items[data.filter]){
-        console.error('Data.type undefined when sending newItems: ', data.filter);
+        // console.log('Data.type undefined when sending newItems: ', data.filter);
         return;
     }
 
@@ -271,6 +269,6 @@ socket.on('newMessage', (data) => {
             createMessage(data[dataKey].content, data[dataKey].time, senderString, data[dataKey].type); //WILL CHANGE FOR EPOCH
         }
     }
-
+    
     filterItems(); // Filter the items and show them in front
 });

@@ -496,6 +496,9 @@ input:checked + .slider:before {
     align-items: center;
     gap: 10px;
 }
+.tag-btn-container.active {
+    display: none;
+}
 .tag-btn {
     padding: 7px 15px;
     border: .5px solid transparent;
@@ -990,8 +993,8 @@ input:checked + .slider:before {
 /* Image notification */
 .image-notification {
     position: absolute;
-    bottom: 5px;
-    right: 100px;
+    bottom: 17px;
+    right: 115px;
     background-color: #ed2106;
     color: #fff;
     padding: 2px;
@@ -1126,6 +1129,10 @@ input:checked + .slider:before {
 }
 
 @media (max-width: 576px) {
+    .chat-header {
+        flex-direction: column;
+        row-gap: 6px;
+    }
     .filters {
         padding: 25px 10px 10px 10px;
         column-gap: 15px;
@@ -1162,6 +1169,13 @@ input:checked + .slider:before {
     
     .platform span {
         display: none;
+    }
+
+    .bot-toggle.small {
+        column-gap: 10px;
+    }
+    .bot-toggle-options span {
+        font-size: 1rem;
     }
     
     .chat-area {
@@ -1212,7 +1226,18 @@ input:checked + .slider:before {
     .bot-modification h3 {
         font-size: 1em;
     }
+
+    .tag-btn {
+        padding: 5px 12px;
+        font-size: .75rem;
+    }
 }
+
+/* @media (max-width: 470px) {
+    .chat-title {
+        display: none;
+    }
+} */
 
 /* Estilos para cuando la pantalla está en modo vertical (móvil) */
 @media (max-height: 600px) {

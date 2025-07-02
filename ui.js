@@ -150,6 +150,7 @@ function createContactCard(contact) {
     if (contact.tag !== 'default') {
         const tagElement = document.createElement('span');
         tagElement.className = 'contact-tag'; // Le damos una clase para estilizarla
+        tagElement.id = `contact-tag-${contact.id}`
         tagElement.textContent = contact.tag;
         tagElement.style.backgroundColor = `${tagColors[contact.tag]}`
         contactElement.appendChild(tagElement);
@@ -427,6 +428,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const contactName = clicked.querySelector('.contact-name').textContent;
         document.querySelector('.chat-title').textContent = contactName;
 
+        // ocultamos la item list, al darle click al item, en caso que estemos en vista de telefono
+        const mediaQuery = window.matchMedia('(max-width: 768px)');
+        if (mediaQuery.matches) {
+            document.querySelector('.contacts-list').classList.toggle('show');
+        }
+
         //actualizar el bot toggle
         initilizeBotToggle();
     });
@@ -447,6 +454,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Manejar el filtro de tipo (chat / comentario)
     const chatButton = document.querySelector('.item-chat');
     const commentButton = document.querySelector('.item-comment');
+    const tagBtnsContainer = document.querySelector('.tag-btn-container');
     const whatsAppToggle = document.getElementById('whatsapp-toggle');
     const linkTag = document.querySelector('.post-link');
 
@@ -478,6 +486,7 @@ document.addEventListener('DOMContentLoaded', () => {
     chatButton.addEventListener('click', () => {
         if (currentFilter !== 'contacts') {
             setCurrentFilter('contacts');
+            tagBtnsContainer.classList.toggle('active');
             whatsAppToggle.classList.toggle('active');
             linkTag.classList.toggle('active');
             updateFilterButtons();
@@ -486,8 +495,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     commentButton.addEventListener('click', () => {
         if (currentFilter !== 'comments') {
-            // console.log('llegamos')
             setCurrentFilter('comments');
+            tagBtnsContainer.classList.toggle('active');
             whatsAppToggle.classList.toggle('active');
             linkTag.classList.toggle('active');
             updateFilterButtons();

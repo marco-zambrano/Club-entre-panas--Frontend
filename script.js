@@ -147,17 +147,35 @@ const handleTagBtn = currentItem => {
     // Creamos la función del listener aquí. Al hacerlo, "captura" el `currentItem`
     // de esta llamada específica (esto es una clausura o closure).
     currentActiveHandler = e => {
+        let itemTag = document.getElementById(`contact-tag-${currentItem.id}`); // obtenemos el tag del item contact
+        //si la etiqueta visual no existe aún para este contacto, busca el contenedor, crea los elementos necesarios y añade todo al contenedor del contacto
+        if (!itemTag) {
+            const itemElementContainer = document.querySelector(`.contact[data-item-id="${currentItem.id}"]`);
+            const tagElement = document.createElement('span');
+            tagElement.className = 'contact-tag'; // Le damos una clase para estilizarla
+            tagElement.id = `contact-tag-${currentItem.id}`;
+            itemTag = tagElement;
+            itemElementContainer.appendChild(tagElement);
+        }
         const btnElement = e.currentTarget; // Usar currentTarget es más seguro
         const tagName = btnElement.textContent;
 
-        if (btnElement === selectedTagButton) {
+        if (btnElement === selectedTagButton) { //si se clickea un boton que ya estaba seleccionado
             resetAllTagButtons();
             setTagBtnStatus("default", currentItem.id);
-        } else {
+
+            itemTag.style.backgroundColor = `transparent`;
+            itemTag.textContent = '';
+            currentItem.tag = 'default';
+        } else { //sino, resetea todos los botones y añade las clases y propiedades necesarias
             resetAllTagButtons();
             btnElement.style.backgroundColor = tagColors[tagName];
             setTagBtnStatus(btnElement.textContent, currentItem.id);
             selectedTagButton = btnElement;
+
+            itemTag.style.backgroundColor = tagColors[tagName];
+            itemTag.textContent = tagName;
+            currentItem.tag = tagName;
         }
     };
 
@@ -172,7 +190,7 @@ export function openItem(itemId) {
     if (!currentItemId) return;
 
     const currentItem = items[currentFilter].list.find(item => item.id === currentItemId);
-
+    
     if (!currentItem) return;
 
     if (currentItem.imgViewed === false) {
@@ -193,7 +211,7 @@ export function openItem(itemId) {
         messagesContainer.innerHTML = '';
     }
 
-    handleTagBtn(currentItem);
+    if (currentFilter === 'contacts') handleTagBtn(currentItem);
 
     // Si no hay ningun mensaje en el contenedor messages
     var entryKey = (currentFilter == "contacts") ? "messages" : (currentFilter == "comments") ? "comments" : null;
