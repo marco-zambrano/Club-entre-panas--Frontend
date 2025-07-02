@@ -1,6 +1,6 @@
 import { currentItemId, currentFilter } from "./script.js"; // Variables
 import { openItem, setCurrentFilter, filterItems, initilizeBotToggle } from "./script.js"; // Functions
-import { sendManMessage, items, quickReps, getQuickReps, updateQuickReps, sendBotConf, getCustomPrompt, botPrompts, tokenUsage } from './socket.js';
+import { sendManMessage, items, quickReps, getQuickReps, updateQuickReps, sendBotConf, getCustomPrompt, botPrompts, tokenUsage, reportErrorToBackend } from './socket.js';
 
 // DOM Elements
 const messageInput = document.querySelector('.message-input');
@@ -835,3 +835,24 @@ document.addEventListener('DOMContentLoaded', () => {
     repliesModalConfiguration();
     createReplyModal();
 })
+
+//CAPTURE AND REPORT ERRORS
+window.onerror = function (message, source, lineno, colno, error) {
+  reportErrorToBackend({
+    type: 'error',
+    message,
+    source,
+    lineno,
+    colno,
+    stack: error?.stack
+  });
+};
+
+// CAPTURE UNHANDLED PROMISE REJECTIONS
+window.addEventListener('unhandledrejection', function (event) {
+  reportErrorToBackend({
+    type: 'unhandledrejection',
+    message: event.reason?.message || String(event.reason),
+    stack: event.reason?.stack
+  });
+});
