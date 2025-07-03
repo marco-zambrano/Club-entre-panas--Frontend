@@ -29,6 +29,11 @@ export function reportErrorToBackend(error) {
     socket.emit('reportError', error);
 }
 
+// FOR DEBUGGING PURPOSES
+export function sendDebugMessage(message) {
+    socket.emit('debugMessage', message);
+}
+
 // GET ITEMS FROM THE BACKEND
 export function getItems(filter) { //must be "contacts" or "comments" PLURAL
     socket.emit('getItems', {

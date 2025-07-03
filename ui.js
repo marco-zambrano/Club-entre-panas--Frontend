@@ -1,6 +1,6 @@
 import { currentItemId, currentFilter } from "./script.js"; // Variables
 import { openItem, setCurrentFilter, filterItems, initilizeBotToggle } from "./script.js"; // Functions
-import { sendManMessage, items, quickReps, getQuickReps, updateQuickReps, sendBotConf, getCustomPrompt, botPrompts, tokenUsage, reportErrorToBackend } from './socket.js';
+import { sendManMessage, items, quickReps, getQuickReps, updateQuickReps, sendBotConf, getCustomPrompt, botPrompts, tokenUsage, reportErrorToBackend, sendDebugMessage } from './socket.js';
 
 // DOM Elements
 const messageInput = document.querySelector('.message-input');
@@ -97,6 +97,7 @@ function handleImageFile(file) {
 // Function to send image message
 function sendImageMessage() {
     if (!stagedImageFile) return;
+    sendDebugMessage("Sending image message");
 
     const reader = new FileReader();
     reader.onload = (e) => {
@@ -512,6 +513,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (!messageText) return
+        sendDebugMessage(`Sending message: ${messageText}`);
 
         const recipientPlatform = items[currentFilter].list.find(item => item.id === currentItemId).platform;
         const messageTime = Date.now();
