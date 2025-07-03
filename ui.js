@@ -79,13 +79,16 @@ export function createMessage(content, time, sender, type) {
 function handleImageFile(file) {
     if (!file || !file.type.startsWith('image/')) {
         alert('Please select an image file.');
+        sendDebugMessage("Invalid file selected, not an image.");
         return;
     }
 
+    sendDebugMessage(`Image file selected: ${file.name}`);
     stagedImageFile = file; // Store the file
 
     const reader = new FileReader();
     reader.onload = (e) => {
+        sendDebugMessage("Image file processed, showing preview.");
         imagePreviewThumbnail.src = e.target.result;
         imagePreviewFilename.textContent = file.name;
         messageInput.style.display = 'none';
@@ -97,7 +100,7 @@ function handleImageFile(file) {
 // Function to send image message
 function sendImageMessage() {
     if (!stagedImageFile) return;
-    sendDebugMessage("Sending image message");
+    sendDebugMessage("Sending image message from cache.");
 
     const reader = new FileReader();
     reader.onload = (e) => {
@@ -106,6 +109,7 @@ function sendImageMessage() {
         const messageTime = Date.now();
 
         sendManMessage(currentItemId, "image", base64Image, currentFilter, recipientPlatform);
+        sendDebugMessage("Image sent to backend.");
 
         createMessage(base64Image, messageTime, 'bot', 'image');
         const entry = {
@@ -565,6 +569,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     uploadImageBtn.addEventListener('click', () => {
+        sendDebugMessage("Upload image button clicked, opening file selector.");
         imageFileInput.removeAttribute('capture');
         imageFileInput.click();
         attachmentMenu.style.display = 'none';
