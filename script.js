@@ -256,6 +256,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ) {
             isLoading = true; //stop new calls
 
+            sendDebugMessage("GETTINGITEMS AFTER SCROLL TO BOTTOM")
             getItems(currentFilter); //wait until it finishes
             // filterItems();  --> the getItems function, calls the filterItems() too, so the function filterItems() used to be called TWICE, and that was a problem
 

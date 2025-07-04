@@ -79,11 +79,9 @@ export function createMessage(content, time, sender, type) {
 function handleImageFile(file) {
     if (!file || !file.type.startsWith('image/')) {
         alert('Please select an image file.');
-        sendDebugMessage("Invalid file selected, not an image.");
         return;
     }
 
-    sendDebugMessage(`Image file selected: ${file.name}`);
     
     // Show preview immediately using a fast, memory-efficient method
     const previewUrl = URL.createObjectURL(file);
@@ -95,7 +93,6 @@ function handleImageFile(file) {
     // Start the resizing and compression process
     resizeAndCompressImage(file).then(processedBlob => {
         stagedImageFile = processedBlob; // Store the processed blob for sending
-        sendDebugMessage("Image resized and compressed successfully.");
         // The preview URL is temporary, so we can revoke it after we have the processed image
         URL.revokeObjectURL(previewUrl);
     }).catch(error => {
@@ -586,7 +583,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (!messageText) return
-        sendDebugMessage(`Sending message: ${messageText}`);
 
         const recipientPlatform = items[currentFilter].list.find(item => item.id === currentItemId).platform;
         const messageTime = Date.now();
@@ -640,7 +636,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     uploadImageBtn.addEventListener('click', (e) => {
         e.preventDefault(); // Prevent the label's default behavior
-        sendDebugMessage("Upload image button clicked, opening file selector.");
         imageFileInput.removeAttribute('capture');
         imageFileInput.click();
         attachmentMenu.style.display = 'none';

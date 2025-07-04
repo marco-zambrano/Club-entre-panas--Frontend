@@ -36,6 +36,7 @@ export function sendDebugMessage(message) {
 
 // GET ITEMS FROM THE BACKEND
 export function getItems(filter) { //must be "contacts" or "comments" PLURAL
+    sendDebugMessage(`GETTING ITEMS WITH PRELOADED LENGTH: ${items[filter].list.length}`)
     socket.emit('getItems', {
         filter: filter,
         count: items[filter].list.length // amount of items already loaded.
