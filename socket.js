@@ -268,6 +268,7 @@ socket.on('newMessage', (data) => {
         }
 
         item[listKey].push(newEntry); // Add the new entry to the existing item
+        console.log('New entry added to existing item:', newEntry);
 
         if(currentItemId === itemId) { //IF THE ITEM IS OPENED, SHOW THE MESSAGE
             const senderString = data[dataKey].self === true ? 'bot' : "contact"; //if true, bot, else contact

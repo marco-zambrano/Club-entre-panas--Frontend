@@ -565,7 +565,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const takePhotoBtn = document.getElementById('take-photo-btn');
 
     attachButton.addEventListener('click', () => {
-        attachmentMenu.style.display = attachmentMenu.style.display === 'block' ? 'none' : 'block';
+        attachmentMenu.style.display = attachmentMenu.style.display === 'flex' ? 'none' : 'flex';
     });
 
     uploadImageBtn.addEventListener('click', () => {
