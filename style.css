@@ -682,6 +682,7 @@ input:checked + .slider:before {
     background-color: #2a2a2a; /* Darker background for preview */
     border-radius: 20px; /* Match input border-radius */
     margin-right: 10px; /* Space before buttons */
+    min-width: 0; /* Prevents the container from overflowing its parent */
 }
 
 .image-preview-thumbnail {
