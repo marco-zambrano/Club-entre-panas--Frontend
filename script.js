@@ -243,6 +243,9 @@ export function setCurrentFilter(value) {
 }
 
 export let isLoading = false;
+export function setIsLoading(status){
+    isLoading = status;
+}
 
 document.addEventListener('DOMContentLoaded', () => {
     setCurrentFilter('contacts'); //ARBITRARY
