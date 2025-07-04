@@ -84,23 +84,86 @@ function handleImageFile(file) {
     }
 
     sendDebugMessage(`Image file selected: ${file.name}`);
-    stagedImageFile = file; // Store the file
+    
+    // Show preview immediately using a fast, memory-efficient method
+    const previewUrl = URL.createObjectURL(file);
+    imagePreviewThumbnail.src = previewUrl;
+    imagePreviewFilename.textContent = file.name;
+    messageInput.style.display = 'none';
+    imagePreviewContainer.style.display = 'flex';
 
-    const reader = new FileReader();
-    reader.onload = (e) => {
-        sendDebugMessage("Image file processed, showing preview.");
-        imagePreviewThumbnail.src = e.target.result;
-        imagePreviewFilename.textContent = file.name;
-        messageInput.style.display = 'none';
-        imagePreviewContainer.style.display = 'flex';
-    };
-    reader.readAsDataURL(file);
+    // Start the resizing and compression process
+    resizeAndCompressImage(file).then(processedBlob => {
+        stagedImageFile = processedBlob; // Store the processed blob for sending
+        sendDebugMessage("Image resized and compressed successfully.");
+        // The preview URL is temporary, so we can revoke it after we have the processed image
+        URL.revokeObjectURL(previewUrl);
+    }).catch(error => {
+        console.error("Image processing failed:", error);
+        sendDebugMessage(`Image processing failed: ${error.message}`);
+        clearImagePreview(); // Clear preview if processing fails
+        alert("There was an error processing the image. Please try again.");
+    });
 }
+
+// New function to resize and compress the image
+function resizeAndCompressImage(file, maxWidth = 1280, maxHeight = 1280, quality = 0.85) {
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.src = URL.createObjectURL(file);
+        img.onload = () => {
+            URL.revokeObjectURL(img.src); // Clean up the object URL
+
+            let width = img.width;
+            let height = img.height;
+
+            // Calculate the new dimensions
+            if (width > height) {
+                if (width > maxWidth) {
+                    height = Math.round((height * maxWidth) / width);
+                    width = maxWidth;
+                }
+            } else {
+                if (height > maxHeight) {
+                    width = Math.round((width * maxHeight) / height);
+                    height = maxHeight;
+                }
+            }
+
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+
+            // Get the processed image as a Blob
+            canvas.toBlob(
+                (blob) => {
+                    if (blob) {
+                        resolve(blob);
+                    } else {
+                        reject(new Error('Canvas to Blob conversion failed'));
+                    }
+                },
+                'image/jpeg',
+                quality
+            );
+        };
+        img.onerror = (error) => {
+            URL.revokeObjectURL(img.src);
+            reject(error);
+        };
+    });
+}
+
 
 // Function to send image message
 function sendImageMessage() {
-    if (!stagedImageFile) return;
-    sendDebugMessage("Sending image message from cache.");
+    if (!stagedImageFile) {
+        sendDebugMessage("No staged image file to send.");
+        return;
+    }
+    sendDebugMessage("Sending processed image message from cache.");
 
     const reader = new FileReader();
     reader.onload = (e) => {
@@ -127,6 +190,12 @@ function sendImageMessage() {
         
         // Clear the staged image and revert UI
         clearImagePreview();
+    };
+    reader.onerror = (error) => {
+        console.error("FileReader error:", error);
+        sendDebugMessage(`FileReader error: ${error.message}`);
+        clearImagePreview();
+        alert("Could not read the processed image. Please try again.");
     };
     reader.readAsDataURL(stagedImageFile);
 }
@@ -564,18 +633,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const uploadImageBtn = document.getElementById('upload-image-btn');
     const takePhotoBtn = document.getElementById('take-photo-btn');
 
-    attachButton.addEventListener('click', () => {
+    attachButton.addEventListener('click', (e) => {
+        e.preventDefault();
         attachmentMenu.style.display = attachmentMenu.style.display === 'flex' ? 'none' : 'flex';
     });
 
-    uploadImageBtn.addEventListener('click', () => {
+    uploadImageBtn.addEventListener('click', (e) => {
+        e.preventDefault(); // Prevent the label's default behavior
         sendDebugMessage("Upload image button clicked, opening file selector.");
         imageFileInput.removeAttribute('capture');
         imageFileInput.click();
         attachmentMenu.style.display = 'none';
     });
 
-    takePhotoBtn.addEventListener('click', () => {
+    takePhotoBtn.addEventListener('click', (e) => {
+        e.preventDefault(); // Prevent the label's default behavior
         imageFileInput.setAttribute('capture', 'camera');
         imageFileInput.click();
         attachmentMenu.style.display = 'none';
