@@ -677,11 +677,12 @@ input:checked + .slider:before {
 .image-preview-container {
     display: flex;
     align-items: center;
-    flex-grow: 1;
+    flex: 1 1 0; /* Use flex shorthand for proper shrinking */
     padding: 5px 15px; /* Adjusted padding */
     background-color: #2a2a2a; /* Darker background for preview */
     border-radius: 20px; /* Match input border-radius */
     margin-right: 10px; /* Space before buttons */
+    min-width: 0; /* Prevents the container from overflowing its parent */
 }
 
 .image-preview-thumbnail {
@@ -694,11 +695,14 @@ input:checked + .slider:before {
 
 .image-preview-filename {
     flex-grow: 1;
+    width: 0;
     font-size: 0.9em;
     color: #ccc; /* Lighter text color */
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    min-width: 0; /* Allows the filename to be truncated */
+    overflow-wrap: break-word; /* Allows long words to break if necessary */
 }
 
 .image-preview-cancel-button {
