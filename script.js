@@ -242,7 +242,7 @@ export function setCurrentFilter(value) {
     }
 }
 
-let isLoading = false;
+export let isLoading = false;
 
 document.addEventListener('DOMContentLoaded', () => {
     setCurrentFilter('contacts'); //ARBITRARY
@@ -256,11 +256,8 @@ document.addEventListener('DOMContentLoaded', () => {
         ) {
             isLoading = true; //stop new calls
 
-            sendDebugMessage("GETTINGITEMS AFTER SCROLL TO BOTTOM")
             getItems(currentFilter); //wait until it finishes
             // filterItems();  --> the getItems function, calls the filterItems() too, so the function filterItems() used to be called TWICE, and that was a problem
-
-            isLoading = false; //liberate to allow new requests
         }else{
             // console.log("DIDNT LOAD BECAUSE ITS ALL LOADED OR ITS ALREADY LOADING")
         }

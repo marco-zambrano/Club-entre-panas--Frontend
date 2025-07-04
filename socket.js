@@ -1,5 +1,5 @@
 import { currentFilter, currentItemId } from "./script.js"; // VariablesMore actions
-import { filterItems} from "./script.js"; // Functions
+import { filterItems, isLoading } from "./script.js"; // Functions
 import { createMessage } from './ui.js'; // Function create message
 
 export const socket = io("https://panasresponde.work", {
@@ -181,6 +181,8 @@ socket.on('newItems', (data) => { //RECEIVES LIST, TYPE, ALLITEMSLOADED.
     if (currentFilter === data.filter) {
         filterItems();
     }
+
+    isLoading = false;
 });
 
 
