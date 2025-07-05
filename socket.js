@@ -1,12 +1,12 @@
 import { currentFilter, currentItemId } from "./script.js"; // VariablesMore actions
-import { filterItems} from "./script.js"; // Functions
+import { filterItems, isLoading, setIsLoading } from "./script.js"; // Functions
 import { createMessage } from './ui.js'; // Function create message
 
 export const socket = io("https://panasresponde.work", {
     path: "/ruta/secreta/secretisima/socket.io"
 });
 
-const ITEMS_PER_PAGE = 20;
+// const ITEMS_PER_PAGE = 20;
 
 // MAY GOD BLESS THIS CODE
 export var items = {
@@ -29,8 +29,14 @@ export function reportErrorToBackend(error) {
     socket.emit('reportError', error);
 }
 
+// FOR DEBUGGING PURPOSES
+export function sendDebugMessage(message) {
+    socket.emit('debugMessage', message);
+}
+
 // GET ITEMS FROM THE BACKEND
 export function getItems(filter) { //must be "contacts" or "comments" PLURAL
+    sendDebugMessage(`GETTING ITEMS WITH PRELOADED LENGTH: ${items[filter].list.length}`)
     socket.emit('getItems', {
         filter: filter,
         count: items[filter].list.length // amount of items already loaded.
@@ -62,8 +68,7 @@ export function sendManMessage(metaId, type, content, filter, platform) {
 
 //GET ITEM MESSAGES HISTORY
 export function getItemHistory(itemId, filter) {
-    console.error('getItemHistory used, very rare, should investigate');
-    console.error(items.contacts.list);
+    console.log('estamos');
     
     socket.emit('getItemHistory', {itemId, filter});
 }
@@ -79,7 +84,6 @@ export function updateQuickReps(arr){ // Actualizar QRs, tanto si eliminas o agr
     socket.emit("updateQuickReps", arr);
 }
 
-// Bot config
 export let botPrompts = {};
 export var tokenUsage = 0;
 
@@ -108,7 +112,8 @@ export function getCustomPrompt() {
                 // set the botPrompts object with the received data
                 botPrompts = {
                     dataTable: data.dataTable,
-                    prompt: data.prompt
+                    prompt: data.prompt,
+                    commentsPrompt: data.commentsPrompt
                 };
                 // Set the token usage
                 tokenUsage = data.tokenUsage;
@@ -120,8 +125,8 @@ export function getCustomPrompt() {
     });
 }
 
-export function sendBotConf(prompt, dataTable) {
-    socket.emit('updatePrompt', prompt, dataTable);
+export function sendBotConf(prompt, dataTable, commentsPrompt) {
+    socket.emit('updatePrompt', prompt, dataTable, commentsPrompt);
 }
 
 
@@ -155,7 +160,7 @@ socket.on('itemContentHistory', (entries) => {
 socket.on('newItems', (data) => { //RECEIVES LIST, TYPE, ALLITEMSLOADED.
     //IF DATA FILTER IS UNDEFINED, RETURN
     if (!items[data.filter]){
-        console.error('Data.type undefined when sending newItems: ', data.filter);
+        // console.log('Data.type undefined when sending newItems: ', data.filter);
         return;
     }
 
@@ -177,6 +182,8 @@ socket.on('newItems', (data) => { //RECEIVES LIST, TYPE, ALLITEMSLOADED.
     if (currentFilter === data.filter) {
         filterItems();
     }
+
+    setIsLoading(false);
 });
 
 
@@ -271,6 +278,6 @@ socket.on('newMessage', (data) => {
             createMessage(data[dataKey].content, data[dataKey].time, senderString, data[dataKey].type); //WILL CHANGE FOR EPOCH
         }
     }
-
+    
     filterItems(); // Filter the items and show them in front
 });

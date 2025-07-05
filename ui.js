@@ -1,6 +1,6 @@
 import { currentItemId, currentFilter } from "./script.js"; // Variables
 import { openItem, setCurrentFilter, filterItems, initilizeBotToggle } from "./script.js"; // Functions
-import { sendManMessage, items, quickReps, getQuickReps, updateQuickReps, sendBotConf, getCustomPrompt, botPrompts, tokenUsage } from './socket.js';
+import { sendManMessage, items, quickReps, getQuickReps, updateQuickReps, sendBotConf, getCustomPrompt, botPrompts, tokenUsage, reportErrorToBackend, sendDebugMessage } from './socket.js';
 
 // DOM Elements
 const messageInput = document.querySelector('.message-input');
@@ -17,8 +17,10 @@ const messageInputContainer = document.querySelector('.message-input-container')
 let stagedImageFile = null; // To hold the image file before sending
 
 export const tagColors = {
-    'Venta': '#4CAF50',
-    'Terminada': '#dd7d39'
+    'Servientrega': '#26d367',
+    'RP': '#efb32f',
+    'Delivery': '#57c9ff',
+    'Terminado': '#c89ecc'
 }
 
 export function createMessage(content, time, sender, type) {
@@ -82,21 +84,85 @@ function handleImageFile(file) {
         return;
     }
 
-    stagedImageFile = file; // Store the file
+    
+    // Show preview immediately using a fast, memory-efficient method
+    const previewUrl = URL.createObjectURL(file);
+    imagePreviewThumbnail.src = previewUrl;
+    imagePreviewFilename.textContent = file.name;
+    messageInput.style.display = 'none';
+    imagePreviewContainer.style.display = 'flex';
 
-    const reader = new FileReader();
-    reader.onload = (e) => {
-        imagePreviewThumbnail.src = e.target.result;
-        imagePreviewFilename.textContent = file.name;
-        messageInput.style.display = 'none';
-        imagePreviewContainer.style.display = 'flex';
-    };
-    reader.readAsDataURL(file);
+    // Start the resizing and compression process
+    resizeAndCompressImage(file).then(processedBlob => {
+        stagedImageFile = processedBlob; // Store the processed blob for sending
+        // The preview URL is temporary, so we can revoke it after we have the processed image
+        URL.revokeObjectURL(previewUrl);
+    }).catch(error => {
+        console.error("Image processing failed:", error);
+        sendDebugMessage(`Image processing failed: ${error.message}`);
+        clearImagePreview(); // Clear preview if processing fails
+        alert("There was an error processing the image. Please try again.");
+    });
 }
+
+// New function to resize and compress the image
+function resizeAndCompressImage(file, maxWidth = 1280, maxHeight = 1280, quality = 0.85) {
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.src = URL.createObjectURL(file);
+        img.onload = () => {
+            URL.revokeObjectURL(img.src); // Clean up the object URL
+
+            let width = img.width;
+            let height = img.height;
+
+            // Calculate the new dimensions
+            if (width > height) {
+                if (width > maxWidth) {
+                    height = Math.round((height * maxWidth) / width);
+                    width = maxWidth;
+                }
+            } else {
+                if (height > maxHeight) {
+                    width = Math.round((width * maxHeight) / height);
+                    height = maxHeight;
+                }
+            }
+
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+
+            // Get the processed image as a Blob
+            canvas.toBlob(
+                (blob) => {
+                    if (blob) {
+                        resolve(blob);
+                    } else {
+                        reject(new Error('Canvas to Blob conversion failed'));
+                    }
+                },
+                'image/jpeg',
+                quality
+            );
+        };
+        img.onerror = (error) => {
+            URL.revokeObjectURL(img.src);
+            reject(error);
+        };
+    });
+}
+
 
 // Function to send image message
 function sendImageMessage() {
-    if (!stagedImageFile) return;
+    if (!stagedImageFile) {
+        sendDebugMessage("No staged image file to send.");
+        return;
+    }
+    sendDebugMessage("Sending processed image message from cache.");
 
     const reader = new FileReader();
     reader.onload = (e) => {
@@ -105,6 +171,7 @@ function sendImageMessage() {
         const messageTime = Date.now();
 
         sendManMessage(currentItemId, "image", base64Image, currentFilter, recipientPlatform);
+        sendDebugMessage("Image sent to backend.");
 
         createMessage(base64Image, messageTime, 'bot', 'image');
         const entry = {
@@ -122,6 +189,12 @@ function sendImageMessage() {
         
         // Clear the staged image and revert UI
         clearImagePreview();
+    };
+    reader.onerror = (error) => {
+        console.error("FileReader error:", error);
+        sendDebugMessage(`FileReader error: ${error.message}`);
+        clearImagePreview();
+        alert("Could not read the processed image. Please try again.");
     };
     reader.readAsDataURL(stagedImageFile);
 }
@@ -150,6 +223,7 @@ function createContactCard(contact) {
     if (contact.tag !== 'default') {
         const tagElement = document.createElement('span');
         tagElement.className = 'contact-tag'; // Le damos una clase para estilizarla
+        tagElement.id = `contact-tag-${contact.id}`
         tagElement.textContent = contact.tag;
         tagElement.style.backgroundColor = `${tagColors[contact.tag]}`
         contactElement.appendChild(tagElement);
@@ -427,6 +501,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const contactName = clicked.querySelector('.contact-name').textContent;
         document.querySelector('.chat-title').textContent = contactName;
 
+        // ocultamos la item list, al darle click al item, en caso que estemos en vista de telefono
+        const mediaQuery = window.matchMedia('(max-width: 768px)');
+        if (mediaQuery.matches) {
+            document.querySelector('.contacts-list').classList.toggle('show');
+        }
+
         //actualizar el bot toggle
         initilizeBotToggle();
     });
@@ -447,6 +527,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Manejar el filtro de tipo (chat / comentario)
     const chatButton = document.querySelector('.item-chat');
     const commentButton = document.querySelector('.item-comment');
+    const tagBtnsContainer = document.querySelector('.tag-btn-container');
     const whatsAppToggle = document.getElementById('whatsapp-toggle');
     const linkTag = document.querySelector('.post-link');
 
@@ -478,6 +559,7 @@ document.addEventListener('DOMContentLoaded', () => {
     chatButton.addEventListener('click', () => {
         if (currentFilter !== 'contacts') {
             setCurrentFilter('contacts');
+            tagBtnsContainer.classList.toggle('active');
             whatsAppToggle.classList.toggle('active');
             linkTag.classList.toggle('active');
             updateFilterButtons();
@@ -486,8 +568,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     commentButton.addEventListener('click', () => {
         if (currentFilter !== 'comments') {
-            // console.log('llegamos')
             setCurrentFilter('comments');
+            tagBtnsContainer.classList.toggle('active');
             whatsAppToggle.classList.toggle('active');
             linkTag.classList.toggle('active');
             updateFilterButtons();
@@ -549,17 +631,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const uploadImageBtn = document.getElementById('upload-image-btn');
     const takePhotoBtn = document.getElementById('take-photo-btn');
 
-    attachButton.addEventListener('click', () => {
-        attachmentMenu.style.display = attachmentMenu.style.display === 'block' ? 'none' : 'block';
+    attachButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        attachmentMenu.style.display = attachmentMenu.style.display === 'flex' ? 'none' : 'flex';
     });
 
-    uploadImageBtn.addEventListener('click', () => {
+    uploadImageBtn.addEventListener('click', (e) => {
+        e.preventDefault(); // Prevent the label's default behavior
         imageFileInput.removeAttribute('capture');
         imageFileInput.click();
         attachmentMenu.style.display = 'none';
     });
 
-    takePhotoBtn.addEventListener('click', () => {
+    takePhotoBtn.addEventListener('click', (e) => {
+        e.preventDefault(); // Prevent the label's default behavior
         imageFileInput.setAttribute('capture', 'camera');
         imageFileInput.click();
         attachmentMenu.style.display = 'none';
@@ -590,6 +675,22 @@ document.addEventListener('DOMContentLoaded', () => {
         if (currentFilter === 'contacts') { // Only process drop for contacts
             const file = event.dataTransfer.files[0];
             handleImageFile(file);
+        }
+    });
+
+    messageInput.addEventListener('paste', (event) => {
+        if (currentFilter === 'contacts') { // Only process paste for contacts
+            const items = (event.clipboardData || event.originalEvent.clipboardData).items;
+            for (let i = 0; i < items.length; i++) {
+                if (items[i].type.indexOf('image') !== -1) {
+                    const file = items[i].getAsFile();
+                    if (file) {
+                        event.preventDefault(); // Prevent the image data from being pasted as text
+                        handleImageFile(file);
+                        break;
+                    }
+                }
+            }
         }
     });
 
@@ -654,10 +755,12 @@ document.addEventListener('DOMContentLoaded', () => {
             mainConfigModal.classList.remove('show');
             botTextArea[0].value = 'Cargando...'; // cleaning the bot text area value
             botTextArea[1].value = 'Cargando...'; // cleaning the json table text area value
+            botTextArea[2].value = 'Cargando...';
             botConfigModal.classList.add('show');
             await getCustomPrompt(); // Get the bot configuration
             botTextArea[0].value = botPrompts.prompt; // Set the bot configuration to the text area
             botTextArea[1].value = botPrompts.dataTable; // Set the bot configuration to the text area
+            botTextArea[2].value = botPrompts.commentsPrompt; // Set the bot configuration to the text area
             const tokenUsageLabel = document.querySelector('.token-usage p');
             if (tokenUsageLabel) {
                 tokenUsageLabel.textContent = `Uso total de tokens: ${tokenUsage}`;
@@ -685,8 +788,9 @@ document.addEventListener('DOMContentLoaded', () => {
         saveChangesBtn.addEventListener('click', () => {
             const botPrompt = botTextArea[0].value.trim();
             const dataTable = botTextArea[1].value.trim();
+            const commentsPrompt = botTextArea[2].value.trim();
 
-            if (botPrompt && dataTable) {
+            if (botPrompt && dataTable && commentsPrompt) {
                 // Validacion de si dataTable es JSON o no
                 try {
                     JSON.parse(dataTable);
@@ -696,10 +800,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     return;
                 }
                 // enviamos la info del bot
-                sendBotConf(botPrompt, dataTable);
+                sendBotConf(botPrompt, dataTable, commentsPrompt);
                 // Ocultamos el modal
                 botConfigModal.classList.remove('show');
-                console.log('sent to back: ', botTextArea[0].value.trim(), botTextArea[1].value.trim())
+                console.log('sent to back: ', botTextArea[0].value.trim(), botTextArea[1].value.trim(), botTextArea[2].value.trim())
             } else {
                 alert('No enviar contenido vacío, inténtelo nuevamente');
             }
@@ -826,3 +930,24 @@ document.addEventListener('DOMContentLoaded', () => {
     repliesModalConfiguration();
     createReplyModal();
 })
+
+//CAPTURE AND REPORT ERRORS
+window.onerror = function (message, source, lineno, colno, error) {
+  reportErrorToBackend({
+    type: 'error',
+    message,
+    source,
+    lineno,
+    colno,
+    stack: error?.stack
+  });
+};
+
+// CAPTURE UNHANDLED PROMISE REJECTIONS
+window.addEventListener('unhandledrejection', function (event) {
+  reportErrorToBackend({
+    type: 'unhandledrejection',
+    message: event.reason?.message || String(event.reason),
+    stack: event.reason?.stack
+  });
+});
