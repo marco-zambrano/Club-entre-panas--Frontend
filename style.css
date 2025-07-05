@@ -510,18 +510,31 @@ input:checked + .slider:before {
     transition: all 0.3s ease;
 }
 
-.tag-btn--venta {
-    border-color: #4CAF50;
+.tag-btn--servientrega {
+    border-color: #26d367;
 }
-.tag-btn--venta:hover {
-    background-color: #4caf4f64;
+.tag-btn--servientrega:hover {
+    background-color: rgba(38, 211, 103, 0.35); /* Using rgba for hover effect */
 }
-.tag-btn--terminada {
-    border-color: #DD7D39;
+.tag-btn--rp {
+    border-color: #efb32f;
 }
-.tag-btn--terminada:hover {
-    background-color: #dd7d3958;
+.tag-btn--rp:hover {
+    background-color: rgba(239, 179, 47, 0.35); /* Using rgba for hover effect */
 }
+.tag-btn--delivery {
+    border-color: #57c9ff;
+}
+.tag-btn--delivery:hover {
+    background-color: rgba(87, 201, 255, 0.35); /* Using rgba for hover effect */
+}
+.tag-btn--terminado {
+    border-color: #c89ecc;
+}
+.tag-btn--terminado:hover {
+    background-color: rgba(200, 158, 204, 0.35); /* Using rgba for hover effect */
+}
+
 .bot-toggle-options {
     display: flex;
     justify-content: center;

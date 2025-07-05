@@ -17,8 +17,10 @@ const messageInputContainer = document.querySelector('.message-input-container')
 let stagedImageFile = null; // To hold the image file before sending
 
 export const tagColors = {
-    'Venta': '#4CAF50',
-    'Terminada': '#dd7d39'
+    'Servientrega': '#26d367',
+    'RP': '#efb32f',
+    'Delivery': '#57c9ff',
+    'Terminado': '#c89ecc'
 }
 
 export function createMessage(content, time, sender, type) {
