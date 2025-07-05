@@ -676,6 +676,22 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    messageInput.addEventListener('paste', (event) => {
+        if (currentFilter === 'contacts') { // Only process paste for contacts
+            const items = (event.clipboardData || event.originalEvent.clipboardData).items;
+            for (let i = 0; i < items.length; i++) {
+                if (items[i].type.indexOf('image') !== -1) {
+                    const file = items[i].getAsFile();
+                    if (file) {
+                        event.preventDefault(); // Prevent the image data from being pasted as text
+                        handleImageFile(file);
+                        break;
+                    }
+                }
+            }
+        }
+    });
+
 
     // --- MODALES Y BOTONES ---
     // Modal Principal
