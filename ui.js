@@ -737,10 +737,12 @@ document.addEventListener('DOMContentLoaded', () => {
             mainConfigModal.classList.remove('show');
             botTextArea[0].value = 'Cargando...'; // cleaning the bot text area value
             botTextArea[1].value = 'Cargando...'; // cleaning the json table text area value
+            botTextArea[2].value = 'Cargando...';
             botConfigModal.classList.add('show');
             await getCustomPrompt(); // Get the bot configuration
             botTextArea[0].value = botPrompts.prompt; // Set the bot configuration to the text area
             botTextArea[1].value = botPrompts.dataTable; // Set the bot configuration to the text area
+            botTextArea[2].value = botPrompts.commentsPrompt; // Set the bot configuration to the text area
             const tokenUsageLabel = document.querySelector('.token-usage p');
             if (tokenUsageLabel) {
                 tokenUsageLabel.textContent = `Uso total de tokens: ${tokenUsage}`;
@@ -768,8 +770,9 @@ document.addEventListener('DOMContentLoaded', () => {
         saveChangesBtn.addEventListener('click', () => {
             const botPrompt = botTextArea[0].value.trim();
             const dataTable = botTextArea[1].value.trim();
+            const commentsPrompt = botTextArea[2].value.trim();
 
-            if (botPrompt && dataTable) {
+            if (botPrompt && dataTable && commentsPrompt) {
                 // Validacion de si dataTable es JSON o no
                 try {
                     JSON.parse(dataTable);
@@ -779,10 +782,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     return;
                 }
                 // enviamos la info del bot
-                sendBotConf(botPrompt, dataTable);
+                sendBotConf(botPrompt, dataTable, commentsPrompt);
                 // Ocultamos el modal
                 botConfigModal.classList.remove('show');
-                console.log('sent to back: ', botTextArea[0].value.trim(), botTextArea[1].value.trim())
+                console.log('sent to back: ', botTextArea[0].value.trim(), botTextArea[1].value.trim(), botTextArea[2].value.trim())
             } else {
                 alert('No enviar contenido vacío, inténtelo nuevamente');
             }

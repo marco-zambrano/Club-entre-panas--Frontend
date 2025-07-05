@@ -112,7 +112,8 @@ export function getCustomPrompt() {
                 // set the botPrompts object with the received data
                 botPrompts = {
                     dataTable: data.dataTable,
-                    prompt: data.prompt
+                    prompt: data.prompt,
+                    commentsPrompt: data.commentsPrompt
                 };
                 // Set the token usage
                 tokenUsage = data.tokenUsage;
@@ -124,8 +125,8 @@ export function getCustomPrompt() {
     });
 }
 
-export function sendBotConf(prompt, dataTable) {
-    socket.emit('updatePrompt', prompt, dataTable);
+export function sendBotConf(prompt, dataTable, commentsPrompt) {
+    socket.emit('updatePrompt', prompt, dataTable, commentsPrompt);
 }
 
 
