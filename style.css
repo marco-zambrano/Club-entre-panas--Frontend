@@ -492,9 +492,9 @@ input:checked + .slider:before {
 }
 .tag-btn-container {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
+    flex-wrap: wrap; /* Allow buttons to wrap to the next line */
+    justify-content: flex-start; /* Align wrapped buttons to the start */
+    gap: 8px; /* Space between wrapped buttons */
 }
 .tag-btn-container.active {
     display: none;
@@ -1196,7 +1196,14 @@ input:checked + .slider:before {
     }
 
     .bot-toggle.small {
-        column-gap: 10px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px; /* Space between tag buttons and bot toggle options */
+        align-self: center;
+    }
+    .bot-toggle-options {
+        justify-content: flex-start; /* Align content to the left */
+        align-self: center;
     }
     .bot-toggle-options span {
         font-size: 1rem;
