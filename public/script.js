@@ -28,6 +28,19 @@ export function filterItems() {
     const filteredItems = items[currentFilter].list.filter(item => {
         const platformToggle = document.querySelector(`.platform-toggle[data-platform="${item.platform}"]`);
         const matchesPlatform = platformToggle && platformToggle.checked;
+
+        if (currentFilter === 'contacts') {
+            const selectedTags = Array.from(document.querySelectorAll('.tag-toggle:checked')).map(toggle => toggle.dataset.tag);
+            const itemTags = Array.isArray(item.tag) ? item.tag : [item.tag];
+
+            if (selectedTags.includes('default') && itemTags.length === 0) {
+                return matchesPlatform;
+            }
+
+            const matchesTags = selectedTags.some(tag => itemTags.includes(tag));
+            return matchesPlatform && matchesTags;
+        }
+
         return matchesPlatform;
     });
 

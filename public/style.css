@@ -29,20 +29,37 @@ body {
 .filters {
     display: flex;
     justify-content: space-between;
+    align-items: center; /* Alinear verticalmente */
     padding: 15px 20px;
     border-bottom: 1px solid #333;
+    gap: 20px; /* Espacio entre grupos de filtros y el botón */
 }
-.platform-filters {
+
+.filter-groups {
+    display: flex;
+    flex-direction: column; /* Apilar los grupos de filtros */
+    gap: 10px; /* Espacio entre los grupos de filtros */
+    flex-grow: 1; /* Permitir que los grupos de filtros crezcan */
+}
+
+.platform-filters,
+.tag-filters {
     display: flex;
     gap: 20px;
     flex-wrap: wrap;
     align-items: center;
 }
+
+.tag-filters.hidden {
+    display: none;
+}
+
 .filter {
     display: flex;
     align-items: center;
     gap: 10px;
 }
+
 .bot-toggle {
     display: flex;
     align-items: center;
@@ -56,11 +73,13 @@ body {
     width: 50px;
     height: 24px;
 }
+
 .toggle input {
     opacity: 0;
     width: 0;
     height: 0;
 }
+
 .slider {
     position: absolute;
     cursor: pointer;
@@ -72,6 +91,7 @@ body {
     transition: .4s;
     border-radius: 34px;
 }
+
 .slider:before {
     position: absolute;
     content: "";
@@ -83,20 +103,46 @@ body {
     transition: .4s;
     border-radius: 50%;
 }
+
 /* Input del bot */
 input:checked + .slider {
     background-color: #4CAF50;
 }
+
 /* Input de las redes sociales */
 input:checked + .facebook-slider {
     background-color: #1877F2;
 }
+
 input:checked + .instagram-slider {
     background-color: #E1306C;
 }
+
 input:checked + .whatsapp-slider {
     background-color: #25D366;
 }
+
+/* Input de las etiquetas */
+input:checked + .servientrega-slider {
+    background-color: #26d367;
+}
+
+input:checked + .rp-slider {
+    background-color: #efb32f;
+}
+
+input:checked + .delivery-slider {
+    background-color: #57c9ff;
+}
+
+input:checked + .terminado-slider {
+    background-color: #c89ecc;
+}
+
+input:checked + .default-slider {
+    background-color: #888;
+}
+
 /* Animation del input */
 input:checked + .slider:before {
     transform: translateX(26px);

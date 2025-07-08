@@ -535,11 +535,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const tagBtnsContainer = document.querySelector('.tag-btn-container');
     const whatsAppToggle = document.getElementById('whatsapp-toggle');
     const linkTag = document.querySelector('.post-link');
+    const tagFilters = document.querySelector('.tag-filters');
 
     // Función para actualizar el estado de los botones
     function updateFilterButtons() {
         chatButton.classList.toggle('active', currentFilter === 'contacts');
         commentButton.classList.toggle('active', currentFilter === 'comments');
+        tagFilters.classList.toggle('hidden', currentFilter === 'comments');
         
         // Hide/show attach button based on filter
         if (currentFilter === 'comments') {
@@ -580,6 +582,10 @@ document.addEventListener('DOMContentLoaded', () => {
             updateFilterButtons();
             filterItems();
         }
+    });
+
+    document.querySelectorAll('.tag-toggle').forEach(toggle => {
+        toggle.addEventListener('change', filterItems);
     });
 
     // Send message functionality
