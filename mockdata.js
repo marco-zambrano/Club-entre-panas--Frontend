@@ -9,7 +9,7 @@ const items = {
                 botEnabled: true,
                 interest: 8,
                 imgViewed: true,
-                tag: 'Venta', 
+                tag: 'RP', 
                 messages: [
                     { id: "m1a8d4c9b7f0", content: "salam aukjdfsajl", type: "audio", time: 1672576800000, self: false },
                     { id: "m4b7c2f1a3d9", content: "hello again", type: "text", time: 1672576860000, self: true }
@@ -36,7 +36,7 @@ const items = {
                 botEnabled: true,
                 interest: 9,
                 imgViewed: true,
-                tag: 'Terminada', 
+                tag: 'Terminado', 
                 messages: [
                     { id: "m9a6b3c2f1e7", content: "hi alice", type: "text", time: 1672584000000, self: true },
                     { id: "m4f8e1b9c3d2", content: "hello!", type: "text", time: 1672584060000, self: false }
@@ -49,7 +49,7 @@ const items = {
                 botEnabled: false,
                 interest: 4,
                 imgViewed: true,
-                tag: 'Venta', 
+                tag: 'RP', 
                 messages: [
                     { id: "m3e2a9f6b0c1", content: "are you there?", type: "text", time: 1672587600000, self: true },
                     { id: "m1c7b3e8a4f0", content: "yes I am", type: "text", time: 1672587660000, self: false },
@@ -76,7 +76,7 @@ const items = {
                 botEnabled: false,
                 interest: 5,
                 imgViewed: true,
-                tag: 'Terminada', 
+                tag: 'Terminado', 
                 messages: [
                     { id: "m1f0a9c3e2b6", content: "me interesa mucho", type: "text", time: 1672594800000, self: false }
                 ]
@@ -88,7 +88,7 @@ const items = {
                 botEnabled: true,
                 interest: 6,
                 imgViewed: true,
-                tag: 'Venta', 
+                tag: 'RP', 
                 messages: [
                     { id: "m5e9a0f3c2b7", content: "¿está disponible aún?", type: "text", time: 1672598400000, self: false },
                     { id: "m9b1f3a6c0e2", content: "sí, claro", type: "text", time: 1672598460000, self: true }
@@ -113,7 +113,7 @@ const items = {
                 botEnabled: true,
                 interest: 8,
                 imgViewed: false,
-                tag: 'Terminada', 
+                tag: 'Terminado', 
                 messages: [
                     { id: "m0f1e3a9b6c4", content: "buenas noches", type: "text", time: 1672605600000, self: false },
                     { id: "m0f1e3a9b423", content: "https://picsum.photos/400/300", type: "image", time: 1672605600000, self: false },
@@ -127,7 +127,7 @@ const items = {
                 botEnabled: false,
                 interest: 3,
                 imgViewed: true,
-                tag: 'Venta', 
+                tag: 'RP', 
                 messages: [
                     { id: "m6b2f3e1a0c7", content: "me puedes llamar?", type: "text", time: 1672609200000, self: false }
                 ]
@@ -153,7 +153,7 @@ const items = {
                 botEnabled: false,
                 interest: 4,
                 imgViewed: true,
-                tag: 'Terminada', 
+                tag: 'Terminado', 
                 messages: [
                     { id: "m2a1c0f3e9b5", content: "listo para la reunión", type: "audio", time: 1672616400000, self: false },
                     { id: "m6f3e1b2a9c0", content: "perfecto", type: "text", time: 1672616460000, self: true },
@@ -172,7 +172,7 @@ const items = {
                 botEnabled: true,
                 interest: 6,
                 imgViewed: true,
-                tag: 'Venta', 
+                tag: 'RP', 
                 messages: [
                     { id: "m0e3f1a2c6b9", content: "me interesa el producto", type: "text", time: 1672620000000, self: false }
                 ]
@@ -197,7 +197,7 @@ const items = {
                 botEnabled: true,
                 interest: 9,
                 imgViewed: true,
-                tag: 'Terminada', 
+                tag: 'Terminado', 
                 messages: [
                     { id: "m1e9a3f0b7c2", content: "hay descuento?", type: "text", time: 1672627200000, self: false },
                     { id: "m4c0f1e2b6a3", content: "sí, del 10%", type: "text", time: 1672627260000, self: true }
@@ -210,7 +210,7 @@ const items = {
                 botEnabled: false,
                 interest: 4,
                 imgViewed: true,
-                tag: 'Venta', 
+                tag: 'RP', 
                 messages: [
                     { id: "m3f9e1a0b2c6", content: "cuándo llega el pedido?", type: "audio", time: 1672630800000, self: false }
                 ]
@@ -235,7 +235,7 @@ const items = {
                 botEnabled: true,
                 interest: 8,
                 imgViewed: true,
-                tag: 'Terminada', 
+                tag: 'Terminado', 
                 messages: [
                     { id: "m7d9e2c1b0a3", content: "hola, estoy interesada en el servicio", type: "text", time: 1672638000000, self: false },
                     { id: "m0a3b7c2e9f1", content: "¡Hola! ¿En qué puedo ayudarte?", type: "text", time: 1672638060000, self: true }
@@ -248,7 +248,7 @@ const items = {
                 botEnabled: false,
                 interest: 5,
                 imgViewed: true,
-                tag: 'Venta', 
+                tag: 'RP', 
                 messages: [
                     { id: "m2c9f0a3e1b7", content: "tienes stock?", type: "text", time: 1672641600000, self: false }
                 ]
@@ -273,7 +273,7 @@ const items = {
                 botEnabled: false,
                 interest: 3,
                 imgViewed: true,
-                tag: 'Terminada', 
+                tag: 'Terminado', 
                 messages: [
                     { id: "m5f0a2c9e1b3", content: "ok, entendido", type: "text", time: 1672648800000, self: false }
                 ]
@@ -285,7 +285,7 @@ const items = {
                 botEnabled: true,
                 interest: 7,
                 imgViewed: true,
-                tag: 'Venta', 
+                tag: 'RP', 
                 messages: [
                     { id: "m9a1c3f0e2b7", content: "cuando envías?", type: "text", time: 1672652400000, self: false },
                     { id: "m4e2b0a1f9c3", content: "mañana mismo", type: "text", time: 1672652460000, self: true }
@@ -310,7 +310,7 @@ const items = {
                 botEnabled: true,
                 interest: 8,
                 imgViewed: true,
-                tag: 'Terminada', 
+                tag: 'Terminado', 
                 messages: [
                     { id: "m7c0b1f9e2a3", content: "me confirmas la dirección?", type: "text", time: 1672659600000, self: false },
                     { id: "m0e2a9f3c1b7", content: "claro, es...", type: "text", time: 1672659660000, self: true }
@@ -323,7 +323,7 @@ const items = {
                 botEnabled: false,
                 interest: 4,
                 imgViewed: true,
-                tag: 'Venta', 
+                tag: 'RP', 
                 messages: [
                     { id: "m3c9f1a0e2b4", content: "gracias por tu tiempo", type: "text", time: 1672663200000, self: false }
                 ]
@@ -348,7 +348,7 @@ const items = {
                 botEnabled: false,
                 interest: 5,
                 imgViewed: true,
-                tag: 'Terminada', 
+                tag: 'Terminado', 
                 messages: [
                     { id: "m9f3e1b2a0c6", content: "tienen alguna promoción?", type: "text", time: 1672670400000, self: false }
                 ]
@@ -360,7 +360,7 @@ const items = {
                 botEnabled: true,
                 interest: 7,
                 imgViewed: true,
-                tag: 'Venta', 
+                tag: 'RP', 
                 messages: [
                     { id: "m1a0c6f9e2b3", content: "ya hice la transferencia", type: "text", time: 1672674000000, self: false },
                     { id: "m4d9e3b1c0a2", content: "perfecto, lo reviso", type: "text", time: 1672674060000, self: true }
@@ -385,7 +385,7 @@ const items = {
                 botEnabled: true,
                 interest: 6,
                 imgViewed: true,
-                tag: 'Terminada', 
+                tag: 'Terminado', 
                 messages: [
                     { id: "m2c0f3a9e1b8", content: "me encantó el producto, gracias!", type: "text", time: 1672681200000, self: false },
                     { id: "m5a8b1c0f3e2", content: "¡Qué bueno que te gustó!", type: "text", time: 1672681260000, self: true }
@@ -398,7 +398,7 @@ const items = {
                 botEnabled: false,
                 interest: 5,
                 imgViewed: true,
-                tag: 'Venta', 
+                tag: 'RP', 
                 messages: [
                     { id: "m8e1c3f0a9b2", content: "cuando abren mañana?", type: "text", time: 1672684800000, self: false }
                 ]
@@ -423,7 +423,7 @@ const items = {
                 botEnabled: false,
                 interest: 4,
                 imgViewed: true,
-                tag: 'Terminada', 
+                tag: 'Terminado', 
                 messages: [
                     { id: "m1b7d0a2c9f3", content: "no me llegó la confirmación", type: "text", time: 1672692000000, self: false }
                 ]
@@ -435,7 +435,7 @@ const items = {
                 botEnabled: true,
                 interest: 9,
                 imgViewed: true,
-                tag: 'Venta', 
+                tag: 'RP', 
                 messages: [
                     { id: "m4a9c3f0e1b7", content: "todo perfecto, muchas gracias!", type: "text", time: 1672695600000, self: false },
                     { id: "m7e1b0a2f9c3", content: "a ti por tu compra!", type: "text", time: 1672695660000, self: true }
@@ -460,7 +460,7 @@ const items = {
                 botEnabled: true,
                 interest: 7,
                 imgViewed: true,
-                tag: 'Terminada', 
+                tag: 'Terminado', 
                 messages: [
                     { id: "m2f0e1b9c3a7", content: "puedo pagar con tarjeta?", type: "text", time: 1672702800000, self: false },
                     { id: "m5b1c7f0a9e2", content: "sí, aceptamos tarjetas", type: "text", time: 1672702860000, self: true }
@@ -473,7 +473,7 @@ const items = {
                 botEnabled: false,
                 interest: 6,
                 imgViewed: true,
-                tag: 'Venta', 
+                tag: 'RP', 
                 messages: [
                     { id: "m1c0f9a3e2b7", content: "cuando tienen nuevos modelos?", type: "text", time: 1672706400000, self: false }
                 ]
@@ -498,7 +498,7 @@ const items = {
                 botEnabled: false,
                 interest: 4,
                 imgViewed: true,
-                tag: 'Terminada', 
+                tag: 'Terminado', 
                 messages: [
                     { id: "m9e2c0f1b7a3", content: "no me responden los mensajes", type: "text", time: 1672713600000, self: false }
                 ]
@@ -510,7 +510,7 @@ const items = {
                 botEnabled: true,
                 interest: 9,
                 imgViewed: true,
-                tag: 'Venta', 
+                tag: 'RP', 
                 messages: [
                     { id: "m2b7f0a1e9c3", content: "me llegó antes de lo esperado, genial!", type: "text", time: 1672717200000, self: false },
                     { id: "m5c0a9f3e1b2", content: "¡Nos alegramos mucho!", type: "text", time: 1672717260000, self: true }
