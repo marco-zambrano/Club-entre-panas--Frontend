@@ -145,7 +145,7 @@ io.on('connection', (socket) => {
     //TO RECEIVE MANUAL MESSAGE
     socket.on('sendManMessage', (data) => {
         const { metaId, content, type } = data;
-        console.log(content)
+        // console.log(content)
         const item = items.contacts.list.find(item => item.id === metaId) || items.comments.list.find(item => `${item.userId}-${item.postId}` === metaId);
 
         var randomalphanumericid = Math.random().toString(36).substring(2, 15);
@@ -222,8 +222,8 @@ io.on('connection', (socket) => {
         , 2000); // Simulate a delay of 2 seconds
     });
 
-    socket.on('setTagBtnStatus', (status, itemId) => {
-        console.log(status, itemId);
+    socket.on('setTagBtnStatus', (itmemId, tags) => {
+        console.log(itmemId, tags);
     }) 
 
     //TIME TESTING

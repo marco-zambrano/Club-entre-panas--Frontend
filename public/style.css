@@ -339,12 +339,16 @@ input:checked + .slider:before {
     background-color: #1e1e1e;
 }
 
-.contact-tag {
+.contact-tags-container {
     position: absolute;
-    top: 2px; 
-    right: 0px; 
+    top: 2px;
+    right: 0px;
+    display: flex;
+    flex-direction: row;
+    gap: 2px;
+}
 
-    /* background-color: #4CAF50; */
+.contact-tag {
     color: white;
     padding: 3px 8px;
     border-radius: 4px 0px 0px 4px;

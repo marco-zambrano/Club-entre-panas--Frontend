@@ -112,12 +112,10 @@ export function initilizeBotToggle() {
     }
 }
 
-let selectedTagButton = null;
 let currentActiveHandler = null;
 
 const handleTagBtn = currentItem => {
     // --- PASO 1: Limpiar los listeners ANTERIORES ---
-    // Recorremos todos los botones y, si existe un handler previo, lo removemos.
     document.querySelectorAll(".tag-btn").forEach(btn => {
         if (currentActiveHandler) {
             btn.removeEventListener("click", currentActiveHandler);
@@ -129,61 +127,75 @@ const handleTagBtn = currentItem => {
         document.querySelectorAll(".tag-btn").forEach(btn => {
             btn.style.backgroundColor = "transparent";
         });
-        selectedTagButton = null;
     };
 
-    // Reseteamos el estado visual al iniciar
     resetAllTagButtons();
 
+    // Ensure currentItem.tag is an array before proceeding
+    if (typeof currentItem.tag === 'string') {
+        currentItem.tag = currentItem.tag === 'default' ? [] : [currentItem.tag];
+    } else if (!Array.isArray(currentItem.tag)) {
+        currentItem.tag = [];
+    }
+
     // Establecemos el estado inicial basado en el nuevo `currentItem`
-    if (currentItem.tag !== "default") {
-        const tagElement = document.querySelector(`.tag-btn--${currentItem.tag.toLowerCase()}`);
-        if (tagElement) {
-            tagElement.style.backgroundColor = tagColors[currentItem.tag];
-            selectedTagButton = tagElement;
-        }
+    if (currentItem.tag.length > 0) {
+        currentItem.tag.forEach(tag => {
+            const tagElement = document.querySelector(`.tag-btn--${tag.toLowerCase()}`);
+            if (tagElement) {
+                tagElement.style.backgroundColor = tagColors[tag];
+            }
+        });
     }
 
     // --- PASO 2: Crear el NUEVO handler para el `currentItem` actual ---
-    // Creamos la función del listener aquí. Al hacerlo, "captura" el `currentItem`
-    // de esta llamada específica (esto es una clausura o closure).
     currentActiveHandler = e => {
-        let itemTag = document.getElementById(`contact-tag-${currentItem.id}`); // obtenemos el tag del item contact
-        //si la etiqueta visual no existe aún para este contacto, busca el contenedor, crea los elementos necesarios y añade todo al contenedor del contacto
-        if (!itemTag) {
-            const itemElementContainer = document.querySelector(`.contact[data-item-id="${currentItem.id}"]`);
-            const tagElement = document.createElement('span');
-            tagElement.className = 'contact-tag'; // Le damos una clase para estilizarla
-            tagElement.id = `contact-tag-${currentItem.id}`;
-            itemTag = tagElement;
-            itemElementContainer.appendChild(tagElement);
-        }
-        const btnElement = e.currentTarget; // Usar currentTarget es más seguro
+        const btnElement = e.currentTarget;
         const tagName = btnElement.textContent;
-
-        if (btnElement === selectedTagButton) { //si se clickea un boton que ya estaba seleccionado
-            resetAllTagButtons();
-            setTagBtnStatus("default", currentItem.id);
-
-            itemTag.style.backgroundColor = `transparent`;
-            itemTag.textContent = '';
-            currentItem.tag = 'default';
-        } else { //sino, resetea todos los botones y añade las clases y propiedades necesarias
-            resetAllTagButtons();
-            btnElement.style.backgroundColor = tagColors[tagName];
-            setTagBtnStatus(btnElement.textContent, currentItem.id);
-            selectedTagButton = btnElement;
-
-            itemTag.style.backgroundColor = tagColors[tagName];
-            itemTag.textContent = tagName;
-            currentItem.tag = tagName;
+        
+        // Ensure itemTagContainer is handled correctly
+        let itemTagContainer = document.getElementById(`contact-tags-${currentItem.id}`);
+        if (!itemTagContainer) {
+            const itemElementContainer = document.querySelector(`.contact[data-item-id="${currentItem.id}"]`);
+            itemTagContainer = document.createElement('div');
+            itemTagContainer.className = 'contact-tags-container';
+            itemTagContainer.id = `contact-tags-${currentItem.id}`;
+            itemElementContainer.appendChild(itemTagContainer);
         }
+
+        const tagIndex = currentItem.tag.indexOf(tagName);
+
+        if (tagIndex > -1) { // Si la etiqueta ya existe, la eliminamos
+            currentItem.tag.splice(tagIndex, 1);
+            btnElement.style.backgroundColor = "transparent";
+        } else { // Si no existe, la agregamos
+            currentItem.tag.push(tagName);
+            btnElement.style.backgroundColor = tagColors[tagName];
+        }
+
+        setTagBtnStatus(currentItem.id, currentItem.tag);
+        updateTagDisplay(currentItem);
     };
 
     document.querySelectorAll(".tag-btn").forEach(btn => {
         btn.addEventListener("click", currentActiveHandler);
     });
 };
+
+function updateTagDisplay(item) {
+    const tagContainer = document.getElementById(`contact-tags-${item.id}`);
+    if (!tagContainer) return;
+
+    tagContainer.innerHTML = ''; // Limpiamos el contenedor
+
+    item.tag.forEach(tagName => {
+        const tagElement = document.createElement('span');
+        tagElement.className = 'contact-tag';
+        tagElement.textContent = tagName;
+        tagElement.style.backgroundColor = tagColors[tagName];
+        tagContainer.appendChild(tagElement);
+    });
+}
 
 //TO OPEN A NEW ITEM
 export function openItem(itemId) {

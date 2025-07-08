@@ -219,13 +219,19 @@ function createContactCard(contact) {
     contactElement.dataset.type = contact.type;
 
     // Agregamos la etiqueta de categoría si existe
-    if (contact.tag !== 'default') {
-        const tagElement = document.createElement('span');
-        tagElement.className = 'contact-tag'; // Le damos una clase para estilizarla
-        tagElement.id = `contact-tag-${contact.id}`
-        tagElement.textContent = contact.tag;
-        tagElement.style.backgroundColor = `${tagColors[contact.tag]}`
-        contactElement.appendChild(tagElement);
+    if (contact.tag && contact.tag.length > 0) {
+        const tagContainer = document.createElement('div');
+        tagContainer.className = 'contact-tags-container';
+        tagContainer.id = `contact-tags-${contact.id}`;
+
+        contact.tag.forEach(tagName => {
+            const tagElement = document.createElement('span');
+            tagElement.className = 'contact-tag';
+            tagElement.textContent = tagName;
+            tagElement.style.backgroundColor = tagColors[tagName];
+            tagContainer.appendChild(tagElement);
+        });
+        contactElement.appendChild(tagContainer);
     }
 
     if (contact.imgViewed === false) { // Si el contacto no ha visto la imagen, creamos un elemento de notificación de imagen
