@@ -1,5 +1,5 @@
 import { items } from './socket.js'; // variables
-import { updateBotStatus, getItemHistory, getItems, setViewedImgFalse, setTagBtnStatus } from './socket.js'; // functions
+import { updateBotStatus, getItemHistory, getItems, setViewedImgFalse, setTagBtnStatus, reportErrorToBackend } from './socket.js'; // functions
 import { updateItemsList, createMessage, tagColors } from './ui.js';
 
 export let currentItemId = null; // Id of the item actived
@@ -80,6 +80,7 @@ function handleInputVisibility(isChecked, itemId) {
     currentItem.botEnabled = isChecked;
     updateBotStatus(itemId, isChecked); //GOES TO THE BACKEND USING WEBSOCKETS
 }
+
 //INITIALIZE BOT TOGGLE
 export function initilizeBotToggle() {
     const currentItem = items[currentFilter].list.find(item => item.id === currentItemId);
@@ -148,6 +149,7 @@ const handleTagBtn = currentItem => {
     // de esta llamada específica (esto es una clausura o closure).
     currentActiveHandler = e => {
         let itemTag = document.getElementById(`contact-tag-${currentItem.id}`); // obtenemos el tag del item contact
+        //si la etiqueta visual no existe aún para este contacto, busca el contenedor, crea los elementos necesarios y añade todo al contenedor del contacto
         if (!itemTag) {
             const itemElementContainer = document.querySelector(`.contact[data-item-id="${currentItem.id}"]`);
             const tagElement = document.createElement('span');
@@ -159,14 +161,14 @@ const handleTagBtn = currentItem => {
         const btnElement = e.currentTarget; // Usar currentTarget es más seguro
         const tagName = btnElement.textContent;
 
-        if (btnElement === selectedTagButton) {
+        if (btnElement === selectedTagButton) { //si se clickea un boton que ya estaba seleccionado
             resetAllTagButtons();
             setTagBtnStatus("default", currentItem.id);
 
             itemTag.style.backgroundColor = `transparent`;
             itemTag.textContent = '';
             currentItem.tag = 'default';
-        } else {
+        } else { //sino, resetea todos los botones y añade las clases y propiedades necesarias
             resetAllTagButtons();
             btnElement.style.backgroundColor = tagColors[tagName];
             setTagBtnStatus(btnElement.textContent, currentItem.id);
@@ -228,6 +230,7 @@ export function openItem(itemId) {
 
     getItemHistory(currentItemId, currentFilter);
 }
+
 //TO CHANGE MESSAGE/COMMENT FILTER
 export function setCurrentFilter(value) {
     currentFilter = value;
@@ -241,7 +244,10 @@ export function setCurrentFilter(value) {
     }
 }
 
-let isLoading = false;
+export let isLoading = false;
+export function setIsLoading(status){
+    isLoading = status;
+}
 
 document.addEventListener('DOMContentLoaded', () => {
     setCurrentFilter('contacts'); //ARBITRARY
@@ -257,10 +263,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
             getItems(currentFilter); //wait until it finishes
             // filterItems();  --> the getItems function, calls the filterItems() too, so the function filterItems() used to be called TWICE, and that was a problem
-
-            isLoading = false; //liberate to allow new requests
         }else{
             // console.log("DIDNT LOAD BECAUSE ITS ALL LOADED OR ITS ALREADY LOADING")
         }
+    });
+});
+
+//CAPTURE AND REPORT ERRORS
+window.onerror = function (message, source, lineno, colno, error) {
+    reportErrorToBackend({
+        type: 'error',
+        message,
+        source,
+        lineno,
+        colno,
+        stack: error?.stack
+    });
+};
+
+// CAPTURE UNHANDLED PROMISE REJECTIONS
+window.addEventListener('unhandledrejection', function (event) {
+    reportErrorToBackend({
+        type: 'unhandledrejection',
+        message: event.reason?.message || String(event.reason),
+        stack: event.reason?.stack
     });
 });

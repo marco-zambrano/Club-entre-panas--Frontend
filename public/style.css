@@ -492,9 +492,9 @@ input:checked + .slider:before {
 }
 .tag-btn-container {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
+    flex-wrap: wrap; /* Allow buttons to wrap to the next line */
+    justify-content: flex-start; /* Align wrapped buttons to the start */
+    gap: 8px; /* Space between wrapped buttons */
 }
 .tag-btn-container.active {
     display: none;
@@ -510,18 +510,31 @@ input:checked + .slider:before {
     transition: all 0.3s ease;
 }
 
-.tag-btn--venta {
-    border-color: #4CAF50;
+.tag-btn--servientrega {
+    border-color: #26d367;
 }
-.tag-btn--venta:hover {
-    background-color: #4caf4f64;
+.tag-btn--servientrega:hover {
+    background-color: rgba(38, 211, 103, 0.35); /* Using rgba for hover effect */
 }
-.tag-btn--terminada {
-    border-color: #DD7D39;
+.tag-btn--rp {
+    border-color: #efb32f;
 }
-.tag-btn--terminada:hover {
-    background-color: #dd7d3958;
+.tag-btn--rp:hover {
+    background-color: rgba(239, 179, 47, 0.35); /* Using rgba for hover effect */
 }
+.tag-btn--delivery {
+    border-color: #57c9ff;
+}
+.tag-btn--delivery:hover {
+    background-color: rgba(87, 201, 255, 0.35); /* Using rgba for hover effect */
+}
+.tag-btn--terminado {
+    border-color: #c89ecc;
+}
+.tag-btn--terminado:hover {
+    background-color: rgba(200, 158, 204, 0.35); /* Using rgba for hover effect */
+}
+
 .bot-toggle-options {
     display: flex;
     justify-content: center;
@@ -677,11 +690,12 @@ input:checked + .slider:before {
 .image-preview-container {
     display: flex;
     align-items: center;
-    flex-grow: 1;
+    flex: 1 1 0; /* Use flex shorthand for proper shrinking */
     padding: 5px 15px; /* Adjusted padding */
     background-color: #2a2a2a; /* Darker background for preview */
     border-radius: 20px; /* Match input border-radius */
     margin-right: 10px; /* Space before buttons */
+    min-width: 0; /* Prevents the container from overflowing its parent */
 }
 
 .image-preview-thumbnail {
@@ -694,11 +708,14 @@ input:checked + .slider:before {
 
 .image-preview-filename {
     flex-grow: 1;
+    width: 0;
     font-size: 0.9em;
     color: #ccc; /* Lighter text color */
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    min-width: 0; /* Allows the filename to be truncated */
+    overflow-wrap: break-word; /* Allows long words to break if necessary */
 }
 
 .image-preview-cancel-button {
@@ -1012,30 +1029,37 @@ input:checked + .slider:before {
 }
 
 .attachment-menu {
-    display: none;
+    display: none; /* Initially hidden */
     position: absolute;
-    bottom: calc(100% + 10px); /* Position above the attach button with some space */
-    left: 0;
-    background-color: #2a2a2a;
-    border-radius: 8px;
+    bottom: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    border-radius: 25px; /* Pill shape */
     padding: 5px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-    z-index: 101; /* Ensure the menu itself is on top */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    z-index: 101;
+    gap: 5px;
 }
 
-.attachment-menu button {
-    display: block;
-    width: 100%;
-    padding: 10px;
+.attachment-menu label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px; /* Circular buttons */
+    height: 40px;
     background: none;
     border: none;
-    color: white;
-    text-align: left;
+    color: #eee;
     cursor: pointer;
+    font-size: 1.3rem; /* Larger icons */
+    border-radius: 50%; /* Circular shape */
+    transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-.attachment-menu button:hover {
-    background-color: #333;
+.attachment-menu label:hover {
+    background-color: #0b93f6;
+    color: white;
 }
 
 /* Camera Modal */
@@ -1172,7 +1196,14 @@ input:checked + .slider:before {
     }
 
     .bot-toggle.small {
-        column-gap: 10px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px; /* Space between tag buttons and bot toggle options */
+        align-self: center;
+    }
+    .bot-toggle-options {
+        justify-content: flex-start; /* Align content to the left */
+        align-self: center;
     }
     .bot-toggle-options span {
         font-size: 1rem;

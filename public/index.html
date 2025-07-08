@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Control</title>
+    <!-- <link rel="stylesheet" href="/ruta/secreta/secretisima/dashboard/style.css"> -->
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -60,8 +61,10 @@
                     <!-- Toggle encender/apagar bot -->
                     <div class="bot-toggle small">
                         <div class="tag-btn-container">
-                            <button class="tag-btn tag-btn--venta">Venta</button>
-                            <button class="tag-btn tag-btn--terminada">Terminada</button>
+                            <button class="tag-btn tag-btn--servientrega">Servientrega</button>
+                            <button class="tag-btn tag-btn--rp">RP</button>
+                            <button class="tag-btn tag-btn--delivery">Delivery</button>
+                            <button class="tag-btn tag-btn--terminado">Terminado</button>
                         </div>
                         <div class="bot-toggle-options">
                             <span>Bot</span>
@@ -92,8 +95,8 @@
                             <i class="fas fa-paperclip"></i>
                         </button>
                         <div class="attachment-menu">
-                            <button id="upload-image-btn"><i class="fas fa-upload"></i></button>
-                            <button id="take-photo-btn"><i class="fas fa-camera"></i></button>
+                            <label for="image-file-input" id="upload-image-btn"><i class="fas fa-upload"></i></label>
+                            <label for="image-file-input" id="take-photo-btn"><i class="fas fa-camera"></i></label>
                         </div>
                     </div>
                     <button class="send-button">
@@ -147,6 +150,10 @@
                     <h3>Modificar tabla de datos (JSON):</h3>
                     <textarea id="bot-table" class="bot-textarea"></textarea>
                 </div>
+                <div class="bot-modification">
+                    <h3>Modificar prompt de comentarios:</h3>
+                    <textarea id="bot-comments-prompt" class="bot-textarea"></textarea>
+                </div>
                 <div class="modal-token-container">
                     <div class="token-usage">
                         <p>Uso total de tokens: x</p>
@@ -190,9 +197,12 @@
     </div>
 
     <!-- Fin modal respuestas rápidas -->
-
     <script type="module" src="/socket.io/socket.io.js"></script>
     <script type="module" src="ui.js"></script>
     <script type="module" src="script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js"></script>
+    <!-- <script type="module" src="/ruta/secreta/secretisima/socket.io/socket.io.js"></script>
+    <script type="module" src="/ruta/secreta/secretisima/dashboard/ui.js"></script>
+    <script type="module" src="/ruta/secreta/secretisima/dashboard/script.js"></script> -->
 </body>
 </html>
