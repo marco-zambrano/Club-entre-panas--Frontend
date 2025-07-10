@@ -524,7 +524,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const itemOptions = event.target.closest('.item-options-menu');
         if (itemOptions) {
             const popup = itemOptions.querySelector('.options-popup');
-            // popup.style.display = popup.style.display === 'block' ? hideAllOptionsPopOuts() : 'block';
             if (popup.style.display === 'block') {
                 hideAllOptionsPopOuts();
             } else {
@@ -566,8 +565,25 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     // Hide popup when clicking outside
-    document.addEventListener('click', () => {
-        hideAllOptionsPopOuts();
+    document.addEventListener('click', (event) => {
+        document.querySelectorAll('.options-popup').forEach(popup => {
+            if (!popup.contains(event.target)) {
+                popup.style.display = 'none';
+            }
+        });
+    });
+
+    // Toggle tag filters on mobile
+    const toggleTagFiltersBtn = document.querySelector('.toggle-tag-filters-btn');
+    const tagFilters = document.querySelector('.tag-filters');
+
+    toggleTagFiltersBtn.addEventListener('click', () => {
+        tagFilters.classList.toggle('show');
+        if (tagFilters.classList.contains('show')) {
+            toggleTagFiltersBtn.textContent = 'Ocultar filtros de etiquetas';
+        } else {
+            toggleTagFiltersBtn.textContent = 'Mostrar filtros de etiquetas';
+        }
     });
 
 
@@ -589,7 +605,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const tagBtnsContainer = document.querySelector('.tag-btn-container');
     const whatsAppToggle = document.getElementById('whatsapp-toggle');
     const linkTag = document.querySelector('.post-link');
-    const tagFilters = document.querySelector('.tag-filters');
 
     // Función para actualizar el estado de los botones
     function updateFilterButtons() {

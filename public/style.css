@@ -1154,6 +1154,18 @@ input:checked + .slider:before {
     background-color: #f44336;
 }
 
+.toggle-tag-filters-btn {
+    display: none; /* Oculto por defecto */
+    font-size: .85rem;
+    /* background-color: #333; */
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    max-width: 200px;
+    text-decoration: underline;
+}
+
 /* Media queries para responsividad */
 @media (max-width: 992px) {
     .chat-container {
@@ -1183,6 +1195,18 @@ input:checked + .slider:before {
     }
     .contacts-list.show {
         transform: translateX(0);
+    }
+
+    .tag-filters {
+        display: none; /* Ocultar filtros de etiquetas por defecto en móvil */
+    }
+
+    .tag-filters.show {
+        display: flex; /* Mostrar cuando la clase .show está presente */
+    }
+
+    .toggle-tag-filters-btn {
+        display: block; /* Mostrar el botón en móvil */
     }
     
     .toggle-contacts {
