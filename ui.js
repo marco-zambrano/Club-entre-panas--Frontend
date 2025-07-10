@@ -1,6 +1,6 @@
 import { currentItemId, currentFilter } from "./script.js"; // Variables
 import { openItem, setCurrentFilter, filterItems, initilizeBotToggle } from "./script.js"; // Functions
-import { sendManMessage, items, quickReps, getQuickReps, updateQuickReps, sendBotConf, getCustomPrompt, botPrompts, tokenUsage, reportErrorToBackend, sendDebugMessage } from './socket.js';
+import { sendManMessage, items, quickReps, getQuickReps, updateQuickReps, sendBotConf, getCustomPrompt, botPrompts, tokenUsage, reportErrorToBackend, sendDebugMessage, deleteItem } from './socket.js';
 
 // DOM Elements
 const messageInput = document.querySelector('.message-input');
@@ -84,7 +84,6 @@ function handleImageFile(file) {
         return;
     }
 
-    
     // Show preview immediately using a fast, memory-efficient method
     const previewUrl = URL.createObjectURL(file);
     imagePreviewThumbnail.src = previewUrl;
@@ -219,14 +218,31 @@ function createContactCard(contact) {
     contactElement.dataset.itemId = contact.id;
     contactElement.dataset.type = contact.type;
 
+    // Three-dots menu
+    const optionsMenu = document.createElement('div');
+    optionsMenu.className = 'item-options-menu';
+    optionsMenu.innerHTML = `
+        <i class="fas fa-ellipsis-v"></i>
+        <div class="options-popup">
+            <button class="delete-item-btn" data-item-id="${contact.id}" data-item-name="${contact.name}">Eliminar</button>
+        </div>
+    `;
+    contactElement.appendChild(optionsMenu);
+
     // Agregamos la etiqueta de categoría si existe
-    if (contact.tag !== 'default') {
-        const tagElement = document.createElement('span');
-        tagElement.className = 'contact-tag'; // Le damos una clase para estilizarla
-        tagElement.id = `contact-tag-${contact.id}`
-        tagElement.textContent = contact.tag;
-        tagElement.style.backgroundColor = `${tagColors[contact.tag]}`
-        contactElement.appendChild(tagElement);
+    if (contact.tag && contact.tag.length > 0) {
+        const tagContainer = document.createElement('div');
+        tagContainer.className = 'contact-tags-container';
+        tagContainer.id = `contact-tags-${contact.id}`;
+
+        contact.tag.forEach(tagName => {
+            const tagElement = document.createElement('span');
+            tagElement.className = 'contact-tag';
+            tagElement.textContent = tagName;
+            tagElement.style.backgroundColor = tagColors[tagName];
+            tagContainer.appendChild(tagElement);
+        });
+        contactElement.appendChild(tagContainer);
     }
 
     if (contact.imgViewed === false) { // Si el contacto no ha visto la imagen, creamos un elemento de notificación de imagen
@@ -344,6 +360,16 @@ function createCommentCard(comment) {
     commentElement.dataset.itemId = comment.id;
     commentElement.dataset.type = comment.type;
 
+    // Three-dots menu
+    const optionsMenu = document.createElement('div');
+    optionsMenu.className = 'item-options-menu';
+    optionsMenu.innerHTML = `
+        <i class="fas fa-ellipsis-v"></i>
+        <div class="options-popup">
+            <button class="delete-item-btn" data-item-id="${comment.id}" data-item-name="${comment.name}">Eliminar item</button>
+        </div>
+    `;
+    commentElement.appendChild(optionsMenu);
 
     // Container del info del comentario (la clase dice contact-info porque son los mismos estilos)
     const commentInfo = document.createElement('div');
@@ -486,6 +512,28 @@ export function updateItemsList(items, currentFilter) {
 document.addEventListener('DOMContentLoaded', () => {
     // event listener for the contact or comment list
     document.querySelector('.contacts-list').addEventListener('click', (event) => {
+        const deleteButton = event.target.closest('.delete-item-btn');
+        if (deleteButton) {
+            const itemId = deleteButton.dataset.itemId;
+            const itemName = deleteButton.dataset.itemName;
+            showDeleteConfirmation(itemId, itemName);
+            event.stopPropagation();
+            return;
+        }
+
+        const itemOptions = event.target.closest('.item-options-menu');
+        if (itemOptions) {
+            const popup = itemOptions.querySelector('.options-popup');
+            if (popup.style.display === 'block') {
+                hideAllOptionsPopOuts();
+            } else {
+                hideAllOptionsPopOuts();
+                popup.style.display = 'block';
+            }
+            event.stopPropagation();
+            return;
+        }
+
         const clicked = event.target.closest('.contact');
         if (!clicked) return;
 
@@ -509,6 +557,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
         //actualizar el bot toggle
         initilizeBotToggle();
+    });
+
+    function hideAllOptionsPopOuts() {
+        document.querySelectorAll('.options-popup').forEach(popup => {
+            popup.style.display = 'none';
+        });
+    }
+    // Hide popup when clicking outside
+    document.addEventListener('click', (event) => {
+        document.querySelectorAll('.options-popup').forEach(popup => {
+            if (!popup.contains(event.target)) {
+                popup.style.display = 'none';
+            }
+        });
+    });
+
+    // Toggle tag filters on mobile
+    const toggleTagFiltersBtn = document.querySelector('.toggle-tag-filters-btn');
+    const tagFilters = document.querySelector('.tag-filters');
+
+    toggleTagFiltersBtn.addEventListener('click', () => {
+        tagFilters.classList.toggle('show');
+        if (tagFilters.classList.contains('show')) {
+            toggleTagFiltersBtn.textContent = 'Ocultar filtros de etiquetas';
+        } else {
+            toggleTagFiltersBtn.textContent = 'Mostrar filtros de etiquetas';
+        }
     });
 
 
@@ -535,6 +610,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateFilterButtons() {
         chatButton.classList.toggle('active', currentFilter === 'contacts');
         commentButton.classList.toggle('active', currentFilter === 'comments');
+        tagFilters.classList.toggle('hidden', currentFilter === 'comments');
         
         // Hide/show attach button based on filter
         if (currentFilter === 'comments') {
@@ -575,6 +651,10 @@ document.addEventListener('DOMContentLoaded', () => {
             updateFilterButtons();
             filterItems();
         }
+    });
+
+    document.querySelectorAll('.tag-toggle').forEach(toggle => {
+        toggle.addEventListener('change', filterItems);
     });
 
     // Send message functionality
@@ -929,25 +1009,67 @@ document.addEventListener('DOMContentLoaded', () => {
     botModalConfiguration();
     repliesModalConfiguration();
     createReplyModal();
+
+    // Delete confirmation modal logic
+    const deleteConfirmationModal = document.getElementById('deleteConfirmationModal');
+    const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+    const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
+    const deleteConfirmationText = document.getElementById('deleteConfirmationText');
+    let itemIdToDelete = null;
+
+    function showDeleteConfirmation(itemId, itemName) {
+        itemIdToDelete = itemId;
+        deleteConfirmationText.textContent = `¿Seguro que quieres eliminar a ${itemName}?`;
+        deleteConfirmationModal.classList.add('show');
+    }
+
+    function hideDeleteConfirmation() {
+        deleteConfirmationModal.classList.remove('show');
+    }
+
+    confirmDeleteBtn.addEventListener('click', () => {
+        if (itemIdToDelete) {
+            // Eliminar el item del array local
+            const itemIndex = items[currentFilter].list.findIndex(item => item.id === itemIdToDelete);
+            if (itemIndex > -1) {
+                items[currentFilter].list.splice(itemIndex, 1);
+            }
+
+            // Enviar la solicitud de eliminación al servidor
+            deleteItem(itemIdToDelete, currentFilter);
+
+            // Si el item eliminado era el que estaba abierto, limpiar la vista
+            if (currentItemId === itemIdToDelete) {
+                openItem(null);
+            }
+
+            // Actualizar la lista de items en la UI
+            filterItems();
+            
+            hideDeleteConfirmation();
+        }
+    });
+
+    cancelDeleteBtn.addEventListener('click', hideDeleteConfirmation);
 })
 
 //CAPTURE AND REPORT ERRORS
 window.onerror = function (message, source, lineno, colno, error) {
-  reportErrorToBackend({
-    type: 'error',
-    message,
-    source,
-    lineno,
-    colno,
-    stack: error?.stack
-  });
+    reportErrorToBackend({
+        type: 'error',
+        message,
+        source,
+        lineno,
+        colno,
+        stack: error?.stack
+    });
 };
 
 // CAPTURE UNHANDLED PROMISE REJECTIONS
 window.addEventListener('unhandledrejection', function (event) {
-  reportErrorToBackend({
-    type: 'unhandledrejection',
-    message: event.reason?.message || String(event.reason),
-    stack: event.reason?.stack
-  });
+    reportErrorToBackend({
+        type: 'unhandledrejection',
+        message: event.reason?.message || String(event.reason),
+        stack: event.reason?.stack
+    });
 });

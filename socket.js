@@ -129,14 +129,18 @@ export function sendBotConf(prompt, dataTable, commentsPrompt) {
     socket.emit('updatePrompt', prompt, dataTable, commentsPrompt);
 }
 
-
 // send the viewd image status to the backend
 export function setViewedImgFalse(itemId, platform) {
     socket.emit('setViewedImgFalse', { itemId, platform });
 }
 
-export function setTagBtnStatus(tag, itemId) {
-    socket.emit('setTagBtnStatus', tag, itemId);
+export function setTagBtnStatus(itemId, data) {
+    socket.emit('setTagBtnStatus', itemId, data);
+}
+
+// Send the deleted item to the backend
+export function deleteItem(itemId, filter) {
+    socket.emit('deleteItem', {itemId, filter});
 }
 
 //SEARCH CONTENT MESSAGE HISTORY FOR AN ITEM
@@ -250,6 +254,7 @@ socket.on('newMessage', (data) => {
             interest: data.interest,
             botEnabled: data.botEnabled,
             imgViewed: data.imgViewed,
+            tag: [],
             [listKey]: [] // Dynamically set the property
         };
     }

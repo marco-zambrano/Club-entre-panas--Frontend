@@ -11,31 +11,71 @@
     <div class="chat-container">
         <!-- Filtros superiores -->
         <div class="filters">
-            <div class="platform-filters">
-                <div class="filter">
-                    <span>Facebook</span>
-                    <label class="toggle">
-                        <input type="checkbox" checked class="platform-toggle" data-platform="facebook">
-                        <span class="slider facebook-slider"></span>
-                    </label>
+            <div class="filter-groups">
+                <div class="platform-filters">
+                    <div class="filter">
+                        <span>Facebook</span>
+                        <label class="toggle">
+                            <input type="checkbox" checked class="platform-toggle" data-platform="facebook">
+                            <span class="slider facebook-slider"></span>
+                        </label>
+                    </div>
+                    <div class="filter">
+                        <span>Instagram</span>
+                        <label class="toggle">
+                            <input type="checkbox" checked class="platform-toggle" data-platform="instagram">
+                            <span class="slider instagram-slider"></span>
+                        </label>
+                    </div>
+                    <div class="filter" id="whatsapp-toggle">
+                        <span>WhatsApp</span>
+                        <label class="toggle">
+                            <input type="checkbox" checked class="platform-toggle" data-platform="whatsapp">
+                            <span class="slider whatsapp-slider"></span>
+                        </label>
+                    </div>
+                    <div class="item-filter">
+                        <button class="item-chat">Chats</button>
+                        <button class="item-comment">Comentarios</button>
+                    </div>
                 </div>
-                <div class="filter">
-                    <span>Instagram</span>
-                    <label class="toggle">
-                        <input type="checkbox" checked class="platform-toggle" data-platform="instagram">
-                        <span class="slider instagram-slider"></span>
-                    </label>
-                </div>
-                <div class="filter" id="whatsapp-toggle">
-                    <span>WhatsApp</span>
-                    <label class="toggle">
-                        <input type="checkbox" checked class="platform-toggle" data-platform="whatsapp">
-                        <span class="slider whatsapp-slider"></span>
-                    </label>
-                </div>
-                <div class="item-filter">
-                    <button class="item-chat">Chats</button>
-                    <button class="item-comment">Comentarios</button>
+                <span class="toggle-tag-filters-btn">Mostrar filtros de etiquetas >></span>
+                <div class="tag-filters">
+                    <div class="filter">
+                        <span>Servientrega</span>
+                        <label class="toggle">
+                            <input type="checkbox" checked class="tag-toggle" data-tag="Servientrega">
+                            <span class="slider servientrega-slider"></span>
+                        </label>
+                    </div>
+                    <div class="filter">
+                        <span>RP</span>
+                        <label class="toggle">
+                            <input type="checkbox" checked class="tag-toggle" data-tag="RP">
+                            <span class="slider rp-slider"></span>
+                        </label>
+                    </div>
+                    <div class="filter">
+                        <span>Delivery</span>
+                        <label class="toggle">
+                            <input type="checkbox" checked class="tag-toggle" data-tag="Delivery">
+                            <span class="slider delivery-slider"></span>
+                        </label>
+                    </div>
+                    <div class="filter">
+                        <span>Terminado</span>
+                        <label class="toggle">
+                            <input type="checkbox" checked class="tag-toggle" data-tag="Terminado">
+                            <span class="slider terminado-slider"></span>
+                        </label>
+                    </div>
+                    <div class="filter">
+                        <span>Sin etiqueta</span>
+                        <label class="toggle">
+                            <input type="checkbox" checked class="tag-toggle" data-tag="default">
+                            <span class="slider default-slider"></span>
+                        </label>
+                    </div>
                 </div>
             </div>
             <!-- boton de modal del bot -->
@@ -195,6 +235,18 @@
         </div>
     </div>
 
+    <!-- Fin modal respuestas rápidas -->
+
+    <!-- Modal de confirmación para eliminar -->
+    <div class="delete-confirmation-modal" id="deleteConfirmationModal">
+        <div class="delete-confirmation-content">
+            <p id="deleteConfirmationText"></p>
+            <div class="delete-confirmation-actions">
+                <button id="cancelDeleteBtn">Cancelar</button>
+                <button id="confirmDeleteBtn">Eliminar</button>
+            </div>
+        </div>
+    </div>
     <!-- Fin modal respuestas rápidas -->
     <script type="module" src="/ruta/secreta/secretisima/socket.io/socket.io.js"></script>
     <script type="module" src="/ruta/secreta/secretisima/dashboard/ui.js"></script>

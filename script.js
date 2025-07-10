@@ -1,5 +1,5 @@
 import { items } from './socket.js'; // variables
-import { updateBotStatus, getItemHistory, getItems, reportErrorToBackend, setViewedImgFalse, setTagBtnStatus } from './socket.js'; // functions
+import { updateBotStatus, getItemHistory, getItems, setViewedImgFalse, setTagBtnStatus, reportErrorToBackend } from './socket.js'; // functions
 import { updateItemsList, createMessage, tagColors } from './ui.js';
 
 export let currentItemId = null; // Id of the item actived
@@ -28,6 +28,19 @@ export function filterItems() {
     const filteredItems = items[currentFilter].list.filter(item => {
         const platformToggle = document.querySelector(`.platform-toggle[data-platform="${item.platform}"]`);
         const matchesPlatform = platformToggle && platformToggle.checked;
+
+        if (currentFilter === 'contacts') {
+            const selectedTags = Array.from(document.querySelectorAll('.tag-toggle:checked')).map(toggle => toggle.dataset.tag);
+            const itemTags = Array.isArray(item.tag) ? item.tag : [item.tag];
+
+            if (selectedTags.includes('default') && itemTags.length === 0) {
+                return matchesPlatform;
+            }
+
+            const matchesTags = selectedTags.some(tag => itemTags.includes(tag));
+            return matchesPlatform && matchesTags;
+        }
+
         return matchesPlatform;
     });
 
@@ -80,6 +93,7 @@ function handleInputVisibility(isChecked, itemId) {
     currentItem.botEnabled = isChecked;
     updateBotStatus(itemId, isChecked); //GOES TO THE BACKEND USING WEBSOCKETS
 }
+
 //INITIALIZE BOT TOGGLE
 export function initilizeBotToggle() {
     const currentItem = items[currentFilter].list.find(item => item.id === currentItemId);
@@ -111,12 +125,10 @@ export function initilizeBotToggle() {
     }
 }
 
-let selectedTagButton = null;
 let currentActiveHandler = null;
 
 const handleTagBtn = currentItem => {
     // --- PASO 1: Limpiar los listeners ANTERIORES ---
-    // Recorremos todos los botones y, si existe un handler previo, lo removemos.
     document.querySelectorAll(".tag-btn").forEach(btn => {
         if (currentActiveHandler) {
             btn.removeEventListener("click", currentActiveHandler);
@@ -128,55 +140,54 @@ const handleTagBtn = currentItem => {
         document.querySelectorAll(".tag-btn").forEach(btn => {
             btn.style.backgroundColor = "transparent";
         });
-        selectedTagButton = null;
     };
 
-    // Reseteamos el estado visual al iniciar
     resetAllTagButtons();
 
+    // Ensure currentItem.tag is an array before proceeding
+    if (typeof currentItem.tag === 'string') {
+        currentItem.tag = currentItem.tag === 'default' ? [] : [currentItem.tag];
+    } else if (!Array.isArray(currentItem.tag)) {
+        currentItem.tag = [];
+    }
+
     // Establecemos el estado inicial basado en el nuevo `currentItem`
-    if (currentItem.tag !== "default") {
-        const tagElement = document.querySelector(`.tag-btn--${currentItem.tag.toLowerCase()}`);
-        if (tagElement) {
-            tagElement.style.backgroundColor = tagColors[currentItem.tag];
-            selectedTagButton = tagElement;
-        }
+    if (currentItem.tag.length > 0) {
+        currentItem.tag.forEach(tag => {
+            const tagElement = document.querySelector(`.tag-btn--${tag.toLowerCase()}`);
+            if (tagElement) {
+                tagElement.style.backgroundColor = tagColors[tag];
+            }
+        });
     }
 
     // --- PASO 2: Crear el NUEVO handler para el `currentItem` actual ---
-    // Creamos la función del listener aquí. Al hacerlo, "captura" el `currentItem`
-    // de esta llamada específica (esto es una clausura o closure).
     currentActiveHandler = e => {
-        let itemTag = document.getElementById(`contact-tag-${currentItem.id}`); // obtenemos el tag del item contact
-        //si la etiqueta visual no existe aún para este contacto, busca el contenedor, crea los elementos necesarios y añade todo al contenedor del contacto
-        if (!itemTag) {
-            const itemElementContainer = document.querySelector(`.contact[data-item-id="${currentItem.id}"]`);
-            const tagElement = document.createElement('span');
-            tagElement.className = 'contact-tag'; // Le damos una clase para estilizarla
-            tagElement.id = `contact-tag-${currentItem.id}`;
-            itemTag = tagElement;
-            itemElementContainer.appendChild(tagElement);
-        }
-        const btnElement = e.currentTarget; // Usar currentTarget es más seguro
+        const btnElement = e.currentTarget;
         const tagName = btnElement.textContent;
-
-        if (btnElement === selectedTagButton) { //si se clickea un boton que ya estaba seleccionado
-            resetAllTagButtons();
-            setTagBtnStatus("default", currentItem.id);
-
-            itemTag.style.backgroundColor = `transparent`;
-            itemTag.textContent = '';
-            currentItem.tag = 'default';
-        } else { //sino, resetea todos los botones y añade las clases y propiedades necesarias
-            resetAllTagButtons();
-            btnElement.style.backgroundColor = tagColors[tagName];
-            setTagBtnStatus(btnElement.textContent, currentItem.id);
-            selectedTagButton = btnElement;
-
-            itemTag.style.backgroundColor = tagColors[tagName];
-            itemTag.textContent = tagName;
-            currentItem.tag = tagName;
+        
+        // Ensure itemTagContainer is handled correctly
+        let itemTagContainer = document.getElementById(`contact-tags-${currentItem.id}`);
+        if (!itemTagContainer) {
+            const itemElementContainer = document.querySelector(`.contact[data-item-id="${currentItem.id}"]`);
+            itemTagContainer = document.createElement('div');
+            itemTagContainer.className = 'contact-tags-container';
+            itemTagContainer.id = `contact-tags-${currentItem.id}`;
+            itemElementContainer.appendChild(itemTagContainer);
         }
+
+        const tagIndex = currentItem.tag.indexOf(tagName);
+
+        if (tagIndex > -1) { // Si la etiqueta ya existe, la eliminamos
+            currentItem.tag.splice(tagIndex, 1);
+            btnElement.style.backgroundColor = "transparent";
+        } else { // Si no existe, la agregamos
+            currentItem.tag.push(tagName);
+            btnElement.style.backgroundColor = tagColors[tagName];
+        }
+
+        setTagBtnStatus(currentItem.id, currentItem.tag);
+        updateTagDisplay(currentItem);
     };
 
     document.querySelectorAll(".tag-btn").forEach(btn => {
@@ -184,14 +195,41 @@ const handleTagBtn = currentItem => {
     });
 };
 
+function updateTagDisplay(item) {
+    const tagContainer = document.getElementById(`contact-tags-${item.id}`);
+    if (!tagContainer) return;
+
+    tagContainer.innerHTML = ''; // Limpiamos el contenedor
+
+    item.tag.forEach(tagName => {
+        const tagElement = document.createElement('span');
+        tagElement.className = 'contact-tag';
+        tagElement.textContent = tagName;
+        tagElement.style.backgroundColor = tagColors[tagName];
+        tagContainer.appendChild(tagElement);
+    });
+}
+
 //TO OPEN A NEW ITEM
 export function openItem(itemId) {
     currentItemId = itemId;
-    if (!currentItemId) return;
 
-    const currentItem = items[currentFilter].list.find(item => item.id === currentItemId);
-    
-    if (!currentItem) return;
+    // Si itemId es null o no se encuentra, limpiar el área de chat
+    const currentItem = itemId ? items[currentFilter].list.find(item => item.id === itemId) : null;
+
+    if (!currentItem) {
+        document.querySelector('.chat-title').textContent = 'Selecciona un contacto o comentario';
+        const messagesContainer = document.querySelector('.messages');
+        if (messagesContainer) {
+            messagesContainer.innerHTML = '';
+        }
+        document.querySelector('.bot-toggle').style.display = 'none';
+        const previouslyActive = document.querySelector('.contact.active');
+        if (previouslyActive) {
+            previouslyActive.classList.remove('active');
+        }
+        return;
+    }
 
     if (currentItem.imgViewed === false) {
         const imageNotification = document.getElementById(`image-notification-${itemId}`);
@@ -229,6 +267,7 @@ export function openItem(itemId) {
 
     getItemHistory(currentItemId, currentFilter);
 }
+
 //TO CHANGE MESSAGE/COMMENT FILTER
 export function setCurrentFilter(value) {
     currentFilter = value;
@@ -269,21 +308,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
 //CAPTURE AND REPORT ERRORS
 window.onerror = function (message, source, lineno, colno, error) {
-  reportErrorToBackend({
-    type: 'error',
-    message,
-    source,
-    lineno,
-    colno,
-    stack: error?.stack
-  });
+    reportErrorToBackend({
+        type: 'error',
+        message,
+        source,
+        lineno,
+        colno,
+        stack: error?.stack
+    });
 };
 
 // CAPTURE UNHANDLED PROMISE REJECTIONS
 window.addEventListener('unhandledrejection', function (event) {
-  reportErrorToBackend({
-    type: 'unhandledrejection',
-    message: event.reason?.message || String(event.reason),
-    stack: event.reason?.stack
-  });
+    reportErrorToBackend({
+        type: 'unhandledrejection',
+        message: event.reason?.message || String(event.reason),
+        stack: event.reason?.stack
+    });
 });
