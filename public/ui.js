@@ -224,7 +224,7 @@ function createContactCard(contact) {
     optionsMenu.innerHTML = `
         <i class="fas fa-ellipsis-v"></i>
         <div class="options-popup">
-            <button class="delete-item-btn" data-item-id="${contact.id}" data-item-name="${contact.name}">Eliminar item</button>
+            <button class="delete-item-btn" data-item-id="${contact.id}" data-item-name="${contact.name}">Eliminar</button>
         </div>
     `;
     contactElement.appendChild(optionsMenu);
@@ -523,9 +523,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const itemOptions = event.target.closest('.item-options-menu');
         if (itemOptions) {
-            hideAllOptionsPopOuts();
             const popup = itemOptions.querySelector('.options-popup');
-            popup.style.display = popup.style.display === 'block' ? 'none' : 'block';
+            // popup.style.display = popup.style.display === 'block' ? hideAllOptionsPopOuts() : 'block';
+            if (popup.style.display === 'block') {
+                hideAllOptionsPopOuts();
+            } else {
+                hideAllOptionsPopOuts();
+                popup.style.display = 'block';
+            }
             event.stopPropagation();
             return;
         }
@@ -561,7 +566,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     // Hide popup when clicking outside
-    document.addEventListener('click', (event) => {
+    document.addEventListener('click', () => {
         hideAllOptionsPopOuts();
     });
 
