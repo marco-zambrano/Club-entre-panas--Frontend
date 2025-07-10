@@ -122,6 +122,27 @@ input:checked + .whatsapp-slider {
     background-color: #25D366;
 }
 
+/* Input de las etiquetas */
+input:checked + .servientrega-slider {
+    background-color: #26d367;
+}
+
+input:checked + .rp-slider {
+    background-color: #efb32f;
+}
+
+input:checked + .delivery-slider {
+    background-color: #57c9ff;
+}
+
+input:checked + .terminado-slider {
+    background-color: #c89ecc;
+}
+
+input:checked + .default-slider {
+    background-color: #888;
+}
+
 /* Animation del input */
 input:checked + .slider:before {
     transform: translateX(26px);
