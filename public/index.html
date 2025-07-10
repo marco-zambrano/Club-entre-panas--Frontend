@@ -236,6 +236,18 @@
     </div>
 
     <!-- Fin modal respuestas rápidas -->
+
+    <!-- Modal de confirmación para eliminar -->
+    <div class="delete-confirmation-modal" id="deleteConfirmationModal">
+        <div class="delete-confirmation-content">
+            <p id="deleteConfirmationText"></p>
+            <div class="delete-confirmation-actions">
+                <button id="confirmDeleteBtn">Sí</button>
+                <button id="cancelDeleteBtn">No</button>
+            </div>
+        </div>
+    </div>
+    
     <script type="module" src="/socket.io/socket.io.js"></script>
     <script type="module" src="ui.js"></script>
     <script type="module" src="script.js"></script>

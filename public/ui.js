@@ -1,6 +1,6 @@
 import { currentItemId, currentFilter } from "./script.js"; // Variables
 import { openItem, setCurrentFilter, filterItems, initilizeBotToggle } from "./script.js"; // Functions
-import { sendManMessage, items, quickReps, getQuickReps, updateQuickReps, sendBotConf, getCustomPrompt, botPrompts, tokenUsage, reportErrorToBackend, sendDebugMessage } from './socket.js';
+import { sendManMessage, items, quickReps, getQuickReps, updateQuickReps, sendBotConf, getCustomPrompt, botPrompts, tokenUsage, reportErrorToBackend, sendDebugMessage, deleteItem } from './socket.js';
 
 // DOM Elements
 const messageInput = document.querySelector('.message-input');
@@ -218,6 +218,17 @@ function createContactCard(contact) {
     contactElement.dataset.itemId = contact.id;
     contactElement.dataset.type = contact.type;
 
+    // Three-dots menu
+    const optionsMenu = document.createElement('div');
+    optionsMenu.className = 'item-options-menu';
+    optionsMenu.innerHTML = `
+        <i class="fas fa-ellipsis-v"></i>
+        <div class="options-popup">
+            <button class="delete-item-btn" data-item-id="${contact.id}" data-item-name="${contact.name}">Eliminar item</button>
+        </div>
+    `;
+    contactElement.appendChild(optionsMenu);
+
     // Agregamos la etiqueta de categoría si existe
     if (contact.tag && contact.tag.length > 0) {
         const tagContainer = document.createElement('div');
@@ -349,6 +360,16 @@ function createCommentCard(comment) {
     commentElement.dataset.itemId = comment.id;
     commentElement.dataset.type = comment.type;
 
+    // Three-dots menu
+    const optionsMenu = document.createElement('div');
+    optionsMenu.className = 'item-options-menu';
+    optionsMenu.innerHTML = `
+        <i class="fas fa-ellipsis-v"></i>
+        <div class="options-popup">
+            <button class="delete-item-btn" data-item-id="${comment.id}" data-item-name="${comment.name}">Eliminar item</button>
+        </div>
+    `;
+    commentElement.appendChild(optionsMenu);
 
     // Container del info del comentario (la clase dice contact-info porque son los mismos estilos)
     const commentInfo = document.createElement('div');
@@ -491,6 +512,24 @@ export function updateItemsList(items, currentFilter) {
 document.addEventListener('DOMContentLoaded', () => {
     // event listener for the contact or comment list
     document.querySelector('.contacts-list').addEventListener('click', (event) => {
+        const deleteButton = event.target.closest('.delete-item-btn');
+        if (deleteButton) {
+            const itemId = deleteButton.dataset.itemId;
+            const itemName = deleteButton.dataset.itemName;
+            showDeleteConfirmation(itemId, itemName);
+            event.stopPropagation();
+            return;
+        }
+
+        const itemOptions = event.target.closest('.item-options-menu');
+        if (itemOptions) {
+            hideAllOptionsPopOuts();
+            const popup = itemOptions.querySelector('.options-popup');
+            popup.style.display = popup.style.display === 'block' ? 'none' : 'block';
+            event.stopPropagation();
+            return;
+        }
+
         const clicked = event.target.closest('.contact');
         if (!clicked) return;
 
@@ -514,6 +553,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
         //actualizar el bot toggle
         initilizeBotToggle();
+    });
+
+    function hideAllOptionsPopOuts() {
+        document.querySelectorAll('.options-popup').forEach(popup => {
+            popup.style.display = 'none';
+        });
+    }
+    // Hide popup when clicking outside
+    document.addEventListener('click', (event) => {
+        hideAllOptionsPopOuts();
     });
 
 
@@ -940,6 +989,32 @@ document.addEventListener('DOMContentLoaded', () => {
     botModalConfiguration();
     repliesModalConfiguration();
     createReplyModal();
+
+    // Delete confirmation modal logic
+    const deleteConfirmationModal = document.getElementById('deleteConfirmationModal');
+    const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+    const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
+    const deleteConfirmationText = document.getElementById('deleteConfirmationText');
+    let itemIdToDelete = null;
+
+    function showDeleteConfirmation(itemId, itemName) {
+        itemIdToDelete = itemId;
+        deleteConfirmationText.textContent = `¿Seguro que quieres eliminar a ${itemName}?`;
+        deleteConfirmationModal.classList.add('show');
+    }
+
+    function hideDeleteConfirmation() {
+        deleteConfirmationModal.classList.remove('show');
+    }
+
+    confirmDeleteBtn.addEventListener('click', () => {
+        if (itemIdToDelete) {
+            deleteItem(itemIdToDelete);
+            hideDeleteConfirmation();
+        }
+    });
+
+    cancelDeleteBtn.addEventListener('click', hideDeleteConfirmation);
 })
 
 //CAPTURE AND REPORT ERRORS

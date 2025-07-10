@@ -139,6 +139,11 @@ export function setTagBtnStatus(itemId, data) {
     socket.emit('setTagBtnStatus', itemId, data);
 }
 
+// Send the deleted item to the backend
+export function deleteItem(itemId) {
+    socket.emit('deleteItem', itemId);
+}
+
 //SEARCH CONTENT MESSAGE HISTORY FOR AN ITEM
 socket.on('itemContentHistory', (entries) => {
     const currentItem = items[currentFilter].list.find( item => item.id === currentItemId);

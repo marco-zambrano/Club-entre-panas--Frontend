@@ -223,8 +223,12 @@ io.on('connection', (socket) => {
     });
 
     socket.on('setTagBtnStatus', (itmemId, tags) => {
-        console.log(itmemId, tags);
-    }) 
+        // console.log(itmemId, tags);
+    })
+
+    socket.on('deleteItem', (itemId) => {
+        console.log(`Item deleted: ${itemId}`);
+    });
 
     //TIME TESTING
     //NEW MESSAGES EVERY 15 SECS
