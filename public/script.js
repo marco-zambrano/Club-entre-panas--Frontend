@@ -213,11 +213,23 @@ function updateTagDisplay(item) {
 //TO OPEN A NEW ITEM
 export function openItem(itemId) {
     currentItemId = itemId;
-    if (!currentItemId) return;
 
-    const currentItem = items[currentFilter].list.find(item => item.id === currentItemId);
-    
-    if (!currentItem) return;
+    // Si itemId es null o no se encuentra, limpiar el área de chat
+    const currentItem = itemId ? items[currentFilter].list.find(item => item.id === itemId) : null;
+
+    if (!currentItem) {
+        document.querySelector('.chat-title').textContent = 'Selecciona un contacto o comentario';
+        const messagesContainer = document.querySelector('.messages');
+        if (messagesContainer) {
+            messagesContainer.innerHTML = '';
+        }
+        document.querySelector('.bot-toggle').style.display = 'none';
+        const previouslyActive = document.querySelector('.contact.active');
+        if (previouslyActive) {
+            previouslyActive.classList.remove('active');
+        }
+        return;
+    }
 
     if (currentItem.imgViewed === false) {
         const imageNotification = document.getElementById(`image-notification-${itemId}`);

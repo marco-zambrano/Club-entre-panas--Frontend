@@ -140,8 +140,8 @@ export function setTagBtnStatus(itemId, data) {
 }
 
 // Send the deleted item to the backend
-export function deleteItem(itemId) {
-    socket.emit('deleteItem', itemId);
+export function deleteItem(itemId, filter) {
+    socket.emit('deleteItem', {itemId, filter});
 }
 
 //SEARCH CONTENT MESSAGE HISTORY FOR AN ITEM

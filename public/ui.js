@@ -1009,7 +1009,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     confirmDeleteBtn.addEventListener('click', () => {
         if (itemIdToDelete) {
-            deleteItem(itemIdToDelete);
+            // Eliminar el item del array local
+            const itemIndex = items[currentFilter].list.findIndex(item => item.id === itemIdToDelete);
+            if (itemIndex > -1) {
+                items[currentFilter].list.splice(itemIndex, 1);
+            }
+
+            // Enviar la solicitud de eliminación al servidor
+            deleteItem(itemIdToDelete, currentFilter);
+
+            // Si el item eliminado era el que estaba abierto, limpiar la vista
+            if (currentItemId === itemIdToDelete) {
+                openItem(null);
+            }
+
+            // Actualizar la lista de items en la UI
+            filterItems();
+            
             hideDeleteConfirmation();
         }
     });

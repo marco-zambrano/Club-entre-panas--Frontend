@@ -226,8 +226,20 @@ io.on('connection', (socket) => {
         // console.log(itmemId, tags);
     })
 
-    socket.on('deleteItem', (itemId) => {
-        console.log(`Item deleted: ${itemId}`);
+    socket.on('deleteItem', (data) => {
+        const { itemId, filter } = data;
+        if (!filter || !items[filter]) return;
+
+        const list = items[filter].list;
+        const itemIndex = list.findIndex(item => item.id === itemId || `${item.userId}-${item.postId}` === itemId);
+
+        if (itemIndex !== -1) {
+            list.splice(itemIndex, 1);
+            console.log(`Item ${itemId} deleted from ${filter}.`);
+            // No need to broadcast back to the client that initiated the delete,
+            // but you could broadcast to other clients if needed.
+            // io.emit('itemDeleted', { itemId, filter });
+        }
     });
 
     //TIME TESTING
