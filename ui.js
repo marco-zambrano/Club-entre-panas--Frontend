@@ -931,14 +931,6 @@ document.addEventListener('DOMContentLoaded', () => {
         quickRepliesContainer.appendChild(newReply);
     }
 
-    function generateRandomReplyId() {
-        // Genera un ID con prefijo 'qr-' (quick reply) + timestamp + 4 caracteres aleatorios
-        const timestamp = Date.now().toString(36); // Base36 para acortar
-        const randomPart = Math.random().toString(36).substring(2, 6); // 4 caracteres aleatorios
-
-        return `qr-${timestamp}-${randomPart}`;
-    }
-
     // Create new qr item
     function createReplyModal() {
         // Abrir modal de crear nueva respuesta rápida
@@ -954,8 +946,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Mostramos modal de crear nuevo mensaje
             createQuickReplyModal.classList.remove('show');
 
-            const newId = generateRandomReplyId()
-            const textContent = newQrTextArea.value.trim();
+            const textContent = newQrTextArea.value;
 
             // creamos el mensaje en el DOM
             createQuickReply(textContent);

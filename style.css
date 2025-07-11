@@ -652,6 +652,7 @@ input:checked + .slider:before {
     padding: 10px 15px;
     display: inline-block;
     position: relative;
+    white-space: pre-wrap;
 }
 /* message image */
 .message.image {
@@ -955,6 +956,7 @@ input:checked + .slider:before {
     cursor: pointer;
     word-wrap: break-word;
     width: 90%;
+    white-space: pre-wrap;
 }
 .quick-reply-text:hover {
     background: #2a2a2a;
