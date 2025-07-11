@@ -173,9 +173,9 @@ io.on('connection', (socket) => {
 
     //QUICK REPLIES
     let replies = [
-        'El producto en promocion es tal tal',
-        'Hola, muy buenas tardes, sea bienvenido a Club Entre Panas, estamos aca para servirle',
-        'Hola, que tal, actualmente no nos encontramos atendiendo en nuestro local'
+        'El producto en promoción es:\nTal tal',
+        'Hola, muy buenas tardes.\nSea bienvenido a Club Entre Panas.\nEstamos acá para servirle.',
+        'Hola, ¿qué tal?\nActualmente no nos encontramos atendiendo en nuestro local.'
     ];
 
     socket.on('getQuickReps', () => {
