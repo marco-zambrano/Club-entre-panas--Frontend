@@ -213,7 +213,10 @@ function clearImagePreview() {
 function createContactCard(contact) {
     // Container del contacto
     const contactElement = document.createElement('div');
-    contactElement.className = `contact ${contact.id === currentItemId ? 'active' : ''}`; //WHAT THIS DOES IS THAT IF THE CONTACT ID IS THE SAME AS THE CURRENT ITEM ID, IT WILL ADD THE CLASS ACTIVE
+    contactElement.className = `contact ${contact.id === currentItemId ? 'active' : ''}`;
+    if (contact.read === false) { // Si el contacto no ha sido leido y no es el contacto activo
+        contactElement.classList.add('unread');
+    } //WHAT THIS DOES IS THAT IF THE CONTACT ID IS THE SAME AS THE CURRENT ITEM ID, IT WILL ADD THE CLASS ACTIVE
     contactElement.dataset.platform = contact.platform;
     contactElement.dataset.itemId = contact.id;
     contactElement.dataset.type = contact.type;
@@ -359,7 +362,9 @@ function createCommentCard(comment) {
     commentElement.dataset.platform = comment.platform;
     commentElement.dataset.itemId = comment.id;
     commentElement.dataset.type = comment.type;
-
+    if (comment.read === false) { // Si el contacto no ha sido leido y no es el contacto activo
+        commentElement.classList.add('unread');
+    } 
     // Three-dots menu
     const optionsMenu = document.createElement('div');
     optionsMenu.className = 'item-options-menu';

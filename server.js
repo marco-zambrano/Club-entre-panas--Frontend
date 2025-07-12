@@ -26,21 +26,21 @@ function generateRandomPlatform(platform) {
 }
 
 //RANDOM MESSAGES
-// function generateRandomMessage() {
-//     const messages = [
-//         "Hola, ¿cómo estás?",
-//         "¿Podrías ayudarme con una consulta?",
-//         "Necesito información sobre tus pulseras",
-//         "¿Tienes disponibilidad para hablar hoy? 😊",
-//         "Me gustaría preguntar por el accesorio...",
-//         "¿Cuál es el precio de...?",
-//         "Gracias por tu ayuda ❤️",
-//         "¿Podrías darme más detalles?",
-//         "Perfecto, me parece bien 👌",
-//         "¿A qué hora puedo hablarles mañana?"
-//     ];
-//     return messages[Math.floor(Math.random() * messages.length)];
-// }
+function generateRandomMessage() {
+    const messages = [
+        "Hola, ¿cómo estás?",
+        "¿Podrías ayudarme con una consulta?",
+        "Necesito información sobre tus pulseras",
+        "¿Tienes disponibilidad para hablar hoy? 😊",
+        "Me gustaría preguntar por el accesorio...",
+        "¿Cuál es el precio de...?",
+        "Gracias por tu ayuda ❤️",
+        "¿Podrías darme más detalles?",
+        "Perfecto, me parece bien 👌",
+        "¿A qué hora puedo hablarles mañana?"
+    ];
+    return messages[Math.floor(Math.random() * messages.length)];
+}
 
 
 //FUNC TO GENERATE RANDOM IMAGES
@@ -75,15 +75,18 @@ function generateRandomComment() {
 // GENERATE A NEW CONTACT
 function generateNewContact() {
     const newContact = {
-        id: 'a9f3c2d1e0b4',
-        name: 'John Smith',
+        id: 'a9f3c2d1e0b3',
+        name: generateRandomName(),
         platform: 'facebook',
         interest: 8,
         botEnabled: true,
+        imgViewed: true,
+        tag: [],
+        read: false, // New chats are unread by default
         message: {
             id: Math.random().toString(36).substring(2, 15),
-            content: 'https://picsum.photos/300/200',
-            type: 'image',
+            content: generateRandomMessage(),
+            type: 'text',
             time: Date.now(),
             self: false
         }
@@ -100,7 +103,8 @@ function generateNewComment() {
         platform: generateRandomPlatform('comment'),
         botEnabled: Math.random() > 0.5 ? true : false,
         interest: Math.floor(Math.random() * 11),
-        permalink: 'https://www.linkfalso.com/sj1n1324nj2n', // new property
+        permalink: 'https://www.linkfalso.com/sj1n1324nj2n', // new property,
+        read: false, // New comments are unread by default
         comment: {
             id: Math.random().toString(36).substring(2, 15),
             content: generateRandomComment(),
@@ -242,50 +246,57 @@ io.on('connection', (socket) => {
         }
     });
 
+    //READ CHAT
+    socket.on('updateRead', (data) => {
+        const { itemId, read, filter } = data;
+        console.log(`Read chat for itemId: ${itemId}, read: ${read}, itemType: ${filter}`);
+    });
+
+
     //TIME TESTING
-    //NEW MESSAGES EVERY 15 SECS
-    // const contactInterval = setInterval(() => {
-    //     var newContact = generateNewContact();
+    // NEW MESSAGES EVERY 7 SECS
+    const contactInterval = setInterval(() => {
+        var newContact = generateNewContact();
     
-    //     io.emit('newMessage', newContact);
+        io.emit('newMessage', newContact);
 
-    //     //THIS IS JUST TO SAVE IT ON THE SERVER SIDE AND KEEP CONSISTENCY AND REDUNDANCY
-    //     newContact.messages = [];
-    //     newContact.messages.push({
-    //         id: newContact.message.id, 
-    //         type: newContact.message.type, 
-    //         content: newContact.message.content, 
-    //         time: newContact.message.time, 
-    //         self: newContact.message.self
-    //     });
-    //     delete newContact.message; // Remove the message property from the contact object
-    //     items.contacts.list.unshift(newContact); // Add it at the beginning of the list
+        //THIS IS JUST TO SAVE IT ON THE SERVER SIDE AND KEEP CONSISTENCY AND REDUNDANCY
+        newContact.messages = [];
+        newContact.messages.push({
+            id: newContact.message.id, 
+            type: newContact.message.type, 
+            content: newContact.message.content, 
+            time: newContact.message.time, 
+            self: newContact.message.self
+        });
+        delete newContact.message; // Remove the message property from the contact object
+        items.contacts.list.unshift(newContact); // Add it at the beginning of the list
 
-    //     console.log("New contact generated")
-    // }, 7000);
+        console.log("New contact generated")
+    }, 7000);
 
     // NEW COMMENTS EVERY 15 SECS
-    // const commentInterval = setInterval(() => {
-    //     const newComment = generateNewComment();
+    const commentInterval = setInterval(() => {
+        const newComment = generateNewComment();
 
-    //     io.emit('newMessage', newComment);
+        io.emit('newMessage', newComment);
 
 
-    //     //SET THE COMMENTS ARRAY TO THE NEW COMMENT
-    //     newComment.comments = [];
-    //     newComment.comments.push({
-    //         userId: newComment.comment.userId,
-    //         postId: newComment.comment.postId,
-    //         type: newComment.comment.type,
-    //         content: newComment.comment.content,
-    //         permalink: newComment.comment.permalink, // new property
-    //         time: newComment.comment.time,
-    //         self: newComment.comment.self
-    //     });
-    //     delete newComment.comment; // Remove the comment property from the comment object
-    //     items.comments.list.unshift(newComment); // Add it at the beginning of the list
-    //     console.log("New comment generated")
-    // }, 15000);
+        //SET THE COMMENTS ARRAY TO THE NEW COMMENT
+        newComment.comments = [];
+        newComment.comments.push({
+            userId: newComment.comment.userId,
+            postId: newComment.comment.postId,
+            type: newComment.comment.type,
+            content: newComment.comment.content,
+            permalink: newComment.comment.permalink, // new property
+            time: newComment.comment.time,
+            self: newComment.comment.self
+        });
+        delete newComment.comment; // Remove the comment property from the comment object
+        items.comments.list.unshift(newComment); // Add it at the beginning of the list
+        console.log("New comment generated")
+    }, 6000);
 
 
     // setInterval(() => {
@@ -329,9 +340,9 @@ io.on('connection', (socket) => {
 
     //ON DISCONONECT
     socket.on('disconnect', () => {
-        // clearInterval(contactInterval);
-        // clearInterval(commentInterval);
-        console.log('Cliente desconectado:', socket.id);
+        clearInterval(contactInterval);
+        clearInterval(commentInterval);
+        // console.log('Cliente desconectado:', socket.id);
     });
 });
 

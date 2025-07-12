@@ -139,6 +139,10 @@ export function setTagBtnStatus(itemId, data) {
     socket.emit('setTagBtnStatus', itemId, data);
 }
 
+export function readChat(itemId, read, filter) {
+    socket.emit('updateRead', { itemId, read, filter });
+}
+
 // Send the deleted item to the backend
 export function deleteItem(itemId, filter) {
     socket.emit('deleteItem', {itemId, filter});
@@ -234,14 +238,15 @@ socket.on('newMessage', (data) => {
         itemId = `${data.userId}-${data.postId}`; //comment id
         //ITEM COMMENT
         newItem = {
-            id: itemId, // new property
+            id: itemId,
             userId: data.userId,
             postId: data.postId,
             name: data.name,
             platform: data.platform,
             interest: data.interest,
             botEnabled: data.botEnabled,
-            permalink: data.permalink,  // new property
+            permalink: data.permalink,
+            read: data.read, // New comments reads are false by default
             [listKey]: [] // Dynamically set the property (messages or comments)
         };
 
@@ -255,6 +260,7 @@ socket.on('newMessage', (data) => {
             interest: data.interest,
             botEnabled: data.botEnabled,
             imgViewed: data.imgViewed,
+            read: data.read, // New chats reads are false by default
             tag: [],
             [listKey]: [] // Dynamically set the property
         };
@@ -273,15 +279,20 @@ socket.on('newMessage', (data) => {
         item.preview.content = data[dataKey].content;
         item.preview.timestamp = data[dataKey].time;
 
-        if (newEntry.type === 'image' && newEntry.self === false) {
-            item.imgViewed = data.imgViewed; // Reset imgViewed status for new images messages
+        if (newEntry.self === false) {
+            item.read = data.read;
+            if(newEntry.type === 'image') item.imgViewed = data.imgViewed; // Reset imgViewed status for new images messages
         }
 
         item[listKey].push(newEntry); // Add the new entry to the existing item
 
         if(currentItemId === itemId) { //IF THE ITEM IS OPENED, SHOW THE MESSAGE
             const senderString = data[dataKey].self === true ? 'bot' : "contact"; //if true, bot, else contact
-            createMessage(data[dataKey].content, data[dataKey].time, senderString, data[dataKey].type); //WILL CHANGE FOR EPOCH
+            createMessage(data[dataKey].content, data[dataKey].time, senderString, data[dataKey].type);
+
+            if(newEntry.self === false) { // If the message is from the contact, mark it as read
+                item.read = true; // Mark the item as read
+            }
         }
     }
     

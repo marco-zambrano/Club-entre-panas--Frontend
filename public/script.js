@@ -1,5 +1,5 @@
 import { items } from './socket.js'; // variables
-import { updateBotStatus, getItemHistory, getItems, setViewedImgFalse, setTagBtnStatus, reportErrorToBackend } from './socket.js'; // functions
+import { updateBotStatus, getItemHistory, getItems, setViewedImgFalse, setTagBtnStatus, reportErrorToBackend, readChat } from './socket.js'; // functions
 import { updateItemsList, createMessage, tagColors } from './ui.js';
 
 export let currentItemId = null; // Id of the item actived
@@ -229,6 +229,15 @@ export function openItem(itemId) {
             previouslyActive.classList.remove('active');
         }
         return;
+    }
+
+    if (currentItem.read === false) {
+        currentItem.read = true;
+        readChat(currentItemId, true, currentFilter);
+        const contactElement = document.querySelector(`.contact[data-item-id="${currentItemId}"]`);
+        if (contactElement) {
+            contactElement.classList.remove('unread');
+        }
     }
 
     if (currentItem.imgViewed === false) {
