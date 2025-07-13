@@ -382,7 +382,7 @@ input:checked + .slider:before {
     background-color: #1e1e1e;
 }
 .contact.unread {
-    background-color: rgba(217, 255, 0, 0.058);
+    background-color: rgba(172, 7, 15);
 }
 .contact.active {
     background-color: #1e1e1e;

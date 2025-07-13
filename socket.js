@@ -134,12 +134,14 @@ export function setViewedImgFalse(itemId, platform) {
     socket.emit('setViewedImgFalse', { itemId, platform });
 }
 
+//Set tags for contact
 export function setTagBtnStatus(itemId, data) {
     socket.emit('setTagBtnStatus', itemId, data);
 }
 
-export function readChat(itemId, read, filter) {
-    socket.emit('updateRead', { itemId, read, filter });
+// Mark chat as read
+export function readChat(itemId, filter) {
+    socket.emit('readChat', { itemId, filter });
 }
 
 // Send the deleted item to the backend
