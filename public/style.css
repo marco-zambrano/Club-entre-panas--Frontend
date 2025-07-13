@@ -175,6 +175,11 @@ input:checked + .slider:before {
     background-color: #0b93f6;
 }
 
+.item-filter button.unread {
+    background-color: #ffff0040;
+    cursor: pointer;
+}
+
 /* WhatsApp toggle */
 #whatsapp-toggle.active {
     display: none;
@@ -382,7 +387,7 @@ input:checked + .slider:before {
     background-color: #1e1e1e;
 }
 .contact.unread {
-    background-color: rgba(172, 7, 15);
+    background-color: rgba(242, 255, 4, 0.058);
 }
 .contact.active {
     background-color: #1e1e1e;
