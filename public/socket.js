@@ -139,8 +139,8 @@ export function setTagBtnStatus(itemId, data) {
     socket.emit('setTagBtnStatus', itemId, data);
 }
 
-export function readChat(itemId, read, filter) {
-    socket.emit('updateRead', { itemId, read, filter });
+export function readChat(itemId, filter) {
+    socket.emit('updateRead', { itemId, filter });
 }
 
 // Send the deleted item to the backend
