@@ -603,6 +603,11 @@ document.addEventListener('DOMContentLoaded', () => {
         toggle.addEventListener('change', filterItems);
     });
 
+    const unreadFilterBtn = document.querySelector('.unread-filter-btn');
+    unreadFilterBtn.addEventListener('click', () => {
+        unreadFilterBtn.classList.toggle('unread');
+        filterItems();
+    });
 
     // Manejar el filtro de tipo (chat / comentario)
     const chatButton = document.querySelector('.item-chat');

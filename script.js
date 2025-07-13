@@ -29,19 +29,34 @@ export function filterItems() {
         const platformToggle = document.querySelector(`.platform-toggle[data-platform="${item.platform}"]`);
         const matchesPlatform = platformToggle && platformToggle.checked;
 
+        // Si no coincide con la plataforma, se oculta.
+        if (!matchesPlatform) return false;
+
+        // Manejar las etiquetas de los contactos
         if (currentFilter === 'contacts') {
             const selectedTags = Array.from(document.querySelectorAll('.tag-toggle:checked')).map(toggle => toggle.dataset.tag);
             const itemTags = Array.isArray(item.tag) ? item.tag : [item.tag];
+            const hasNoTags = itemTags.length === 0;
+            const noTagFilterActive = selectedTags.includes('default');
+            const hasMatchingTag = selectedTags.some(tag => itemTags.includes(tag));
 
-            if (selectedTags.includes('default') && itemTags.length === 0) {
-                return matchesPlatform;
+            // Si no coincide con ninguna condición de la etiqueta, se oculta.
+            if (!((noTagFilterActive && hasNoTags) || hasMatchingTag)) {
+                return false;
             }
-
-            const matchesTags = selectedTags.some(tag => itemTags.includes(tag));
-            return matchesPlatform && matchesTags;
         }
 
-        return matchesPlatform;
+        const unreadFilterBtn = document.querySelector('.unread-filter-btn');
+        // Si el filtro de no leídos está activo, se aplica la lógica.
+        if (unreadFilterBtn.classList.contains('unread')) {
+            const isUnread = item.read === false;
+            const isCurrentItem = item.id === currentItemId;
+            // Se muestra si no está leído O si es el elemento actual. Si no, se oculta.
+            return isUnread || isCurrentItem;
+        }
+        
+        // Si se llega hasta aquí, significa que el filtro de no leídos no está activo y el elemento ha pasado todos los demás filtros.
+        return true;
     });
 
     //SORT ITEMS BY LAST SORT ITEMS BY TIME IN DESCENDING ORDER (MOST RECENT FIRST)
