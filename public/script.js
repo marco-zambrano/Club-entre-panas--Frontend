@@ -233,7 +233,7 @@ export function openItem(itemId) {
 
     if (currentItem.read === false) {
         currentItem.read = true;
-        readChat(currentItemId, true, currentFilter);
+        readChat(currentItemId, currentFilter);
         const contactElement = document.querySelector(`.contact[data-item-id="${currentItemId}"]`);
         if (contactElement) {
             contactElement.classList.remove('unread');
