@@ -174,7 +174,6 @@ input:checked + .slider:before {
 .item-filter button.active:hover {
     background-color: #0b93f6;
 }
-
 .item-filter button.unread {
     background-color: #ffff0040;
     cursor: pointer;
@@ -387,7 +386,7 @@ input:checked + .slider:before {
     background-color: #1e1e1e;
 }
 .contact.unread {
-    background-color: rgba(242, 255, 4, 0.058);
+    background-color: rgba(172, 7, 15);
 }
 .contact.active {
     background-color: #1e1e1e;
@@ -436,7 +435,6 @@ input:checked + .slider:before {
     display: flex;
     column-gap: 5px;
 }
-
 .contact-message-time {
     position: absolute;
     font-size: .7rem;
@@ -1160,7 +1158,6 @@ input:checked + .slider:before {
 .toggle-tag-filters-btn {
     display: none; /* Oculto por defecto */
     font-size: .85rem;
-    /* background-color: #333; */
     color: #fff;
     border: none;
     border-radius: 5px;
