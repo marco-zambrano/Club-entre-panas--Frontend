@@ -386,7 +386,7 @@ input:checked + .slider:before {
     background-color: #1e1e1e;
 }
 .contact.unread {
-    background-color: rgba(242, 255, 4, 0.058);
+    background-color: rgba(172, 7, 15);
 }
 .contact.active {
     background-color: #1e1e1e;
@@ -434,14 +434,6 @@ input:checked + .slider:before {
 .contact-side {
     display: flex;
     column-gap: 5px;
-}
-.contact-interest {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: .8em;
-    font-weight: 700;
-    min-width: 17px;
 }
 .contact-message-time {
     position: absolute;
