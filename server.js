@@ -78,7 +78,6 @@ function generateNewContact() {
         id: 'a9f3c2d1e0b3',
         name: generateRandomName(),
         platform: 'facebook',
-        interest: 8,
         botEnabled: true,
         imgViewed: true,
         tag: [],
@@ -102,7 +101,6 @@ function generateNewComment() {
         name: generateRandomName(),
         platform: generateRandomPlatform('comment'),
         botEnabled: Math.random() > 0.5 ? true : false,
-        interest: Math.floor(Math.random() * 11),
         permalink: 'https://www.linkfalso.com/sj1n1324nj2n', // new property,
         read: false, // New comments are unread by default
         comment: {
