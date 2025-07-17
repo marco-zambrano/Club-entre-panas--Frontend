@@ -302,23 +302,9 @@ function createContactCard(contact) {
     contactName.className = 'contact-name';
     contactName.textContent = contact.name;
 
-    // container for platform info and interest level 
+    // container for platform info
     const contactSide = document.createElement('div');
     contactSide.className = 'contact-side';
-
-    // Nivel de interes
-    const interest = document.createElement('span');
-    interest.className = 'contact-interest';
-    interest.textContent = contact.interest;
-
-    const interestNumber = Number(contact.interest);
-    if (interestNumber >= 0 && interestNumber <= 4) {
-        interest.style.color = '#FF2929';
-    } else if (interestNumber >= 5 && interestNumber <= 7) {
-        interest.style.color = '#FFD943';
-    } else {
-        interest.style.color = '#14F000';
-    }
 
     // Container de la plataforma
     const platform = document.createElement('div');
@@ -337,20 +323,17 @@ function createContactCard(contact) {
     platform.appendChild(platformName);
     platform.appendChild(platformIcon);
 
-    // contact side <----- platform and interest
+    // contact side <----- platform
     contactSide.appendChild(platform);
-    contactSide.appendChild(interest);
 
     // Contact info <--- nombre, plataforma, hora de ultimo mensaje
     contactInfo.appendChild(contactName);
-    // contactInfo.appendChild(platform);
     contactInfo.appendChild(messageTime);
 
-    // Contact element <--- El preview, interest y la informacion del contacto
+    // Contact element <--- El preview y la informacion del contacto
     contactElement.appendChild(preView);
     contactElement.appendChild(contactInfo);
     contactElement.appendChild(contactSide);
-    // contactElement.appendChild(interest);
 
     return contactElement; // Retornamos el contacto
 }
@@ -404,11 +387,6 @@ function createCommentCard(comment) {
     const commentDetails = document.createElement('div');
     commentDetails.classList.add('comment-details')
 
-    // // preview del titulo del post 
-    // const postTitle = document.createElement('span');
-    // postTitle.className = 'post-title';
-    // postTitle.textContent = comment.postTitle;
-
     // Platform container
     const platform = document.createElement('div');
     platform.className = 'platform';
@@ -420,20 +398,6 @@ function createCommentCard(comment) {
     // Logo de la plataforma
     const platformIcon = document.createElement('i');
     platformIcon.className = `fab fa-${comment.platform} ${comment.platform}-icon`;
-
-    // Nivel de interes
-    const interest = document.createElement('span');
-    interest.className = 'contact-interest';
-    interest.textContent = comment.interest;
-
-    const interestNumber = Number(comment.interest);
-    if (interestNumber >= 0 && interestNumber <= 4) {
-        interest.style.color = '#FF2929';
-    } else if (interestNumber >= 5 && interestNumber <= 7) {
-        interest.style.color = '#FFD943';
-    } else {
-        interest.style.color = '#14F000';
-    }
 
     // Tiempo del ultimo mensaje enviado
     const fecha = new Date(comment.comments[comment.comments.length -1].time);
@@ -468,9 +432,7 @@ function createCommentCard(comment) {
     platform.appendChild(platformIcon);
 
     // Detalles <--- preview del post, plataforma, tiempo del ultimo mensaje enviado
-    // commentDetails.appendChild(postTitle);
     commentDetails.appendChild(platform);
-    commentDetails.appendChild(interest);
     commentDetails.appendChild(messageTime);
 
     // Informacion del comentario <--- header, detalles, info (todos contenedores)

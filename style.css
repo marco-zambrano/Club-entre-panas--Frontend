@@ -435,14 +435,6 @@ input:checked + .slider:before {
     display: flex;
     column-gap: 5px;
 }
-.contact-interest {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: .8em;
-    font-weight: 700;
-    min-width: 17px;
-}
 .contact-message-time {
     position: absolute;
     font-size: .7rem;
