@@ -13,8 +13,8 @@ app.use(express.static('public'));
 
 //RANDOM NAMES
 function generateRandomName() {
-    const names = ['Juan', 'María', 'Carlos', 'Ana', 'Pedro', 'Laura', 'Miguel', 'Sofía', 'David', 'Elena'];
-    const surnames = ['García', 'Rodríguez', 'López', 'Martínez', 'González', 'Pérez', 'Sánchez', 'Ramírez', 'Flores', 'Torres'];
+    const names = ['ddsadsaa', '2121wsdsa', 'dsadsa', 'dsafdsvfnyt', 'juyjhgfgf', 'jhghgfdvfvd', 'gtrg4r3t', 'fdgfdg46j', 'gfgfdvcxv', 'vcbvbtgeer'];
+    const surnames = ['dsadqwwrtyyy', 'ytjytdfcxs', 'jhfda', 'qweqwergh', 'mnbmnb', 'mnbmmnb', 'vbcbvbvn', 'fdsfd', 'tretrere', '43543'];
     return `${names[Math.floor(Math.random() * names.length)]} ${surnames[Math.floor(Math.random() * surnames.length)]}`;
 }
 

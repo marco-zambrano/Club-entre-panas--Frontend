@@ -243,7 +243,6 @@ socket.on('newMessage', (data) => {
             postId: data.postId,
             name: data.name,
             platform: data.platform,
-            interest: data.interest,
             botEnabled: data.botEnabled,
             permalink: data.permalink,
             read: data.read, // New comments reads are false by default
@@ -257,7 +256,6 @@ socket.on('newMessage', (data) => {
             id: itemId,
             name: data.name,
             platform: data.platform,
-            interest: data.interest,
             botEnabled: data.botEnabled,
             imgViewed: data.imgViewed,
             read: data.read, // New chats reads are false by default
@@ -274,7 +272,6 @@ socket.on('newMessage', (data) => {
 
     } else {
         // UPDATE THE EXISTING ITEM
-        item.interest = data.interest;
         item.preview = item.preview || {};
         item.preview.content = data[dataKey].content;
         item.preview.timestamp = data[dataKey].time;
