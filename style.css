@@ -123,7 +123,7 @@ input:checked + .whatsapp-slider {
 }
 
 /* Input de las etiquetas */
-input:checked + .servientrega-slider {
+input:checked + .contraentrega-slider {
     background-color: #26d367;
 }
 
@@ -175,7 +175,7 @@ input:checked + .slider:before {
     background-color: #0b93f6;
 }
 .item-filter button.unread {
-    background-color: #ffff0040;
+    background-color: rgba(172, 7, 15);
     cursor: pointer;
 }
 
@@ -388,6 +388,9 @@ input:checked + .slider:before {
 .contact.unread {
     background-color: rgba(172, 7, 15);
 }
+.contact.unread .contact-preview {
+    color: #ffffff;
+}
 .contact.active {
     background-color: #1e1e1e;
 }
@@ -559,10 +562,10 @@ input:checked + .slider:before {
     transition: all 0.3s ease;
 }
 
-.tag-btn--servientrega {
+.tag-btn--contraentrega {
     border-color: #26d367;
 }
-.tag-btn--servientrega:hover {
+.tag-btn--contraentrega:hover {
     background-color: rgba(38, 211, 103, 0.35); /* Using rgba for hover effect */
 }
 .tag-btn--rp {

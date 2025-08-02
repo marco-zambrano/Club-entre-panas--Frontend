@@ -34,15 +34,17 @@ export function filterItems() {
 
         // Manejar las etiquetas de los contactos
         if (currentFilter === 'contacts') {
-            const selectedTags = Array.from(document.querySelectorAll('.tag-toggle:checked')).map(toggle => toggle.dataset.tag);
-            const itemTags = Array.isArray(item.tag) ? item.tag : [item.tag];
-            const hasNoTags = itemTags.length === 0;
-            const noTagFilterActive = selectedTags.includes('default');
-            const hasMatchingTag = selectedTags.some(tag => itemTags.includes(tag));
+            const selectedTag = document.querySelector('.tag-toggle:checked').dataset.tag;
+            
+            if (selectedTag !== 'all') {
+                const itemTags = Array.isArray(item.tag) ? item.tag : [item.tag];
+                const hasNoTags = itemTags.length === 0;
 
-            // Si no coincide con ninguna condición de la etiqueta, se oculta.
-            if (!((noTagFilterActive && hasNoTags) || hasMatchingTag)) {
-                return false;
+                if (selectedTag === 'default') {
+                    if (!hasNoTags) return false;
+                } else {
+                    if (!itemTags.includes(selectedTag)) return false;
+                }
             }
         }
 
@@ -203,6 +205,12 @@ const handleTagBtn = currentItem => {
 
         setTagBtnStatus(currentItem.id, currentItem.tag);
         updateTagDisplay(currentItem);
+
+        // Re-filter if a tag filter is active
+        const selectedTagFilter = document.querySelector('.tag-toggle:checked').dataset.tag;
+        if (selectedTagFilter !== 'all') {
+            filterItems();
+        }
     };
 
     document.querySelectorAll(".tag-btn").forEach(btn => {
@@ -252,6 +260,10 @@ export function openItem(itemId) {
         const contactElement = document.querySelector(`.contact[data-item-id="${currentItemId}"]`);
         if (contactElement) {
             contactElement.classList.remove('unread');
+        }
+        const unreadFilterBtn = document.querySelector('.unread-filter-btn');
+        if (unreadFilterBtn.classList.contains('unread')) {
+            filterItems();
         }
     }
 

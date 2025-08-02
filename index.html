@@ -43,37 +43,44 @@
                 <span class="toggle-tag-filters-btn">Mostrar filtros de etiquetas >></span>
                 <div class="tag-filters">
                     <div class="filter">
-                        <span>Servientrega</span>
+                        <span>Todos</span>
                         <label class="toggle">
-                            <input type="checkbox" checked class="tag-toggle" data-tag="Servientrega">
-                            <span class="slider servientrega-slider"></span>
+                            <input type="radio" name="tag-filter" checked class="tag-toggle" data-tag="all">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="filter">
+                        <span>Contraentrega</span>
+                        <label class="toggle">
+                            <input type="radio" name="tag-filter" class="tag-toggle" data-tag="Contraentrega">
+                            <span class="slider contraentrega-slider"></span>
                         </label>
                     </div>
                     <div class="filter">
                         <span>RP</span>
                         <label class="toggle">
-                            <input type="checkbox" checked class="tag-toggle" data-tag="RP">
+                            <input type="radio" name="tag-filter" class="tag-toggle" data-tag="RP">
                             <span class="slider rp-slider"></span>
                         </label>
                     </div>
                     <div class="filter">
                         <span>Delivery</span>
                         <label class="toggle">
-                            <input type="checkbox" checked class="tag-toggle" data-tag="Delivery">
+                            <input type="radio" name="tag-filter" class="tag-toggle" data-tag="Delivery">
                             <span class="slider delivery-slider"></span>
                         </label>
                     </div>
                     <div class="filter">
                         <span>Terminado</span>
                         <label class="toggle">
-                            <input type="checkbox" checked class="tag-toggle" data-tag="Terminado">
+                            <input type="radio" name="tag-filter" class="tag-toggle" data-tag="Terminado">
                             <span class="slider terminado-slider"></span>
                         </label>
                     </div>
                     <div class="filter">
                         <span>Sin etiqueta</span>
                         <label class="toggle">
-                            <input type="checkbox" checked class="tag-toggle" data-tag="default">
+                            <input type="radio" name="tag-filter" class="tag-toggle" data-tag="default">
                             <span class="slider default-slider"></span>
                         </label>
                     </div>
@@ -101,7 +108,7 @@
                     <!-- Toggle encender/apagar bot -->
                     <div class="bot-toggle small">
                         <div class="tag-btn-container">
-                            <button class="tag-btn tag-btn--servientrega">Servientrega</button>
+                            <button class="tag-btn tag-btn--contraentrega">Contraentrega</button>
                             <button class="tag-btn tag-btn--rp">RP</button>
                             <button class="tag-btn tag-btn--delivery">Delivery</button>
                             <button class="tag-btn tag-btn--terminado">Terminado</button>
