@@ -33,15 +33,17 @@ export function filterItems() {
 
         // Manejar las etiquetas de los contactos
         if (currentFilter === 'contacts') {
-            const selectedTags = Array.from(document.querySelectorAll('.tag-toggle:checked')).map(toggle => toggle.dataset.tag);
-            const itemTags = Array.isArray(item.tag) ? item.tag : [item.tag];
-            const hasNoTags = itemTags.length === 0;
-            const noTagFilterActive = selectedTags.includes('default');
-            const hasMatchingTag = selectedTags.some(tag => itemTags.includes(tag));
+            const selectedTag = document.querySelector('.tag-toggle:checked').dataset.tag;
 
-            // Si no coincide con ninguna condición de la etiqueta, se oculta.
-            if (!((noTagFilterActive && hasNoTags) || hasMatchingTag)) {
-                return false;
+            if (selectedTag !== 'all') {
+                const itemTags = Array.isArray(item.tag) ? item.tag : [item.tag];
+                const hasNoTags = itemTags.length === 0;
+
+                if (selectedTag === 'default') {
+                    if (!hasNoTags) return false;
+                } else {
+                    if (!itemTags.includes(selectedTag)) return false;
+                }
             }
         }
 
