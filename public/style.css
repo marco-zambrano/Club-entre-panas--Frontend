@@ -176,7 +176,7 @@ input:checked + .slider:before {
 }
 
 .item-filter button.unread {
-    background-color: #ffff0040;
+    background-color: rgba(172, 7, 15);;
     cursor: pointer;
 }
 
@@ -387,7 +387,10 @@ input:checked + .slider:before {
     background-color: #1e1e1e;
 }
 .contact.unread {
-    background-color: rgba(242, 255, 4, 0.058);
+    background-color: rgba(172, 7, 15);;
+}
+.contact.unread .contact-preview {
+    color: #ffffff;
 }
 .contact.active {
     background-color: #1e1e1e;

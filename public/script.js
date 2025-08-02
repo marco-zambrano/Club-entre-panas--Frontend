@@ -204,6 +204,12 @@ const handleTagBtn = currentItem => {
 
         setTagBtnStatus(currentItem.id, currentItem.tag);
         updateTagDisplay(currentItem);
+
+        // Re-filter if a tag filter is active
+        const selectedTagFilter = document.querySelector('.tag-toggle:checked').dataset.tag;
+        if (selectedTagFilter !== 'all') {
+            filterItems();
+        }
     };
 
     document.querySelectorAll(".tag-btn").forEach(btn => {
@@ -253,6 +259,10 @@ export function openItem(itemId) {
         const contactElement = document.querySelector(`.contact[data-item-id="${currentItemId}"]`);
         if (contactElement) {
             contactElement.classList.remove('unread');
+        }
+        const unreadFilterBtn = document.querySelector('.unread-filter-btn');
+        if (unreadFilterBtn.classList.contains('unread')) {
+            filterItems();
         }
     }
 
