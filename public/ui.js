@@ -17,7 +17,7 @@ const messageInputContainer = document.querySelector('.message-input-container')
 let stagedImageFile = null; // To hold the image file before sending
 
 export const tagColors = {
-    'Servientrega': '#26d367',
+    'Contraentrega': '#26d367',
     'RP': '#efb32f',
     'Delivery': '#57c9ff',
     'Terminado': '#c89ecc'
