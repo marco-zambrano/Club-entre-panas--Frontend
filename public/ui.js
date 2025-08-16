@@ -666,17 +666,27 @@ document.addEventListener('DOMContentLoaded', () => {
         const messageValue = messageInput.value.trim();
         sendMessage(messageValue);
         messageInput.value = '';
+        autoResizeTextarea();
     }
 
     sendButton.addEventListener('click', () => {
         handleInputMessage();
     });
 
-    messageInput.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
+    messageInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
             handleInputMessage();
         }
     });
+
+    function autoResizeTextarea() {
+        messageInput.style.height = 'auto';
+        let scrollHeight = messageInput.scrollHeight;
+        messageInput.style.height = scrollHeight + 'px';
+    }
+
+    messageInput.addEventListener('input', autoResizeTextarea);
 
     // Image attachment and drag-and-drop
     const attachmentMenu = document.querySelector('.attachment-menu');

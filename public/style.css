@@ -682,11 +682,10 @@ input:checked + .slider:before {
 /* Campo de entrada de mensaje */
 .message-input-container {
     display: flex;
-    margin-top: 25px;
     border-radius: 30px;
     background-color: #1e1e1e;
     border: 1px solid #333;
-    align-items: center; /* Added for vertical alignment */
+    align-items: center; /* Align items to the bottom */
     position: relative; /* Needed for absolute positioning of children */
 }
 .message-input {
@@ -697,6 +696,10 @@ input:checked + .slider:before {
     padding: 15px 20px;
     font-size: 1rem;
     outline: none;
+    resize: none; /* Prevent manual resizing */
+    overflow-y: auto; /* Show scrollbar when max-height is reached */
+    max-height: 120px; /* Example max-height */
+    line-height: 1.5;
 }
 .message-input::placeholder {
     color: #aaa;
