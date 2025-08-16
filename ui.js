@@ -673,10 +673,14 @@ document.addEventListener('DOMContentLoaded', () => {
         handleInputMessage();
     });
 
+    const isMobile = () => /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
     messageInput.addEventListener('keydown', function(e) {
         if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            handleInputMessage();
+            if (!isMobile()) {
+                e.preventDefault();
+                handleInputMessage();
+            }
         }
     });
 
