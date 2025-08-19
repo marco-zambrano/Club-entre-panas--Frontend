@@ -62,7 +62,10 @@ export function createMessage(content, time, sender, type) {
     const minutosFormateados = minutos < 10 ? '0' + minutos : minutos;
     horas = horas % 12;
     horas = horas ? horas : 12; // Si el resultado de % 12 es 0, significa que son las 12
-    const tiempoFormateado = `${horas}:${minutosFormateados} ${ampm}`;
+    const dia = currentDate.getDate();
+    const mes = currentDate.getMonth() + 1;
+    const anio = currentDate.getFullYear();
+    const tiempoFormateado = `${dia}/${mes}/${anio} ${horas}:${minutosFormateados} ${ampm}`;
     // Creamos el span de tiempo
     const timeSpan = document.createElement('span');
     timeSpan.className = 'message-time';
