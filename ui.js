@@ -477,6 +477,13 @@ export function updateItemsList(items, currentFilter) {
 
 
 document.addEventListener('DOMContentLoaded', () => {
+    // When loading mobile screens, show contacts list by default
+    const isMobileScreen = window.matchMedia('(max-width: 768px)').matches;
+    if (isMobileScreen) {
+        document.querySelector('.contacts-list').classList.add('show');
+    }
+
+
     // event listener for the contact or comment list
     document.querySelector('.contacts-list').addEventListener('click', (event) => {
         const deleteButton = event.target.closest('.delete-item-btn');
