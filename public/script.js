@@ -90,8 +90,11 @@ export function filterItems() {
     
     //IF IT'S NOT VISIBLE, OPEN THE FIRST ITEM IN THE FILTERED LIST
     if (!currentItemStillVisible && filteredItems.length > 0) {
-        openItem(filteredItems[0].id);
-        initilizeBotToggle();
+        const isMobile = window.matchMedia('(max-width: 768px)').matches;
+        if (!isMobile) {
+            openItem(filteredItems[0].id);
+            initilizeBotToggle();
+        }
     }
 
     updateItemsList(filteredItems, currentFilter);
