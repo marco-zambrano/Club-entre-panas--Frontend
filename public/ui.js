@@ -41,6 +41,9 @@ export function createMessage(content, time, sender, type) {
         imageElement.src = content;
         imageElement.alt = 'Imagen enviada';
         imageElement.className = 'message-image';
+        imageElement.onload = () => {
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        };
         messageContent.appendChild(imageElement);
     } else if(type === "text"){
         // Si es texto normal, solo ponemos el texto
@@ -165,8 +168,18 @@ function sendImageMessage() {
         return;
     }
     sendDebugMessage("Sending processed image message from cache.");
+    sendDebugMessage(`Staged image file: ${stagedImageFile.size} bytes, type: ${stagedImageFile.type}`);
 
+    let lastProgressTime = 0;
     const reader = new FileReader();
+    reader.onprogress = (e) => {
+        const now = Date.now();
+        if (e.lengthComputable && now - lastProgressTime > 100) { // Throttle to once per 100ms
+            lastProgressTime = now;
+            const percentLoaded = Math.round((e.loaded / e.total) * 100);
+            sendDebugMessage(`FileReader progress: ${percentLoaded}%`);
+        }
+    };
     reader.onload = (e) => {
         const base64Image = e.target.result;
         const recipientPlatform = items[currentFilter].list.find(item => item.id === currentItemId).platform;
