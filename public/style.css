@@ -657,6 +657,7 @@ input:checked + .slider:before {
     display: inline-block;
     position: relative;
     white-space: pre-wrap;
+    overflow-wrap: anywhere;
 }
 /* message image */
 .message.image {
