@@ -1,2 +1,5 @@
 node_modules
-*.env
+*.png
+*.svg
+*.ico
+.env
