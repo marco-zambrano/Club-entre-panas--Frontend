@@ -766,7 +766,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Image attachment and drag-and-drop
     const attachmentMenu = document.querySelector('.attachment-menu');
     const uploadImageBtn = document.getElementById('upload-image-btn');
-    const takePhotoBtn = document.getElementById('take-photo-btn');
 
     attachButton.addEventListener('click', (e) => {
         e.preventDefault();
@@ -776,13 +775,6 @@ document.addEventListener('DOMContentLoaded', () => {
     uploadImageBtn.addEventListener('click', (e) => {
         e.preventDefault(); // Prevent the label's default behavior
         imageFileInput.removeAttribute('capture');
-        imageFileInput.click();
-        attachmentMenu.style.display = 'none';
-    });
-
-    takePhotoBtn.addEventListener('click', (e) => {
-        e.preventDefault(); // Prevent the label's default behavior
-        imageFileInput.setAttribute('capture', 'camera');
         imageFileInput.click();
         attachmentMenu.style.display = 'none';
     });
@@ -833,21 +825,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // --- MODALES Y BOTONES ---
-    // Modal Principal
     const $ = (se)=> document.querySelector(se)
     const botConfigButton = $('.bot-config-button');   // Boton de configuracion
-    const mainConfigModal = $('#mainConfigModal'); // Modal principal
-    const closeMainConfig = $('#closeMainConfig'); // Cerrar modal principal
-    const openBotConfig = $('#openBotConfig'); // btn abrir bot modal
     const openQuickRepliesConfig = $('#openQuickRepliesConfig'); // btn abrir qr modal
+
     // Bot Modal
     const botConfigModal = $('.bot-config-modal'); // Modal de configuracion del bot
     const closeModalButton = $('.close-modal'); // Cerrar modal del bot
     const cancelModalButtton = $('.cancel-button'); // Btn cancelar modificacion del bot
     const saveChangesBtn = $('.save-button'); // btn to save and update bot configuration
     const botTextArea = Array.from(document.querySelectorAll('.bot-textarea')); // Text areas values
-    // console.log(botTextArea);
-    
 
     // QRs
     const quickRepliesModal = $('#quickRepliesModal'); // QR modal
@@ -860,36 +847,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const quickRepliesContainer = $('.quick-replies-list');    // Quick reply items containers
     const newQrTextArea = $('.quick-reply-textarea');
 
-    // --- FUNCIONALIDAD DE MODALES ---
 
-    // MODAL GENERAL
-    function GeneralModalConfiguration() {
-        // Abrir modal principal de configuración
-        botConfigButton.addEventListener('click', () => {
-            mainConfigModal.classList.add('show');
-        });
-        // Cerrar modal principal
-        closeMainConfig.addEventListener('click', () => {
-            mainConfigModal.classList.remove('show');
-        });
-        mainConfigModal.addEventListener('click', (e) => {
-            if (e.target === mainConfigModal) {
-                mainConfigModal.classList.remove('show');
-            }
-        });
-        // Escape para cerrar modal principal
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && mainConfigModal.classList.contains('show')) {
-                mainConfigModal.classList.remove('show');
-            }
-        });
-    }
-
-    // MODAL DEL BOT
+    // --------- MODAL DEL BOT ----------
     function botModalConfiguration() {
         // Abrir modal de configuración del bot
-        openBotConfig.addEventListener('click', async () => {
-            mainConfigModal.classList.remove('show');
+        botConfigButton.addEventListener('click', async () => {
             botTextArea[0].value = 'Cargando...'; // cleaning the bot text area value
             botTextArea[1].value = 'Cargando...'; // cleaning the json table text area value
             botTextArea[2].value = 'Cargando...';
@@ -1025,12 +987,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function repliesModalConfiguration() {
-        // Abrir modal de respuestas rápidas desde el modal principal
+        // Abrir modal de respuestas rápidas desde el boton de abajo
         openQuickRepliesConfig.addEventListener('click', () => {
-            mainConfigModal.classList.remove('show');
             quickRepliesModal.classList.add('show');
             quickRepliesContainer.innerHTML = ''    // Limpiamos
 
+            // iteramos las respuestas rapidas disponibles y las mostramos
             quickReps.forEach(res => {
                 createQuickReply(res); // Volvemos a generar
             })
@@ -1053,12 +1015,12 @@ document.addEventListener('DOMContentLoaded', () => {
         getQuickReps();
     }
 
-    GeneralModalConfiguration();
     botModalConfiguration();
     repliesModalConfiguration();
     createReplyModal();
 
-    // Delete confirmation modal logic
+
+    // --------------- Delete confirmation modal logic ----------------
     const deleteConfirmationModal = document.getElementById('deleteConfirmationModal');
     const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
     const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
@@ -1101,6 +1063,8 @@ document.addEventListener('DOMContentLoaded', () => {
     cancelDeleteBtn.addEventListener('click', hideDeleteConfirmation);
 })
 
+
+
 //CAPTURE AND REPORT ERRORS
 window.onerror = function (message, source, lineno, colno, error) {
     reportErrorToBackend({
@@ -1122,8 +1086,9 @@ window.addEventListener('unhandledrejection', function (event) {
     });
 });
 
-// --- LÓGICA DEL VISOR DE IMÁGENES (LIGHTBOX) ---
 
+
+// --- LÓGICA DEL VISOR DE IMÁGENES (LIGHTBOX) ---
 const lightbox = document.getElementById('image-lightbox');
 const lightboxImage = document.getElementById('lightbox-image');
 const lightboxClose = document.querySelector('.lightbox-close');

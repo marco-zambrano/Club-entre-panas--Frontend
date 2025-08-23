@@ -1100,7 +1100,7 @@ input:checked + .slider:before {
     gap: 5px;
 }
 
-.attachment-menu label {
+.attachment-menu button {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1115,7 +1115,7 @@ input:checked + .slider:before {
     transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-.attachment-menu label:hover {
+.attachment-menu button:hover {
     background-color: #0b93f6;
     color: white;
 }

@@ -93,7 +93,7 @@
             </div>
             <!-- boton de modal del bot -->
             <button class="bot-config-button">
-                <i class="fas fa-cog"></i>
+                <i class="fas fa-robot"></i>
             </button>
         </div>
 
@@ -147,8 +147,8 @@
                             <i class="fas fa-paperclip"></i>
                         </button>
                         <div class="attachment-menu">
-                            <label for="image-file-input" id="upload-image-btn"><i class="fas fa-upload"></i></label>
-                            <label for="image-file-input" id="take-photo-btn"><i class="fas fa-camera"></i></label>
+                            <button for="image-file-input" id="upload-image-btn"><i class="fas fa-upload"></i></button>
+                            <button id="openQuickRepliesConfig"><i class="fas fa-comment-dots"></i></button>
                         </div>
                     </div>
                     <button class="send-button">
@@ -162,26 +162,6 @@
         <button class="toggle-contacts">
             <i class="fas fa-users"></i>
         </button>
-    </div>
-
-    <!-- Modal de selección de configuración -->
-    <div class="main-config-modal" id="mainConfigModal">
-        <div class="main-config-content">
-            <div class="main-config-header">
-                <h2>Configuración</h2>
-                <button class="close-main-config" id="closeMainConfig">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="main-config-options">
-                <button class="main-config-option" id="openBotConfig">
-                    <i class="fas fa-robot"></i> Configurar Bot
-                </button>
-                <button class="main-config-option" id="openQuickRepliesConfig">
-                    <i class="fas fa-comment-dots"></i> Respuestas Rápidas
-                </button>
-            </div>
-        </div>
     </div>
 
     <!-- Modal de configuración del bot -->
@@ -264,8 +244,8 @@
 
     <!-- Visor de Imágenes (Lightbox) -->
     <div id="image-lightbox" class="lightbox-overlay">
-      <span class="lightbox-close">&times;</span>
-      <img class="lightbox-content" id="lightbox-image">
+        <span class="lightbox-close">&times;</span>
+        <img class="lightbox-content" id="lightbox-image">
     </div>
 
     <script type="module" src="/ruta/secreta/secretisima/socket.io/socket.io.js"></script>
