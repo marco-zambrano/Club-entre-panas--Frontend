@@ -7,6 +7,11 @@
     <!-- <link rel="stylesheet" href="/ruta/secreta/secretisima/dashboard/style.css"> -->
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <link rel="shortcut icon" href="favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
+    <link rel="manifest" href="site.webmanifest" />
 </head>
 <body>
     <div class="chat-container">
@@ -129,7 +134,7 @@
 
                 <!-- input text to send manual messages -->
                 <div class="message-input-container">
-                    <input type="text" class="message-input" placeholder="Escribir mensaje">
+                    <textarea class="message-input" placeholder="Escribir mensaje" rows="1"></textarea>
                     <div class="image-preview-container" style="display: none;">
                         <img src="" alt="Image preview" class="image-preview-thumbnail">
                         <span class="image-preview-filename"></span>
@@ -257,6 +262,12 @@
         </div>
     </div>
     
+    <!-- Visor de Imágenes (Lightbox) -->
+    <div id="image-lightbox" class="lightbox-overlay">
+      <span class="lightbox-close">&times;</span>
+      <img class="lightbox-content" id="lightbox-image">
+    </div>
+
     <script type="module" src="/socket.io/socket.io.js"></script>
     <script type="module" src="ui.js"></script>
     <script type="module" src="script.js"></script>

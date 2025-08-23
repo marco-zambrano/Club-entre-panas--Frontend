@@ -85,14 +85,7 @@ export function filterItems() {
         return timestampB - timestampA;
     });
 
-    //VERIFY IF CURRENT ITEM IS VISIBLE AFTER FILTERING
-    const currentItemStillVisible = filteredItems.some(item => item.id === currentItemId);
     
-    //IF IT'S NOT VISIBLE, OPEN THE FIRST ITEM IN THE FILTERED LIST
-    if (!currentItemStillVisible && filteredItems.length > 0) {
-        openItem(filteredItems[0].id);
-        initilizeBotToggle();
-    }
 
     updateItemsList(filteredItems, currentFilter);
 }

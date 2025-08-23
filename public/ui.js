@@ -23,6 +23,49 @@ export const tagColors = {
     'Terminado': '#c89ecc'
 }
 
+/**
+ * Encuentra URLs en una cadena de texto y las convierte en elementos <a> clickeables.
+ * El texto que no es URL se inserta como nodos de texto seguros.
+ * @param {string} text - El contenido del mensaje.
+ * @returns {DocumentFragment} Un fragmento de documento con el contenido procesado.
+ */
+function linkifyText(text) {
+    const fragment = document.createDocumentFragment();
+    // Expresión regular actualizada para detectar (1) http/https, (2) www. y (3) dominios.tld comunes
+    const urlRegex = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])|(\bwww\.[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])|(\b[a-zA-Z0-9-]+\.(?:com|org|net|io|gov|edu|dev|app|co|es|mx|ar|cl)\b)/ig;
+
+    let lastIndex = 0;
+    let match;
+
+    while ((match = urlRegex.exec(text)) !== null) {
+        // Añadir el texto que viene ANTES del enlace
+        if (match.index > lastIndex) {
+            fragment.appendChild(document.createTextNode(text.substring(lastIndex, match.index)));
+        }
+
+        // Crear y añadir el elemento <a> para el enlace
+        const url = match[0];
+        // Asegurarse de que los enlaces 'www.' o 'dominio.com' funcionen correctamente, usando https por defecto
+        const href = url.startsWith('http') ? url : `https://${url}`;
+        
+        const a = document.createElement('a');
+        a.href = href;
+        a.textContent = url;
+        a.target = '_blank'; // Abrir en nueva pestaña
+        a.rel = 'noopener noreferrer'; // Buena práctica de seguridad
+        fragment.appendChild(a);
+
+        lastIndex = urlRegex.lastIndex;
+    }
+
+    // Añadir el texto restante DESPUÉS del último enlace
+    if (lastIndex < text.length) {
+        fragment.appendChild(document.createTextNode(text.substring(lastIndex)));
+    }
+
+    return fragment;
+}
+
 export function createMessage(content, time, sender, type) {
     // create new message
     const messageElement = document.createElement('div');
@@ -41,10 +84,16 @@ export function createMessage(content, time, sender, type) {
         imageElement.src = content;
         imageElement.alt = 'Imagen enviada';
         imageElement.className = 'message-image';
+        imageElement.onload = () => {
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        };
+        imageElement.addEventListener('click', () => {
+            openLightbox(content);
+        });
         messageContent.appendChild(imageElement);
     } else if(type === "text"){
-        // Si es texto normal, solo ponemos el texto
-        messageContent.textContent = content;
+        // Si es texto normal, procesarlo para encontrar links de forma segura
+        messageContent.appendChild(linkifyText(content));
     } else if (type === 'audio') {
         const audioAdvice = document.createElement('span');
         audioAdvice.className = 'message-audio';
@@ -62,7 +111,10 @@ export function createMessage(content, time, sender, type) {
     const minutosFormateados = minutos < 10 ? '0' + minutos : minutos;
     horas = horas % 12;
     horas = horas ? horas : 12; // Si el resultado de % 12 es 0, significa que son las 12
-    const tiempoFormateado = `${horas}:${minutosFormateados} ${ampm}`;
+    const dia = currentDate.getDate();
+    const mes = currentDate.getMonth() + 1;
+    const anio = currentDate.getFullYear();
+    const tiempoFormateado = `${dia}/${mes}/${anio} ${horas}:${minutosFormateados} ${ampm}`;
     // Creamos el span de tiempo
     const timeSpan = document.createElement('span');
     timeSpan.className = 'message-time';
@@ -162,8 +214,18 @@ function sendImageMessage() {
         return;
     }
     sendDebugMessage("Sending processed image message from cache.");
+    sendDebugMessage(`Staged image file: ${stagedImageFile.size} bytes, type: ${stagedImageFile.type}`);
 
+    let lastProgressTime = 0;
     const reader = new FileReader();
+    reader.onprogress = (e) => {
+        const now = Date.now();
+        if (e.lengthComputable && now - lastProgressTime > 100) { // Throttle to once per 100ms
+            lastProgressTime = now;
+            const percentLoaded = Math.round((e.loaded / e.total) * 100);
+            sendDebugMessage(`FileReader progress: ${percentLoaded}%`);
+        }
+    };
     reader.onload = (e) => {
         const base64Image = e.target.result;
         const recipientPlatform = items[currentFilter].list.find(item => item.id === currentItemId).platform;
@@ -477,6 +539,12 @@ export function updateItemsList(items, currentFilter) {
 
 
 document.addEventListener('DOMContentLoaded', () => {
+    // When loading mobile screens, show contacts list by default
+    const isMobileScreen = window.matchMedia('(max-width: 768px)').matches;
+    if (isMobileScreen) {
+        document.querySelector('.contacts-list').classList.add('show');
+    }
+
     // event listener for the contact or comment list
     document.querySelector('.contacts-list').addEventListener('click', (event) => {
         const deleteButton = event.target.closest('.delete-item-btn');
@@ -666,17 +734,31 @@ document.addEventListener('DOMContentLoaded', () => {
         const messageValue = messageInput.value.trim();
         sendMessage(messageValue);
         messageInput.value = '';
+        autoResizeTextarea();
     }
 
     sendButton.addEventListener('click', () => {
         handleInputMessage();
     });
 
-    messageInput.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            handleInputMessage();
+    const isMobile = () => /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+    messageInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            if (!isMobile()) {
+                e.preventDefault();
+                handleInputMessage();
+            }
         }
     });
+
+    function autoResizeTextarea() {
+        messageInput.style.height = 'auto';
+        let scrollHeight = messageInput.scrollHeight;
+        messageInput.style.height = scrollHeight + 'px';
+    }
+
+    messageInput.addEventListener('input', autoResizeTextarea);
 
     // Image attachment and drag-and-drop
     const attachmentMenu = document.querySelector('.attachment-menu');
@@ -1036,3 +1118,35 @@ window.addEventListener('unhandledrejection', function (event) {
         stack: event.reason?.stack
     });
 });
+
+// --- LÓGICA DEL VISOR DE IMÁGENES (LIGHTBOX) ---
+
+const lightbox = document.getElementById('image-lightbox');
+const lightboxImage = document.getElementById('lightbox-image');
+const lightboxClose = document.querySelector('.lightbox-close');
+
+function openLightbox(src) {
+    lightboxImage.src = src;
+    lightbox.style.display = 'flex';
+}
+
+function closeLightbox() {
+    lightbox.style.display = 'none';
+    lightboxImage.src = '';
+}
+
+if (lightbox && lightboxImage && lightboxClose) {
+    lightboxClose.addEventListener('click', closeLightbox);
+
+    lightbox.addEventListener('click', (event) => {
+        if (event.target === lightbox) {
+            closeLightbox();
+        }
+    });
+
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && lightbox.style.display === 'flex') {
+            closeLightbox();
+        }
+    });
+}
