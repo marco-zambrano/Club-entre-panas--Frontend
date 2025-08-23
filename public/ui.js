@@ -23,6 +23,49 @@ export const tagColors = {
     'Terminado': '#c89ecc'
 }
 
+/**
+ * Encuentra URLs en una cadena de texto y las convierte en elementos <a> clickeables.
+ * El texto que no es URL se inserta como nodos de texto seguros.
+ * @param {string} text - El contenido del mensaje.
+ * @returns {DocumentFragment} Un fragmento de documento con el contenido procesado.
+ */
+function linkifyText(text) {
+    const fragment = document.createDocumentFragment();
+    // Expresión regular actualizada para detectar (1) http/https, (2) www. y (3) dominios.tld comunes
+    const urlRegex = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])|(\bwww\.[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])|(\b[a-zA-Z0-9-]+\.(?:com|org|net|io|gov|edu|dev|app|co|es|mx|ar|cl)\b)/ig;
+
+    let lastIndex = 0;
+    let match;
+
+    while ((match = urlRegex.exec(text)) !== null) {
+        // Añadir el texto que viene ANTES del enlace
+        if (match.index > lastIndex) {
+            fragment.appendChild(document.createTextNode(text.substring(lastIndex, match.index)));
+        }
+
+        // Crear y añadir el elemento <a> para el enlace
+        const url = match[0];
+        // Asegurarse de que los enlaces 'www.' o 'dominio.com' funcionen correctamente, usando https por defecto
+        const href = url.startsWith('http') ? url : `https://${url}`;
+        
+        const a = document.createElement('a');
+        a.href = href;
+        a.textContent = url;
+        a.target = '_blank'; // Abrir en nueva pestaña
+        a.rel = 'noopener noreferrer'; // Buena práctica de seguridad
+        fragment.appendChild(a);
+
+        lastIndex = urlRegex.lastIndex;
+    }
+
+    // Añadir el texto restante DESPUÉS del último enlace
+    if (lastIndex < text.length) {
+        fragment.appendChild(document.createTextNode(text.substring(lastIndex)));
+    }
+
+    return fragment;
+}
+
 export function createMessage(content, time, sender, type) {
     // create new message
     const messageElement = document.createElement('div');
@@ -46,8 +89,8 @@ export function createMessage(content, time, sender, type) {
         };
         messageContent.appendChild(imageElement);
     } else if(type === "text"){
-        // Si es texto normal, solo ponemos el texto
-        messageContent.textContent = content;
+        // Si es texto normal, procesarlo para encontrar links de forma segura
+        messageContent.appendChild(linkifyText(content));
     } else if (type === 'audio') {
         const audioAdvice = document.createElement('span');
         audioAdvice.className = 'message-audio';
