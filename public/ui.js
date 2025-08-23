@@ -1126,28 +1126,83 @@ const lightbox = document.getElementById('image-lightbox');
 const lightboxImage = document.getElementById('lightbox-image');
 const lightboxClose = document.querySelector('.lightbox-close');
 
+// --- Variables para el gesto de deslizar ---
+let touchStartY = 0;
+let touchMoveY = 0;
+let isDragging = false;
+const dragThreshold = 80; // Distancia en píxeles para cerrar
+
 function openLightbox(src) {
+    document.body.classList.add('lightbox-open'); // Bloquear scroll
     lightboxImage.src = src;
     lightbox.style.display = 'flex';
+    // Resetear estilos por si se quedó a medio cerrar
+    lightbox.style.backgroundColor = 'rgba(0, 0, 0, 0.85)';
+    lightboxImage.style.transform = 'translateY(0px)';
+    lightboxImage.style.transition = 'transform 0.3s ease'; // Asegurar que la transición esté al abrir
 }
 
 function closeLightbox() {
+    document.body.classList.remove('lightbox-open'); // Desbloquear scroll
     lightbox.style.display = 'none';
     lightboxImage.src = '';
 }
 
-if (lightbox && lightboxImage && lightboxClose) {
-    lightboxClose.addEventListener('click', closeLightbox);
+function handleTouchStart(event) {
+    isDragging = true;
+    touchStartY = event.touches[0].clientY;
+    touchMoveY = touchStartY; // Inicializar moveY
+    lightboxImage.style.transition = 'none'; // Quitar transición para un seguimiento directo
+}
 
+function handleTouchMove(event) {
+    if (!isDragging) return;
+
+    touchMoveY = event.touches[0].clientY;
+    const deltaY = touchMoveY - touchStartY;
+
+    // Mover la imagen verticalmente
+    lightboxImage.style.transform = `translateY(${deltaY}px)`;
+    
+    // Hacer el fondo más transparente al deslizar (usando valor absoluto)
+    const opacity = Math.max(0, 0.85 - (Math.abs(deltaY) / window.innerHeight) * 1.5);
+    lightbox.style.backgroundColor = `rgba(0, 0, 0, ${opacity})`;
+}
+
+function handleTouchEnd() {
+    if (!isDragging) return;
+    isDragging = false;
+    
+    const deltaY = touchMoveY - touchStartY;
+
+    // Si se deslizó más allá del umbral (hacia arriba o abajo), cerrar. Si no, volver.
+    if (Math.abs(deltaY) > dragThreshold) {
+        closeLightbox();
+    } else {
+        // Volver a la posición original con animación
+        lightboxImage.style.transition = 'transform 0.3s ease';
+        lightboxImage.style.transform = 'translateY(0px)';
+        lightbox.style.backgroundColor = 'rgba(0, 0, 0, 0.85)';
+    }
+}
+
+
+if (lightbox && lightboxImage && lightboxClose) {
+    // Listeners para cerrar
+    lightboxClose.addEventListener('click', closeLightbox);
     lightbox.addEventListener('click', (event) => {
         if (event.target === lightbox) {
             closeLightbox();
         }
     });
-
     document.addEventListener('keydown', (event) => {
         if (event.key === 'Escape' && lightbox.style.display === 'flex') {
             closeLightbox();
         }
     });
+
+    // Listeners para el gesto táctil
+    lightbox.addEventListener('touchstart', handleTouchStart);
+    lightbox.addEventListener('touchmove', handleTouchMove);
+    lightbox.addEventListener('touchend', handleTouchEnd);
 }

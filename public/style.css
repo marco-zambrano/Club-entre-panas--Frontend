@@ -14,6 +14,11 @@ body {
     align-items: center;
 }
 
+/* Clase para bloquear el scroll del body cuando un modal está abierto */
+body.lightbox-open {
+  overflow: hidden;
+}
+
 .chat-container {
     width: 90%;
     max-width: 1300px;
@@ -176,7 +181,7 @@ input:checked + .slider:before {
 }
 
 .item-filter button.unread {
-    background-color: rgba(172, 7, 15);;
+    background-color: rgba(172, 7, 15);
     cursor: pointer;
 }
 
@@ -387,7 +392,7 @@ input:checked + .slider:before {
     background-color: #1e1e1e;
 }
 .contact.unread {
-    background-color: rgba(172, 7, 15);;
+    background-color: rgba(172, 7, 15);
 }
 .contact.unread .contact-preview {
     color: #ffffff;
@@ -670,6 +675,7 @@ input:checked + .slider:before {
     display: block;
     margin-bottom: 5px;
     object-fit: cover;
+    cursor: pointer;
 }
 
 .message-time {
@@ -1167,7 +1173,6 @@ input:checked + .slider:before {
 .toggle-tag-filters-btn {
     display: none; /* Oculto por defecto */
     font-size: .85rem;
-    /* background-color: #333; */
     color: #fff;
     border: none;
     border-radius: 5px;
@@ -1198,7 +1203,7 @@ input:checked + .slider:before {
         position: absolute;
         width: 60%;
         height: 100%;
-        z-index: 110;
+        z-index: 110; /* Aumentado de 10 a 110 para que se muestre sobre el botón de adjuntar (que tiene z-index: 100) */
         background-color: #121212;
         transform: translateX(-100%);
         transition: transform .3s ease;
@@ -1535,6 +1540,7 @@ input:checked + .slider:before {
   background-color: rgba(0, 0, 0, 0.85);
   justify-content: center;
   align-items: center;
+  transition: background-color 0.3s ease; /* Para la animación de opacidad */
 }
 
 /* La imagen ampliada */
@@ -1543,6 +1549,7 @@ input:checked + .slider:before {
   max-height: 90%;
   object-fit: contain;
   animation: zoom 0.3s ease-in-out;
+  transition: transform 0.3s ease; /* Para la animación de retorno */
 }
 
 /* El botón de cierre */
