@@ -88,9 +88,12 @@ export function createMessage(content, time, sender, type) {
         imageElement.onload = () => {
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
         };
+        imageElement.addEventListener('click', () => {
+            openLightbox(content);
+        });
         messageContent.appendChild(imageElement);
     } else if(type === "text"){
-        // Si es texto normal, procesarlo para encontar links de forma segura
+        // Si es texto normal, procesarlo para encontrar links de forma segura
         messageContent.appendChild(linkifyText(content));
     } else if (type === 'audio') {
         const audioAdvice = document.createElement('span');
@@ -1117,3 +1120,35 @@ window.addEventListener('unhandledrejection', function (event) {
         stack: event.reason?.stack
     });
 });
+
+// --- LÓGICA DEL VISOR DE IMÁGENES (LIGHTBOX) ---
+
+const lightbox = document.getElementById('image-lightbox');
+const lightboxImage = document.getElementById('lightbox-image');
+const lightboxClose = document.querySelector('.lightbox-close');
+
+function openLightbox(src) {
+    lightboxImage.src = src;
+    lightbox.style.display = 'flex';
+}
+
+function closeLightbox() {
+    lightbox.style.display = 'none';
+    lightboxImage.src = '';
+}
+
+if (lightbox && lightboxImage && lightboxClose) {
+    lightboxClose.addEventListener('click', closeLightbox);
+
+    lightbox.addEventListener('click', (event) => {
+        if (event.target === lightbox) {
+            closeLightbox();
+        }
+    });
+
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && lightbox.style.display === 'flex') {
+            closeLightbox();
+        }
+    });
+}
