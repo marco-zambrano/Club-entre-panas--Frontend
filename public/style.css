@@ -185,26 +185,6 @@ input:checked + .slider:before {
     display: none;
 }
 
-/* Botón de configuración del bot */
-.bot-config-button {
-    background-color: #3d5acf;
-    color: white;
-    border: none;
-    min-width: 35px;
-    min-height: 35px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-size: 16px;
-}
-.bot-config-button:hover {
-    transform: scale(1.08);
-    background-color: #4a6aea;
-}
-
 /* Modal de configuración del bot */
 .bot-config-modal {
     display: none;
@@ -681,6 +661,9 @@ input:checked + .slider:before {
 }
 
 /* Campo de entrada de mensaje */
+.chat-bottom {
+    position: relative;
+}
 .message-input-container {
     display: flex;
     border-radius: 30px;
@@ -798,8 +781,8 @@ input:checked + .slider:before {
 /* Botón para mostrar/ocultar contactos en móvil */
 .toggle-contacts {
     display: none;
-    position: fixed;
-    bottom: 50px;
+    position: absolute;
+    top: -50px;
     left: 20px; 
     width: 40px;
     height: 40px;
@@ -810,7 +793,30 @@ input:checked + .slider:before {
     font-size: 20px;
     cursor: pointer;
     z-index: 1000;
+    font-size: 18px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+/* Botón de configuración del bot */
+.bot-config-button {
+    background-color: #3d5acf;
+    color: white;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 18px;
+    position: absolute;
+    top: -50px;
+    right: 20px;
+}
+.bot-config-button:hover {
+    transform: scale(1.08);
+    background-color: #4a6aea;
 }
 
 
@@ -1229,10 +1235,6 @@ input:checked + .slider:before {
     }
     .bot-toggle {
         align-self: flex-end;
-    }
-    .bot-config-button {
-        width: 28px;
-        height: 28px;
     }
 }
 

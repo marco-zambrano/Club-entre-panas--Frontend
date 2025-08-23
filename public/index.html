@@ -92,10 +92,6 @@
                     </div>
                 </div>
             </div>
-            <!-- boton de modal del bot -->
-            <button class="bot-config-button">
-                <i class="fas fa-robot"></i>
-            </button>
         </div>
 
         <!-- Contenido principal -->
@@ -133,36 +129,42 @@
                 <div class="messages"></div>
 
                 <!-- input text to send manual messages -->
-                <div class="message-input-container">
-                    <textarea class="message-input" placeholder="Escribir mensaje" rows="1"></textarea>
-                    <div class="image-preview-container" style="display: none;">
-                        <img src="" alt="Image preview" class="image-preview-thumbnail">
-                        <span class="image-preview-filename"></span>
-                        <button class="image-preview-cancel-button">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                    <input type="file" id="image-file-input" accept="image/*" capture="camera" style="display: none;">
-                    <div class="attachment-container">
-                        <button class="attach-button">
-                            <i class="fas fa-paperclip"></i>
-                        </button>
-                        <div class="attachment-menu">
-                            <button for="image-file-input" id="upload-image-btn"><i class="fas fa-upload"></i></button>
-                            <button id="openQuickRepliesConfig"><i class="fas fa-comment-dots"></i></button>
-                        </div>
-                    </div>
-                    <button class="send-button">
-                        <i class="fas fa-arrow-right"></i>
+                <div class="chat-bottom">
+                    <!-- boton de modal del bot -->
+                    <button class="bot-config-button">
+                        <i class="fas fa-robot"></i>
                     </button>
+                    <!-- Botón para mostrar/ocultar contactos en móvil -->
+                    <button class="toggle-contacts">
+                        <i class="fas fa-users"></i>
+                    </button>
+                    <!-- Input stuffs container -->
+                    <div class="message-input-container">
+                        <textarea class="message-input" placeholder="Escribir mensaje" rows="1"></textarea>
+                        <div class="image-preview-container" style="display: none;">
+                            <img src="" alt="Image preview" class="image-preview-thumbnail">
+                            <span class="image-preview-filename"></span>
+                            <button class="image-preview-cancel-button">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <input type="file" id="image-file-input" accept="image/*" capture="camera" style="display: none;">
+                        <div class="attachment-container">
+                            <button class="attach-button">
+                                <i class="fas fa-paperclip"></i>
+                            </button>
+                            <div class="attachment-menu">
+                                <button for="image-file-input" id="upload-image-btn"><i class="fas fa-upload"></i></button>
+                                <button id="openQuickRepliesConfig"><i class="fas fa-comment-dots"></i></button>
+                            </div>
+                        </div>
+                        <button class="send-button">
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
-        
-        <!-- Botón para mostrar/ocultar contactos en móvil -->
-        <button class="toggle-contacts">
-            <i class="fas fa-users"></i>
-        </button>
     </div>
 
     <!-- Modal de configuración del bot -->
