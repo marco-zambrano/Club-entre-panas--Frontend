@@ -267,6 +267,7 @@ function clearImagePreview() {
     imagePreviewFilename.textContent = '';
     imagePreviewContainer.style.display = 'none';
     messageInput.style.display = 'block';
+    messageInput.style.height = "auto";
     messageInput.value = ''; // Clear any text that might have been there
 }
 
