@@ -131,13 +131,9 @@
                             <button class="tag-btn tag-btn--servientrega">Servientrega</button>
                             <button class="tag-btn tag-btn--recibido">Recibido</button>
                         </div>
-                        <div class="bot-toggle-options">
-                            <span>Bot</span>
-                            <label class="toggle">
-                                <input type="checkbox" checked class="individual-bot-toggle">
-                                <span class="slider"></span>
-                            </label>
-                        </div>
+                        <button class="bot-config-button">
+                            <i class="fas fa-robot"></i>
+                        </button>
                     </div>
                 </div>
 
@@ -145,26 +141,30 @@
                 <div class="messages"></div>
 
                 <!-- input text to send manual messages -->
+
                 <div class="chat-bottom">
                     <!-- boton de modal del bot -->
-                    <button class="bot-config-button">
-                        <i class="fas fa-robot"></i>
-                    </button>
+                    <div class="bot-toggle-options">
+                        <span>Bot</span>
+                        <label class="toggle">
+                            <input type="checkbox" checked class="individual-bot-toggle">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
                     <!-- Botón para mostrar/ocultar contactos en móvil -->
                     <button class="toggle-contacts">
                         <i class="fas fa-users"></i>
                     </button>
                     <!-- Input stuffs container -->
                     <div class="message-input-container">
+                    <!-- Este nuevo contenedor mostrará las miniaturas en una cuadrícula -->
+                        <div id="staged-images-grid" class="staged-images-grid"></div>
+                        <!-- Wrapper for the main input row -->
+                        <div class="input-wrapper">
                         <textarea class="message-input" placeholder="Escribir mensaje" rows="1"></textarea>
-                        <div class="image-preview-container" style="display: none;">
-                            <img src="" alt="Image preview" class="image-preview-thumbnail">
-                            <span class="image-preview-filename"></span>
-                            <button class="image-preview-cancel-button">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        </div>
-                        <input type="file" id="image-file-input" accept="image/*" capture="camera" style="display: none;">
+                        
+                        <!-- El input de archivo ahora permite selección múltiple. Se elimina 'capture' para evitar conflictos en desktop. -->
+                        <input type="file" id="image-file-input" accept="image/*" multiple style="display: none;">
                         <div class="attachment-container">
                             <button class="attach-button">
                                 <i class="fas fa-paperclip"></i>
