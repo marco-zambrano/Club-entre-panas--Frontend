@@ -348,11 +348,53 @@ input:checked + .slider:before {
     overflow: hidden;
 }
 
-/* Lista de contactos */
-.contacts-list {
+/* Main container for the left panel */
+#contacts-container {
     width: 30%;
     border-right: 1px solid #333;
-    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* Prevent the container itself from scrolling */
+}
+
+/* Wrapper for the search input */
+.search-container {
+    padding: 10px 5px;
+    border-bottom: 1px solid #333;
+    position: relative;
+    /* This element will not grow or shrink */
+    flex: 0 0 auto;
+}
+#search-input {
+    width: 100%;
+    padding: 10px 10px 10px 40px; /* Padding for the icon */
+    background-color: #1e1e1e;
+    border: 1px solid #444;
+    border-radius: 20px;
+    color: #fff;
+    font-size: 0.9rem;
+}
+#search-input::placeholder {
+    color: #888;
+}
+#search-input:focus {
+    outline: none;
+    border-color: #939393;
+}
+.search-icon {
+    position: absolute;
+    top: 50%;
+    left: 30px;
+    transform: translateY(-50%);
+    color: #888;
+}
+
+/* The list of contacts */
+.contacts-list {
+    /* This element will grow to fill the remaining space */
+    flex: 1 1 auto;
+    overflow-y: auto; /* IMPORTANT: The scrollbar is on this element */
+    width: 100%; /* Take full width of the parent */
 }
 .contacts-list::-webkit-scrollbar {
     width: 6px;
@@ -873,7 +915,6 @@ input:checked + .slider:before {
     border: none;
     font-size: 20px;
     cursor: pointer;
-    z-index: 1000;
     font-size: 18px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
@@ -1244,27 +1285,25 @@ input:checked + .slider:before {
         height: 100vh;
         border-radius: 0;
     }
-    
-    .contacts-list {
-        width: 35%;
-    }
 }
 
 @media (max-width: 768px) {
     .main-content {
         position: relative;
     }
-
-    .contacts-list {
-        position: absolute;
+    #contacts-container {
         width: 60%;
+    }
+
+    #contacts-container {
+        position: absolute;
         height: 100%;
         z-index: 110; /* Aumentado de 10 a 110 para que se muestre sobre el botón de adjuntar (que tiene z-index: 100) */
         background-color: #121212;
         transform: translateX(-100%);
         transition: transform .3s ease;
     }
-    .contacts-list.show {
+    #contacts-container.show {
         transform: translateX(0);
     }
 
@@ -1363,7 +1402,7 @@ input:checked + .slider:before {
         max-height: 170px;
     }
 
-    .contacts-list {
+    #contacts-container {
         width: 100%;
     }
 
