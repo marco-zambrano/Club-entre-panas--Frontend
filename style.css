@@ -14,6 +14,11 @@ body {
     align-items: center;
 }
 
+/* Clase para bloquear el scroll del body cuando un modal está abierto */
+body.lightbox-open {
+  overflow: hidden;
+}
+
 .chat-container {
     width: 90%;
     max-width: 1300px;
@@ -182,6 +187,7 @@ input:checked + .slider:before {
 .item-filter button.active:hover {
     background-color: #0b93f6;
 }
+
 .item-filter button.unread {
     background-color: rgba(172, 7, 15);
     cursor: pointer;
@@ -426,6 +432,7 @@ input:checked + .slider:before {
     display: flex;
     column-gap: 5px;
 }
+
 .contact-message-time {
     position: absolute;
     font-size: .7rem;
@@ -533,7 +540,7 @@ input:checked + .slider:before {
 .tag-btn-container {
     display: flex;
     flex-wrap: wrap; /* Allow buttons to wrap to the next line */
-    justify-content: flex-start; /* Align wrapped buttons to the start */
+    justify-content: center; /* Align wrapped buttons to the center */
     gap: 8px; /* Space between wrapped buttons */
 }
 .tag-btn-container.active {
@@ -593,9 +600,12 @@ input:checked + .slider:before {
 
 .bot-toggle-options {
     display: flex;
-    justify-content: center;
     align-items: center;
     gap: 10px;
+    position: absolute;
+    top: -150px;
+    right: 20px;
+    flex-direction: column;
 }
 .bot-toggle-options span {
     font-size: 1.15rem;
@@ -672,6 +682,7 @@ input:checked + .slider:before {
     display: block;
     margin-bottom: 5px;
     object-fit: cover;
+    cursor: pointer;
 }
 
 .message-time {
@@ -688,10 +699,10 @@ input:checked + .slider:before {
 }
 .message-input-container {
     display: flex;
-    border-radius: 30px;
+    border-radius: 14px;
     background-color: #1e1e1e;
     border: 1px solid #333;
-    align-items: center; /* Added for vertical alignment */
+    align-items: center; /* Align items to the bottom */
     position: relative; /* Needed for absolute positioning of children */
 }
 .message-input {
@@ -762,14 +773,6 @@ input:checked + .slider:before {
     min-width: 0; /* Prevents the container from overflowing its parent */
 }
 
-.image-preview-thumbnail {
-    width: 40px;
-    height: 40px;
-    border-radius: 8px; /* Slightly smaller radius */
-    object-fit: cover;
-    margin-right: 10px;
-}
-
 .image-preview-filename {
     flex-grow: 1;
     width: 0;
@@ -815,6 +818,7 @@ input:checked + .slider:before {
     font-size: 18px;
     cursor: pointer;
     z-index: 1000;
+    font-size: 18px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 /* Botón de configuración del bot */
@@ -831,9 +835,11 @@ input:checked + .slider:before {
     cursor: pointer;
     transition: all 0.3s ease;
     font-size: 18px;
+    align-self: center;
     position: absolute;
     top: -50px;
     right: 20px;
+
 }
 .bot-config-button:hover {
     transform: scale(1.08);
@@ -1148,47 +1154,6 @@ input:checked + .slider:before {
     color: white;
 }
 
-/* Camera Modal */
-.camera-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.8);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 2000;
-}
-
-.camera-modal-content {
-    background-color: #1e1e1e;
-    padding: 20px;
-    border-radius: 10px;
-    text-align: center;
-}
-
-#camera-stream {
-    width: 100%;
-    max-width: 500px;
-    border-radius: 8px;
-}
-
-#capture-btn,
-#close-camera-modal {
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 10px;
-}
-
-#close-camera-modal {
-    background-color: #f44336;
-}
 
 .toggle-tag-filters-btn {
     display: none; /* Oculto por defecto */
@@ -1223,7 +1188,7 @@ input:checked + .slider:before {
         position: absolute;
         width: 60%;
         height: 100%;
-        z-index: 110;
+        z-index: 110; /* Aumentado de 10 a 110 para que se muestre sobre el botón de adjuntar (que tiene z-index: 100) */
         background-color: #121212;
         transform: translateX(-100%);
         transition: transform .3s ease;
@@ -1309,6 +1274,7 @@ input:checked + .slider:before {
     .bot-toggle-options {
         justify-content: flex-start; /* Align content to the left */
         align-self: center;
+        top: -60px;
     }
     .bot-toggle-options span {
         font-size: 1rem;
@@ -1556,6 +1522,7 @@ input:checked + .slider:before {
   background-color: rgba(0, 0, 0, 0.85);
   justify-content: center;
   align-items: center;
+  transition: background-color 0.3s ease; /* Para la animación de opacidad */
 }
 
 /* La imagen ampliada */
@@ -1564,6 +1531,7 @@ input:checked + .slider:before {
   max-height: 90%;
   object-fit: contain;
   animation: zoom 0.3s ease-in-out;
+  transition: transform 0.3s ease; /* Para la animación de retorno */
 }
 
 /* El botón de cierre */
@@ -1590,4 +1558,84 @@ input:checked + .slider:before {
 /* Hacer que las imágenes del chat tengan cursor de puntero */
 .message-image {
     cursor: pointer;
+}
+
+
+
+/* --- Estilos para la subida de múltiples imágenes --- */
+
+/* Contenedor principal del input: ahora es una columna */
+.message-input-container {
+    flex-direction: column;
+    height: auto; /* Permitir que la altura crezca */
+}
+
+/* NUEVO: Contenedor para la fila del input principal (textarea y botones) */
+.input-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center; /* Alinea los items abajo */
+    width: 100%;
+}
+
+/* El textarea ahora ocupa el espacio flexible */
+.input-wrapper .message-input {
+    flex-grow: 1;
+    max-height: 120px;
+    margin-right: 8px;
+}
+
+/* Cuadrícula para las previsualizaciones */
+.staged-images-grid {
+    display: none; /* Oculto por defecto */
+    display: flex;
+    flex-direction: row; /* Asegura que los elementos estén en una fila */
+    gap: 8px;
+    overflow-x: auto;   /* Habilita el scroll horizontal si las imágenes no caben */
+    overflow-y: hidden;  /* Deshabilita el scroll vertical */
+    align-self: start;
+}
+
+/* Miniatura individual */
+.image-preview-thumbnail {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    background-color: #00000000;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px; /* Slightly smaller radius */
+    object-fit: cover;
+    margin-right: 10px;
+}
+
+.image-preview-thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Botón para eliminar una miniatura */
+.image-preview-remove-btn {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    line-height: 1;
+    padding: 0;
+    transition: background-color 0.2s;
+}
+
+.image-preview-remove-btn:hover {
+    background-color: rgba(255, 0, 0, 0.8);
 }
