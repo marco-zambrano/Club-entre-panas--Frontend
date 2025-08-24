@@ -210,12 +210,14 @@ io.on('connection', (socket) => {
                 "fecha_creacion": "2025-06-18"
             }
         }`,
-        tokenUsage: 10
+        tokenUsage: 10,
+        commentsPrompt: "Responde de manera amigable y profesional a los comentarios de los usuarios en redes sociales, proporcionando información útil y relevante sobre nuestros productos y servicios. Mantén un tono cordial y cercano, fomentando la interacción positiva con la comunidad.",
     };
 
-    socket.on('updatePrompt', (prompt, dataTable) => {
+    socket.on('updatePrompt', (prompt, dataTable, commentsPrompt) => {
         botData.prompt = prompt;
         botData.dataTable = dataTable;
+        botData.commentsPrompt = commentsPrompt;
     });
     socket.on("getCustomPrompt", async () => {
         setTimeout(() => {

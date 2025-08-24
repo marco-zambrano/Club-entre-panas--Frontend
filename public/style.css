@@ -144,6 +144,14 @@ input:checked + .terminado-slider {
     background-color: #c89ecc;
 }
 
+input:checked + .servientrega-slider {
+    background-color: #068c15ff;
+}
+
+input:checked + .recibido-slider {
+    background-color: #ee5252;
+}
+
 input:checked + .default-slider {
     background-color: #888;
 }
@@ -188,26 +196,6 @@ input:checked + .slider:before {
 /* WhatsApp toggle */
 #whatsapp-toggle.active {
     display: none;
-}
-
-/* Botón de configuración del bot */
-.bot-config-button {
-    background-color: #3d5acf;
-    color: white;
-    border: none;
-    min-width: 35px;
-    min-height: 35px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-size: 16px;
-}
-.bot-config-button:hover {
-    transform: scale(1.08);
-    background-color: #4a6aea;
 }
 
 /* Modal de configuración del bot */
@@ -552,7 +540,7 @@ input:checked + .slider:before {
 .tag-btn-container {
     display: flex;
     flex-wrap: wrap; /* Allow buttons to wrap to the next line */
-    justify-content: flex-start; /* Align wrapped buttons to the start */
+    justify-content: center; /* Align wrapped buttons to the center */
     gap: 8px; /* Space between wrapped buttons */
 }
 .tag-btn-container.active {
@@ -594,11 +582,30 @@ input:checked + .slider:before {
     background-color: rgba(200, 158, 204, 0.35); /* Using rgba for hover effect */
 }
 
+.tag-btn--servientrega {
+    border-color: #068c15ff;
+}
+
+.tag-btn--servientrega:hover {
+    background-color: #068c15ff;
+}
+
+.tag-btn--recibido {
+    border-color: #ee5252;
+}
+
+.tag-btn--recibido:hover {
+    background-color: #ee5252;
+}
+
 .bot-toggle-options {
     display: flex;
-    justify-content: center;
     align-items: center;
     gap: 10px;
+    position: absolute;
+    top: -150px;
+    right: 20px;
+    flex-direction: column;
 }
 .bot-toggle-options span {
     font-size: 1.15rem;
@@ -687,6 +694,9 @@ input:checked + .slider:before {
 }
 
 /* Campo de entrada de mensaje */
+.chat-bottom {
+    position: relative;
+}
 .message-input-container {
     display: flex;
     border-radius: 14px;
@@ -796,8 +806,8 @@ input:checked + .slider:before {
 /* Botón para mostrar/ocultar contactos en móvil */
 .toggle-contacts {
     display: none;
-    position: fixed;
-    bottom: 50px;
+    position: absolute;
+    top: -50px;
     left: 20px; 
     width: 40px;
     height: 40px;
@@ -808,7 +818,28 @@ input:checked + .slider:before {
     font-size: 20px;
     cursor: pointer;
     z-index: 1000;
+    font-size: 18px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+/* Botón de configuración del bot */
+.bot-config-button {
+    background-color: #3d5acf;
+    color: white;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 18px;
+    align-self: center;
+}
+.bot-config-button:hover {
+    transform: scale(1.08);
+    background-color: #4a6aea;
 }
 
 
@@ -1100,7 +1131,7 @@ input:checked + .slider:before {
     gap: 5px;
 }
 
-.attachment-menu label {
+.attachment-menu button {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1115,52 +1146,11 @@ input:checked + .slider:before {
     transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-.attachment-menu label:hover {
+.attachment-menu button:hover {
     background-color: #0b93f6;
     color: white;
 }
 
-/* Camera Modal */
-.camera-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.8);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 2000;
-}
-
-.camera-modal-content {
-    background-color: #1e1e1e;
-    padding: 20px;
-    border-radius: 10px;
-    text-align: center;
-}
-
-#camera-stream {
-    width: 100%;
-    max-width: 500px;
-    border-radius: 8px;
-}
-
-#capture-btn,
-#close-camera-modal {
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 10px;
-}
-
-#close-camera-modal {
-    background-color: #f44336;
-}
 
 .toggle-tag-filters-btn {
     display: none; /* Oculto por defecto */
@@ -1227,10 +1217,6 @@ input:checked + .slider:before {
     .bot-toggle {
         align-self: flex-end;
     }
-    .bot-config-button {
-        width: 28px;
-        height: 28px;
-    }
 }
 
 @media (max-width: 576px) {
@@ -1285,6 +1271,7 @@ input:checked + .slider:before {
     .bot-toggle-options {
         justify-content: flex-start; /* Align content to the left */
         align-self: center;
+        top: -60px;
     }
     .bot-toggle-options span {
         font-size: 1rem;

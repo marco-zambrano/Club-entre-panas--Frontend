@@ -84,6 +84,20 @@
                         </label>
                     </div>
                     <div class="filter">
+                        <span>Servientrega</span>
+                        <label class="toggle">
+                            <input type="radio" name="tag-filter" class="tag-toggle" data-tag="Servientrega">
+                            <span class="slider servientrega-slider"></span>
+                        </label>
+                    </div>
+                    <div class="filter">
+                        <span>Recibido</span>
+                        <label class="toggle">
+                            <input type="radio" name="tag-filter" class="tag-toggle" data-tag="Recibido">
+                            <span class="slider recibido-slider"></span>
+                        </label>
+                    </div>
+                    <div class="filter">
                         <span>Sin etiqueta</span>
                         <label class="toggle">
                             <input type="radio" name="tag-filter" class="tag-toggle" data-tag="default">
@@ -92,10 +106,6 @@
                     </div>
                 </div>
             </div>
-            <!-- boton de modal del bot -->
-            <button class="bot-config-button">
-                <i class="fas fa-cog"></i>
-            </button>
         </div>
 
         <!-- Contenido principal -->
@@ -118,14 +128,12 @@
                             <button class="tag-btn tag-btn--rp">RP</button>
                             <button class="tag-btn tag-btn--delivery">Delivery</button>
                             <button class="tag-btn tag-btn--terminado">Terminado</button>
+                            <button class="tag-btn tag-btn--servientrega">Servientrega</button>
+                            <button class="tag-btn tag-btn--recibido">Recibido</button>
                         </div>
-                        <div class="bot-toggle-options">
-                            <span>Bot</span>
-                            <label class="toggle">
-                                <input type="checkbox" checked class="individual-bot-toggle">
-                                <span class="slider"></span>
-                            </label>
-                        </div>
+                        <button class="bot-config-button">
+                            <i class="fas fa-robot"></i>
+                        </button>
                     </div>
                 </div>
 
@@ -133,23 +141,37 @@
                 <div class="messages"></div>
 
                 <!-- input text to send manual messages -->
-                <div class="message-input-container">
+
+                <div class="chat-bottom">
+                    <!-- boton de modal del bot -->
+                    <div class="bot-toggle-options">
+                        <span>Bot</span>
+                        <label class="toggle">
+                            <input type="checkbox" checked class="individual-bot-toggle">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <!-- Botón para mostrar/ocultar contactos en móvil -->
+                    <button class="toggle-contacts">
+                        <i class="fas fa-users"></i>
+                    </button>
+                    <!-- Input stuffs container -->
+                    <div class="message-input-container">
                     <!-- Este nuevo contenedor mostrará las miniaturas en una cuadrícula -->
-                    <div id="staged-images-grid" class="staged-images-grid"></div>
-                    <!-- Wrapper for the main input row -->
-                    <div class="input-wrapper">
+                        <div id="staged-images-grid" class="staged-images-grid"></div>
+                        <!-- Wrapper for the main input row -->
+                        <div class="input-wrapper">
                         <textarea class="message-input" placeholder="Escribir mensaje" rows="1"></textarea>
                         
                         <!-- El input de archivo ahora permite selección múltiple. Se elimina 'capture' para evitar conflictos en desktop. -->
                         <input type="file" id="image-file-input" accept="image/*" multiple style="display: none;">
-
                         <div class="attachment-container">
                             <button class="attach-button">
                                 <i class="fas fa-paperclip"></i>
                             </button>
                             <div class="attachment-menu">
-                                <label for="image-file-input" id="upload-image-btn"><i class="fas fa-upload"></i></label>
-                                <label for="image-file-input" id="take-photo-btn"><i class="fas fa-camera"></i></label>
+                                <button for="image-file-input" id="upload-image-btn"><i class="fas fa-upload"></i></button>
+                                <button id="openQuickRepliesConfig"><i class="fas fa-comment-dots"></i></button>
                             </div>
                         </div>
                         <button class="send-button">
@@ -157,31 +179,6 @@
                         </button>
                     </div>
                 </div>
-            </div>
-        </div>
-        
-        <!-- Botón para mostrar/ocultar contactos en móvil -->
-        <button class="toggle-contacts">
-            <i class="fas fa-users"></i>
-        </button>
-    </div>
-
-    <!-- Modal de selección de configuración -->
-    <div class="main-config-modal" id="mainConfigModal">
-        <div class="main-config-content">
-            <div class="main-config-header">
-                <h2>Configuración</h2>
-                <button class="close-main-config" id="closeMainConfig">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="main-config-options">
-                <button class="main-config-option" id="openBotConfig">
-                    <i class="fas fa-robot"></i> Configurar Bot
-                </button>
-                <button class="main-config-option" id="openQuickRepliesConfig">
-                    <i class="fas fa-comment-dots"></i> Respuestas Rápidas
-                </button>
             </div>
         </div>
     </div>
@@ -265,8 +262,8 @@
     
     <!-- Visor de Imágenes (Lightbox) -->
     <div id="image-lightbox" class="lightbox-overlay">
-      <span class="lightbox-close">&times;</span>
-      <img class="lightbox-content" id="lightbox-image">
+        <span class="lightbox-close">&times;</span>
+        <img class="lightbox-content" id="lightbox-image">
     </div>
 
     <script type="module" src="/socket.io/socket.io.js"></script>
