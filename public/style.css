@@ -139,6 +139,14 @@ input:checked + .terminado-slider {
     background-color: #c89ecc;
 }
 
+input:checked + .servientrega-slider {
+    background-color: #068c15ff;
+}
+
+input:checked + .recibido-slider {
+    background-color: #ee5252;
+}
+
 input:checked + .default-slider {
     background-color: #888;
 }
@@ -567,6 +575,22 @@ input:checked + .slider:before {
 }
 .tag-btn--terminado:hover {
     background-color: rgba(200, 158, 204, 0.35); /* Using rgba for hover effect */
+}
+
+.tag-btn--servientrega {
+    border-color: #068c15ff;
+}
+
+.tag-btn--servientrega:hover {
+    background-color: #068c15ff;
+}
+
+.tag-btn--recibido {
+    border-color: #ee5252;
+}
+
+.tag-btn--recibido:hover {
+    background-color: #ee5252;
 }
 
 .bot-toggle-options {

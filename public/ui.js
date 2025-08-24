@@ -20,7 +20,9 @@ export const tagColors = {
     'Contraentrega': '#26d367',
     'RP': '#efb32f',
     'Delivery': '#57c9ff',
-    'Terminado': '#c89ecc'
+    'Terminado': '#c89ecc',
+    'Servientrega': '#068c15ff',
+    'Recibido': '#ee5252'
 }
 
 /**
