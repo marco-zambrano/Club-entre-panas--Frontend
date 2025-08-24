@@ -689,7 +689,7 @@ input:checked + .slider:before {
 /* Campo de entrada de mensaje */
 .message-input-container {
     display: flex;
-    border-radius: 30px;
+    border-radius: 14px;
     background-color: #1e1e1e;
     border: 1px solid #333;
     align-items: center; /* Align items to the bottom */
@@ -761,14 +761,6 @@ input:checked + .slider:before {
     border-radius: 20px; /* Match input border-radius */
     margin-right: 10px; /* Space before buttons */
     min-width: 0; /* Prevents the container from overflowing its parent */
-}
-
-.image-preview-thumbnail {
-    width: 40px;
-    height: 40px;
-    border-radius: 8px; /* Slightly smaller radius */
-    object-fit: cover;
-    margin-right: 10px;
 }
 
 .image-preview-filename {
@@ -1576,4 +1568,84 @@ input:checked + .slider:before {
 /* Hacer que las imágenes del chat tengan cursor de puntero */
 .message-image {
     cursor: pointer;
+}
+
+
+
+/* --- Estilos para la subida de múltiples imágenes --- */
+
+/* Contenedor principal del input: ahora es una columna */
+.message-input-container {
+    flex-direction: column;
+    height: auto; /* Permitir que la altura crezca */
+}
+
+/* NUEVO: Contenedor para la fila del input principal (textarea y botones) */
+.input-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center; /* Alinea los items abajo */
+    width: 100%;
+}
+
+/* El textarea ahora ocupa el espacio flexible */
+.input-wrapper .message-input {
+    flex-grow: 1;
+    max-height: 120px;
+    margin-right: 8px;
+}
+
+/* Cuadrícula para las previsualizaciones */
+.staged-images-grid {
+    display: none; /* Oculto por defecto */
+    display: flex;
+    flex-direction: row; /* Asegura que los elementos estén en una fila */
+    gap: 8px;
+    overflow-x: auto;   /* Habilita el scroll horizontal si las imágenes no caben */
+    overflow-y: hidden;  /* Deshabilita el scroll vertical */
+    align-self: start;
+}
+
+/* Miniatura individual */
+.image-preview-thumbnail {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    background-color: #00000000;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px; /* Slightly smaller radius */
+    object-fit: cover;
+    margin-right: 10px;
+}
+
+.image-preview-thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Botón para eliminar una miniatura */
+.image-preview-remove-btn {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    line-height: 1;
+    padding: 0;
+    transition: background-color 0.2s;
+}
+
+.image-preview-remove-btn:hover {
+    background-color: rgba(255, 0, 0, 0.8);
 }
