@@ -4,14 +4,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Control</title>
-    <!-- <link rel="stylesheet" href="/ruta/secreta/secretisima/dashboard/style.css"> -->
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="icon" type="image/png" href="favicon-96x96.png" sizes="96x96" />
-    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
-    <link rel="shortcut icon" href="favicon.ico" />
-    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
-    <link rel="manifest" href="site.webmanifest" />
+    <script>
+        // Detectar el entorno
+        const isProduction = window.location.hostname !== "localhost";
+
+        // Definir la configuración para cada entorno
+        const config = {
+            basePath: isProduction
+            ? "/ruta/secreta/secretisima/dashboard"
+            : "",
+            pathSocket: isProduction
+            ? "/ruta/secreta/secretisima"
+            : "",
+            socketConfig: {
+            url: isProduction ? "https://panasresponde.work" : undefined,
+            options: isProduction
+                ? { path: "/ruta/secreta/secretisima/socket.io" }
+                : {},
+            },
+        };
+
+        // Hacer la configuración accesible globalmente para otros scripts
+        window.APP_CONFIG = config;
+
+        // Escribir las etiquetas con las rutas correctas ANTES de que la página cargue
+        document.write(`
+            <link rel="stylesheet" href="${config.basePath}/style.css" />
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+            <link rel="icon" type="image/png" href="${config.basePath}/favicon-96x96.png" sizes="96x96" />
+            <link rel="icon" type="image/svg+xml" href="${config.basePath}/favicon.svg" />
+            <link rel="shortcut icon" href="${config.basePath}/favicon.ico" />
+            <link rel="apple-touch-icon" sizes="180x180" href="${config.basePath}/apple-touch-icon.png" />
+            <link rel="manifest" href="${config.basePath}/site.webmanifest" />
+        `);
+    </script>
 </head>
 <body>
     <div class="chat-container">
@@ -160,10 +186,12 @@
                             <span class="slider"></span>
                         </label>
                     </div>
+
                     <!-- Botón para mostrar/ocultar contactos en móvil -->
                     <button class="toggle-contacts">
                         <i class="fas fa-users"></i>
                     </button>
+
                     <!-- Input stuffs container -->
                     <div class="message-input-container">
                     <!-- Este nuevo contenedor mostrará las miniaturas en una cuadrícula -->
@@ -174,6 +202,7 @@
                         
                         <!-- El input de archivo ahora permite selección múltiple. Se elimina 'capture' para evitar conflictos en desktop. -->
                         <input type="file" id="image-file-input" accept="image/*" multiple style="display: none;">
+
                         <div class="attachment-container">
                             <button class="attach-button">
                                 <i class="fas fa-paperclip"></i>
@@ -267,19 +296,21 @@
             </div>
         </div>
     </div>
-    
+    <!-- Fin modal respuestas rápidas -->
+
     <!-- Visor de Imágenes (Lightbox) -->
     <div id="image-lightbox" class="lightbox-overlay">
         <span class="lightbox-close">&times;</span>
         <img class="lightbox-content" id="lightbox-image">
     </div>
 
-    <script type="module" src="/socket.io/socket.io.js"></script>
-    <script type="module" src="ui.js"></script>
-    <script type="module" src="script.js"></script>
+    <script>
+        document.write(`
+            <script type="module" src="${window.APP_CONFIG.pathSocket}/socket.io/socket.io.js"><\/script>
+            <script type="module" src="${window.APP_CONFIG.basePath}/ui.js"><\/script>
+            <script type="module" src="${window.APP_CONFIG.basePath}/script.js"><\/script>
+        `);
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js"></script>
-    <!-- <script type="module" src="/ruta/secreta/secretisima/socket.io/socket.io.js"></script>
-    <script type="module" src="/ruta/secreta/secretisima/dashboard/ui.js"></script>
-    <script type="module" src="/ruta/secreta/secretisima/dashboard/script.js"></script> -->
 </body>
 </html>

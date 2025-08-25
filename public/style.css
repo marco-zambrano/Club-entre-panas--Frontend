@@ -16,7 +16,7 @@ body {
 
 /* Clase para bloquear el scroll del body cuando un modal está abierto */
 body.lightbox-open {
-  overflow: hidden;
+    overflow: hidden;
 }
 
 .chat-container {
@@ -930,7 +930,6 @@ input:checked + .slider:before {
     background-color: #0b93f6;
     color: white;
     border: none;
-    font-size: 20px;
     cursor: pointer;
     z-index: 1000;
     font-size: 18px;

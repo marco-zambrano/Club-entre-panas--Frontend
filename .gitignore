@@ -3,3 +3,11 @@ node_modules
 *.svg
 *.ico
 .env
+config.js
+/index.html
+/style.css
+/script.js
+/socket.js
+/ui.js
+/site.webmanifest
+*.sh

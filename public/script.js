@@ -30,6 +30,7 @@ export function filterItems() {
 
     const searchTerm = removeAccents(document.getElementById('search-input').value.toLowerCase().trim());
 
+    //FILTER THEM BY THE ACTIVATED PLATFORM TOGGLE
     const filteredItems = items[currentFilter].list.filter(item => {
         const platformToggle = document.querySelector(`.platform-toggle[data-platform="${item.platform}"]`);
         const matchesPlatform = platformToggle && platformToggle.checked;

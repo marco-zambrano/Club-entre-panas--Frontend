@@ -973,7 +973,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- MODALES Y BOTONES ---
     const $ = (se)=> document.querySelector(se)
-    const botConfigButton = $('.bot-config-button');
+    const botConfigButton = $('.bot-config-button'); // Boton de configuracion
     const openQuickRepliesConfig = $('#openQuickRepliesConfig'); // btn abrir qr modal
 
     // Bot Modal
@@ -1138,6 +1138,7 @@ document.addEventListener('DOMContentLoaded', () => {
         openQuickRepliesConfig.addEventListener('click', () => {
             quickRepliesModal.classList.add('show');
             quickRepliesContainer.innerHTML = ''    // Limpiamos
+
             // iteramos las respuestas rapidas disponibles y las mostramos
             quickReps.forEach(res => {
                 createQuickReply(res); // Volvemos a generar
@@ -1209,6 +1210,8 @@ document.addEventListener('DOMContentLoaded', () => {
     cancelDeleteBtn.addEventListener('click', hideDeleteConfirmation);
 })
 
+
+
 //CAPTURE AND REPORT ERRORS
 window.onerror = function (message, source, lineno, colno, error) {
     reportErrorToBackend({
@@ -1229,8 +1232,6 @@ window.addEventListener('unhandledrejection', function (event) {
         stack: event.reason?.stack
     });
 });
-
-
 
 
 
