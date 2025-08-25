@@ -13,8 +13,28 @@ app.use(express.static('public'));
 
 //RANDOM NAMES
 function generateRandomName() {
-    const names = ['ddsadsaa', '2121wsdsa', 'dsadsa', 'dsafdsvfnyt', 'juyjhgfgf', 'jhghgfdvfvd', 'gtrg4r3t', 'fdgfdg46j', 'gfgfdvcxv', 'vcbvbtgeer'];
-    const surnames = ['dsadqwwrtyyy', 'ytjytdfcxs', 'jhfda', 'qweqwergh', 'mnbmnb', 'mnbmmnb', 'vbcbvbvn', 'fdsfd', 'tretrere', '43543'];
+    // Nombres
+    const names = [
+        'Juan', 'Carlos', 'José', 'Luis', 'Miguel', 
+        'Javier', 'Diego', 'Santiago', 'Martín', 'Matías',
+        'Facundo', 'Nicolás', 'Franco', 'Gonzalo', 'Sebastián',
+        'Alejandro', 'Fernando', 'Pablo', 'Ricardo', 'Hernán',
+        'María', 'Ana', 'Laura', 'Carla', 'Sofía',
+        'Valentina', 'Lucía', 'Marta', 'Gabriela', 'Andrea',
+        'Claudia', 'Verónica', 'Silvia', 'Agustina', 'Florencia',
+        'Eugenia', 'Camila', 'Victoria', 'Romina', 'Daniela'
+    ];
+    
+    // Apellidos
+    const surnames = [
+        'González', 'Rodríguez', 'Gómez', 'Fernández', 'López',
+        'Díaz', 'Martínez', 'Pérez', 'García', 'Sánchez',
+        'Romero', 'Sosa', 'Torres', 'Álvarez', 'Ruiz',
+        'Ramírez', 'Flores', 'Benítez', 'Acosta', 'Medina',
+        'Herrera', 'Suárez', 'Aguirre', 'Giménez', 'Molina',
+        'Silva', 'Rojas', 'Ortiz', 'Núñez', 'Luna'
+    ];
+    
     return `${names[Math.floor(Math.random() * names.length)]} ${surnames[Math.floor(Math.random() * surnames.length)]}`;
 }
 
