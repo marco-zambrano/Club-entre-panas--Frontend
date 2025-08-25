@@ -126,10 +126,16 @@ export function initilizeBotToggle() {
         }
 
         //DEFINE NEW HANDLER FUNC WHEN TOGGLE CHANGES
+        //DEFINE NEW HANDLER FUNC WHEN TOGGLE CHANGES
         const toggleHandler = (e) => {
             const isChecked = e.target.checked;
-            scrollToBottom();
             handleInputVisibility(isChecked, currentItem.id);
+            // Se añade un pequeño retraso para dar tiempo al navegador a renderizar los cambios
+            // (como mostrar/ocultar el input) antes de hacer scroll.
+            // Esto es especialmente útil en móviles.
+            setTimeout(() => {
+                scrollToBottom();
+            }, 10); // 100ms de retraso
         };
 
         //SAVE THOSE REFERENCES FOR FUTURE CLEANING
