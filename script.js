@@ -24,7 +24,11 @@ export function filterItems() {
     const computedStyle = window.getComputedStyle(botToggle);
     if (computedStyle.display === 'none') botToggle.style.display = 'flex';
 
-    const searchTerm = document.getElementById('search-input').value.toLowerCase().trim();
+    const removeAccents = (str) => {
+        return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    }
+
+    const searchTerm = removeAccents(document.getElementById('search-input').value.toLowerCase().trim());
 
     //FILTER THEM BY THE ACTIVATED PLATFORM TOGGLE
     const filteredItems = items[currentFilter].list.filter(item => {
@@ -34,7 +38,7 @@ export function filterItems() {
         // Si no coincide con la plataforma, se oculta.
         if (!matchesPlatform) return false;
 
-        const matchesSearch = item.name.toLowerCase().includes(searchTerm);
+        const matchesSearch = removeAccents(item.name.toLowerCase()).includes(searchTerm);
         if (!matchesSearch) return false;
 
         // Manejar las etiquetas de los contactos
