@@ -267,7 +267,7 @@ io.on('connection', (socket) => {
     });
 
     //READ CHAT
-    socket.on('updateRead', (data) => {
+    socket.on('readChat', (data) => {
         const { itemId, filter } = data;
         console.log(`Read chat true for itemId: ${itemId}, itemType: ${filter}`);
     });
