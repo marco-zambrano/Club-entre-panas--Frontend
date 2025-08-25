@@ -661,7 +661,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // When loading mobile screens, show contacts list by default
     const isMobileScreen = window.matchMedia('(max-width: 768px)').matches;
     if (isMobileScreen) {
-        document.querySelector('.contacts-list').classList.add('show');
+        document.querySelector('#contacts-container').classList.add('show');
     }
 
     // event listener for the contact or comment list
@@ -706,7 +706,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // ocultamos la item list, al darle click al item, en caso que estemos en vista de telefono
         const mediaQuery = window.matchMedia('(max-width: 768px)');
         if (mediaQuery.matches) {
-            document.querySelector('.contacts-list').classList.toggle('show');
+            document.querySelector('#contacts-container').classList.toggle('show');
         }
 
         //actualizar el bot toggle
@@ -743,7 +743,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // functionality show / hide contacts in mobile
     document.querySelector('.toggle-contacts').addEventListener('click', function() {
-        document.querySelector('.contacts-list').classList.toggle('show');
+        document.querySelector('#contacts-container').classList.toggle('show');
     });
 
 
