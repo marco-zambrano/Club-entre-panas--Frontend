@@ -128,9 +128,7 @@ export function initilizeBotToggle() {
         //DEFINE NEW HANDLER FUNC WHEN TOGGLE CHANGES
         const toggleHandler = (e) => {
             const isChecked = e.target.checked;
-            if(!isChecked){
-                scrollToBottom();
-            }
+            scrollToBottom();
             handleInputVisibility(isChecked, currentItem.id);
         };
 

@@ -899,21 +899,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Se asocia la nueva función de envío a la tecla Enter.
     messageInput.addEventListener('input', autoResizeTextarea);
 
-    // --- Updated Image Attachment and Interaction Logic ---
-    const attachmentMenu = document.querySelector('.attachment-menu');
-    const uploadImageBtn = document.getElementById('upload-image-btn');
-
+    // --- Image Attachment and Interaction Logic ---
     attachButton.addEventListener('click', (e) => {
-        e.preventDefault();
-        attachmentMenu.style.display = attachmentMenu.style.display === 'flex' ? 'none' : 'flex';
-    });
-
-    // Listener para el botón de subir imagen.
-    uploadImageBtn.addEventListener('click', (e) => {
         e.preventDefault();
         imageFileInput.removeAttribute('capture'); // Se asegura de que abra el explorador de archivos.
         imageFileInput.click();
-        attachmentMenu.style.display = 'none';
     });
 
     // Listener principal para cuando se seleccionan archivos.
