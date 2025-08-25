@@ -25,6 +25,10 @@ export const tagColors = {
     'Recibido': '#ee5252'
 }
 
+export function scrollToBottom() {
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+}
+
 /**
  * Encuentra URLs en una cadena de texto y las convierte en elementos <a> clickeables.
  * El texto que no es URL se inserta como nodos de texto seguros.
@@ -87,7 +91,7 @@ export function createMessage(content, time, sender, type) {
         imageElement.alt = 'Imagen enviada';
         imageElement.className = 'message-image';
         imageElement.onload = () => {
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            scrollToBottom();
         };
         imageElement.addEventListener('click', () => {
             openLightbox(content);
@@ -128,7 +132,10 @@ export function createMessage(content, time, sender, type) {
     // Agregar al main container
     messagesContainer.appendChild(messageElement);
 
-    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    // Hacer scroll al final SOLO SI el usuario ya estaba cerca del final
+    if (messagesContainer.scrollTop + messagesContainer.clientHeight >= messagesContainer.scrollHeight - 100) {
+        scrollToBottom();
+    }
 }
 
 
@@ -841,7 +848,7 @@ document.addEventListener('DOMContentLoaded', () => {
             currentItem[entryKey].push(entry);
         }
 
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        scrollToBottom();
         filterItems();
     }
 

@@ -1,6 +1,6 @@
 import { items } from './socket.js'; // variables
 import { updateBotStatus, getItemHistory, getItems, setViewedImgFalse, setTagBtnStatus, reportErrorToBackend, readChat } from './socket.js'; // functions
-import { updateItemsList, createMessage, tagColors } from './ui.js';
+import { updateItemsList, createMessage, tagColors, scrollToBottom } from './ui.js';
 
 export let currentItemId = null; // Id of the item actived
 export let currentFilter = null; // define (Chat or Comment)
@@ -128,6 +128,9 @@ export function initilizeBotToggle() {
         //DEFINE NEW HANDLER FUNC WHEN TOGGLE CHANGES
         const toggleHandler = (e) => {
             const isChecked = e.target.checked;
+            if(!isChecked){
+                scrollToBottom();
+            }
             handleInputVisibility(isChecked, currentItem.id);
         };
 
