@@ -24,6 +24,8 @@ export function filterItems() {
     const computedStyle = window.getComputedStyle(botToggle);
     if (computedStyle.display === 'none') botToggle.style.display = 'flex';
 
+    const searchTerm = document.getElementById('search-input').value.toLowerCase().trim();
+
     //FILTER THEM BY THE ACTIVATED PLATFORM TOGGLE
     const filteredItems = items[currentFilter].list.filter(item => {
         const platformToggle = document.querySelector(`.platform-toggle[data-platform="${item.platform}"]`);
@@ -31,6 +33,9 @@ export function filterItems() {
 
         // Si no coincide con la plataforma, se oculta.
         if (!matchesPlatform) return false;
+
+        const matchesSearch = item.name.toLowerCase().includes(searchTerm);
+        if (!matchesSearch) return false;
 
         // Manejar las etiquetas de los contactos
         if (currentFilter === 'contacts') {
@@ -316,6 +321,9 @@ export function setIsLoading(status){
 
 document.addEventListener('DOMContentLoaded', () => {
     setCurrentFilter('contacts'); //ARBITRARY
+
+    const searchInput = document.getElementById('search-input');
+    searchInput.addEventListener('input', filterItems);
 
     const contactsList = document.querySelector('.contacts-list');
 
