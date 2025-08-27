@@ -272,7 +272,24 @@
         <div class="create-quick-reply-modal" id="createQuickReplyModal">
             <div class="create-quick-reply-content">
                 <h3>Nueva respuesta rápida</h3>
-                <textarea class="quick-reply-textarea" placeholder="Escribe tu respuesta rápida aquí..."></textarea>
+                
+                <!-- Contenedor para previsualización de imágenes -->
+                <div id="qr-staged-images-grid" class="staged-images-grid"></div>
+
+                <!-- Wrapper para el input y el botón de adjuntar -->
+                <div class="qr-input-wrapper">
+                    <textarea class="quick-reply-textarea" placeholder="Escribe tu respuesta rápida aquí..."></textarea>
+                    
+                    <!-- Input de archivo oculto para las imágenes de QR -->
+                    <input type="file" id="qr-image-file-input" accept="image/*" multiple style="display: none;">
+
+                    <div class="attachment-container">
+                        <button class="qr-attach-button">
+                            <i class="fas fa-paperclip"></i>
+                        </button>
+                    </div>
+                </div>
+
                 <div class="create-quick-reply-actions">
                     <button class="cancel-create-quick-reply" id="cancelCreateQuickReply">Cancelar</button>
                     <button class="save-create-quick-reply">Crear</button>

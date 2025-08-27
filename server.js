@@ -95,7 +95,7 @@ function generateRandomComment() {
 // GENERATE A NEW CONTACT
 function generateNewContact() {
     const newContact = {
-        id: 'a9f3c2d1e0b3',
+        id: Math.random().toString(36).substring(2, 15),
         name: generateRandomName(),
         platform: 'facebook',
         botEnabled: true,
@@ -137,7 +137,12 @@ function generateNewComment() {
 
 
 
-
+//QUICK REPLIES
+let replies = [
+    { text: 'El producto en promoción es:\nTal tal', images: [] },
+    { text: 'Hola, muy buenas tardes.\nSea bienvenido a Club Entre Panas.\nEstamos acá para servirle.', images: [] },
+    { text: 'Hola, ¿qué tal?\nActualmente no nos encontramos atendiendo en nuestro local.', images: [] }
+];
 
 
 io.on('connection', (socket) => {
@@ -193,18 +198,38 @@ io.on('connection', (socket) => {
     })
 
 
-    //QUICK REPLIES
-    let replies = [
-        'El producto en promoción es:\nTal tal',
-        'Hola, muy buenas tardes.\nSea bienvenido a Club Entre Panas.\nEstamos acá para servirle.',
-        'Hola, ¿qué tal?\nActualmente no nos encontramos atendiendo en nuestro local.'
-    ];
-
+    // QUICK REPLIES
     socket.on('getQuickReps', () => {
         socket.emit('quickReps', replies); 
     });
+
     socket.on('updateQuickReps', (newQrs) => {
-        replies = newQrs;
+        // Process newQrs to handle IDs and image uploads
+        const processedQrs = newQrs.map(reply => {
+            // Assign a unique ID if it's a new reply (doesn't have a permanent ID or has a temp one)
+            const hasPermanentId = reply.id && !String(reply.id).startsWith('temp-');
+            const newId = hasPermanentId ? reply.id : `qr-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
+
+            let processedImages = reply.images || [];
+            if (reply.images && Array.isArray(reply.images)) {
+                processedImages = reply.images.map((image, index) => {
+                    // If the image is a Base64 string, simulate an upload and return a mock URL
+                    if (image.startsWith('data:image')) {
+                        //Simulating upload...
+                        console.log('Simulating Base64 image upload...');
+                        return `https://mock.cloudflare.com/img-${Date.now()}-${index}.jpg`;
+                    }
+                    // If it's already a URL, keep it as is
+                    return image;
+                });
+            }
+            
+            return { ...reply, id: newId, text: reply.text || '', images: processedImages };
+        });
+
+        replies = processedQrs;
+        console.log('Updated Quick Replies:', replies);
+        io.emit('quickReps', replies);
     });
 
 

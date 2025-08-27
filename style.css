@@ -1090,34 +1090,43 @@ input:checked + .slider:before {
 }
 .quick-reply-item {
     display: flex;
+    flex-direction: row;
     justify-content: space-between;
-    align-items: center;
-
+    align-items: flex-start;
     background: #232323;
     color: #fff;
     max-width: 372px;
     border-radius: 8px;
     font-size: 1em;
     border: 1px solid transparent;
-    
     transition: background 0.2s;
-}
-.quick-reply-text {
     padding: 12px 16px;
     cursor: pointer;
-    word-wrap: break-word;
-    width: 90%;
-    white-space: pre-wrap;
 }
-.quick-reply-text:hover {
-    background: #2a2a2a;
-    color: #fff;
+
+.quick-reply-item:hover {
+    background-color: #2a2a2a;
+}
+
+.quick-reply-main-content {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex-grow: 1;
+    /* Ensure it can shrink if needed */
+    min-width: 0;
+}
+
+.quick-reply-text {
+    padding: 0;
+    flex-grow: 1;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
 }
 /* trash icon */
 .fa-trash {
     color: rgb(255, 41, 41);
     cursor: pointer;
-    margin-right: 16px;
     margin-left: 5px;
     transition: all ease .3s;
 }
@@ -1162,7 +1171,7 @@ input:checked + .slider:before {
     border-radius: 10px;
     padding: 28px 24px 20px 24px;
     width: 95%;
-    max-width: 350px;
+    max-width: 600px; /* Increased */
     display: flex;
     flex-direction: column;
     gap: 18px;
@@ -1171,7 +1180,7 @@ input:checked + .slider:before {
 }
 .quick-reply-textarea {
     width: 100%;
-    min-height: 80px;
+    min-height: 250px; /* Increased */
     background: #181818;
     border: 1px solid #444;
     border-radius: 6px;
@@ -1179,6 +1188,8 @@ input:checked + .slider:before {
     padding: 10px;
     font-size: 1em;
     resize: none;
+    padding-right: 45px; /* Espacio para el botón de adjuntar */
+    flex-grow: 1;
 }
 .create-quick-reply-actions {
     display: flex;
@@ -1408,6 +1419,10 @@ input:checked + .slider:before {
         font-size: .75rem;
     }
 
+    .create-quick-reply-content {
+        max-width: 360px;
+    }
+
     /* delete modal */
     .delete-confirmation-modal.show {
         padding: 0px 20px;
@@ -1588,7 +1603,7 @@ input:checked + .slider:before {
 .lightbox-overlay {
   display: none; /* Oculto por defecto */
   position: fixed;
-  z-index: 1000;
+  z-index: 5000;
   left: 0;
   top: 0;
   width: 100%;
@@ -1712,4 +1727,62 @@ input:checked + .slider:before {
 
 .image-preview-remove-btn:hover {
     background-color: rgba(255, 0, 0, 0.8);
+}
+
+.qr-input-wrapper {
+    position: relative;
+    display: flex;
+    width: 100%;
+}
+
+.qr-attach-button {
+    position: absolute;
+    right: 5px;
+    bottom: 5px;
+    background: transparent;
+    border: none;
+    color: #aaa;
+    padding: 8px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    transition: color .2s ease;
+}
+
+.qr-attach-button:hover {
+    color: #fff;
+}
+
+/* Asegurarse que el grid de QR se muestre cuando tenga contenido */
+#qr-staged-images-grid {
+    padding-bottom: 10px; /* Espacio entre las miniaturas y el input */
+}
+
+.quick-reply-item-images {
+    display: flex;
+    gap: 5px;
+    padding: 0;
+}
+
+.quick-reply-item-thumbnail {
+    width: 40px;
+    height: 40px;
+    border-radius: 6px;
+    object-fit: cover;
+    cursor: pointer;
+}
+
+.quick-replies-list::-webkit-scrollbar,
+.quick-reply-textarea::-webkit-scrollbar {
+    width: 6px;
+}
+
+.quick-replies-list::-webkit-scrollbar-thumb,
+.quick-reply-textarea::-webkit-scrollbar-thumb {
+    background-color: #2a2a2a;
+    border-radius: 3px;
+}
+
+.quick-replies-list::-webkit-scrollbar-thumb:hover,
+.quick-reply-textarea::-webkit-scrollbar-thumb:hover {
+    background-color: #2f2f2f;
 }

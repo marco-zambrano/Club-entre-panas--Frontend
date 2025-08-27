@@ -16,6 +16,12 @@ let stagedImageFiles = [];
 // Límite de imágenes que se pueden añadir y enviar a la vez.
 const MAX_IMAGES = 3;
 
+// --- Elements for Quick Reply Image Staging ---
+const qrImageFileInput = document.getElementById('qr-image-file-input');
+const qrAttachButton = document.querySelector('.qr-attach-button');
+const qrStagedImagesGrid = document.getElementById('qr-staged-images-grid');
+let stagedQuickReplyImages = []; // Holds blobs for the new QR being created
+
 export const tagColors = {
     'Contraentrega': '#26d367',
     'RP': '#efb32f',
@@ -1054,70 +1060,206 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
 
+
     // ----- QR FUNCTIONS -----
-    function createQuickReply(text) {
-        // Creamos el nuevo reply
+
+    // --- Functions to handle QR image staging ---
+
+    function renderQuickReplyImagePreviews() {
+        qrStagedImagesGrid.innerHTML = ''; // Clear old previews
+        if (stagedQuickReplyImages.length > 0) {
+            qrStagedImagesGrid.style.display = 'flex';
+        } else {
+            qrStagedImagesGrid.style.display = 'none';
+        }
+
+        stagedQuickReplyImages.forEach(fileData => {
+            const previewElement = document.createElement('div');
+            previewElement.className = 'image-preview-thumbnail';
+            previewElement.dataset.id = fileData.id;
+
+            const img = document.createElement('img');
+            img.src = URL.createObjectURL(fileData.blob);
+            img.onload = () => URL.revokeObjectURL(img.src);
+
+            const removeBtn = document.createElement('button');
+            removeBtn.className = 'image-preview-remove-btn';
+            removeBtn.innerHTML = '<i class="fas fa-times"></i>';
+            
+            previewElement.appendChild(img);
+            previewElement.appendChild(removeBtn);
+            qrStagedImagesGrid.appendChild(previewElement);
+        });
+    }
+
+    function handleAndStageQRFiles(files) {
+        const filesToProcess = Array.from(files);
+        if (stagedQuickReplyImages.length + filesToProcess.length > MAX_IMAGES) {
+            alert(`No se pueden subir más de ${MAX_IMAGES} imágenes a la vez.`);
+            return;
+        }
+
+        const processingPromises = filesToProcess.map(file => {
+            return resizeAndCompressImage(file).then(blob => ({
+                id: `staged-qr-${Date.now()}-${Math.random()}`,
+                blob: blob
+            })).catch(error => {
+                console.error('Error procesando un archivo para QR, se omitirá:', file.name, error);
+                return null;
+            });
+        });
+
+        Promise.all(processingPromises).then(processedFiles => {
+            const successfulFiles = processedFiles.filter(f => f !== null);
+            stagedQuickReplyImages.push(...successfulFiles);
+            renderQuickReplyImagePreviews();
+        });
+    }
+
+    // --- QR creation and usage logic ---
+
+    function createQuickReply(reply) { // reply is now an object { id, text, images }
         const newReply = document.createElement('div');
         newReply.classList.add('quick-reply-item');
+        newReply.dataset.id = reply.id; // Store the unique ID
 
-        const replyText = document.createElement('p');
-        replyText.classList.add('quick-reply-text')
-        replyText.textContent = text;
+        // --- Main Content Wrapper (Left Column) ---
+        const mainContentWrapper = document.createElement('div');
+        mainContentWrapper.className = 'quick-reply-main-content';
 
+        // Only create and append the text element if text exists
+        if (reply.text) {
+            const replyText = document.createElement('p');
+            replyText.classList.add('quick-reply-text');
+            replyText.textContent = reply.text;
+            mainContentWrapper.appendChild(replyText);
+        }
+
+        // --- Images Container (inside Left Column) ---
+        if (reply.images && reply.images.length > 0) {
+            const imagesContainer = document.createElement('div');
+            imagesContainer.className = 'quick-reply-item-images';
+            reply.images.forEach(imgUrl => {
+                const imgThumb = document.createElement('img');
+                imgThumb.className = 'quick-reply-item-thumbnail';
+                imgThumb.src = imgUrl;
+                imgThumb.addEventListener('click', (e) => {
+                    e.stopPropagation(); // Prevent the main item click
+                    openLightbox(imgUrl);
+                });
+                imagesContainer.appendChild(imgThumb);
+            });
+            mainContentWrapper.appendChild(imagesContainer);
+        }
+
+        // --- Trash Icon (Right Column) ---
         const trashIcon = document.createElement('i');
-        trashIcon.classList.add('fas');
-        trashIcon.classList.add('fa-trash');
-
-        //click event for the task
-        replyText.addEventListener('click', (e) => {
-            sendTextMessage(e.currentTarget.textContent);
-            quickRepliesModal.classList.remove('show');
-        })
-
-        // click event for that trash can
-        trashIcon.addEventListener('click', () => {
-            // remove from de DOM
-            newReply.remove();            
-            // Delete it locally
-            const index = quickReps.findIndex(item => item === text);
+        trashIcon.classList.add('fas', 'fa-trash');
+        trashIcon.addEventListener('click', (e) => {
+            e.stopPropagation(); // Prevent the item click event from firing
+            newReply.remove();
+            const index = quickReps.findIndex(item => item.id === reply.id);
             if (index !== -1) quickReps.splice(index, 1);
-            // Update QRs as deletion
             updateQuickReps(quickReps);
-        })
+        });
 
-        // Agregamos paragraph en el contenedor
-        newReply.appendChild(replyText);
-        // Agregamos trash-can en el contenedor
+        // Append left column and right column to the main item
+        newReply.appendChild(mainContentWrapper);
         newReply.appendChild(trashIcon);
 
-        // Agregamos al contenedor de replies
+        // Add click listener to the whole item
+        newReply.addEventListener('click', (e) => {
+            if (e.target.classList.contains('fa-trash')) return;
+
+            const clickedId = e.currentTarget.dataset.id;
+            const replyToSend = quickReps.find(r => r.id == clickedId);
+
+            if (!replyToSend) return;
+
+            // Send text if it exists
+            if (replyToSend.text) {
+                sendTextMessage(replyToSend.text);
+            }
+
+            // Sequentially send each image
+            if (replyToSend.images && replyToSend.images.length > 0) {
+                const recipientPlatform = items[currentFilter].list.find(item => item.id === currentItemId)?.platform;
+                if (!recipientPlatform) {
+                    console.error("No se pudo determinar la plataforma del destinatario.");
+                    return;
+                }
+                replyToSend.images.forEach(imageUrl => {
+                    const messageTime = Date.now();
+                    // 1. Send to backend
+                    sendManMessage(currentItemId, "image", imageUrl, currentFilter, recipientPlatform);
+                    
+                    // 2. Display locally
+                    createMessage(imageUrl, messageTime, 'bot', 'image');
+
+                    // 3. Save to local state for consistency
+                    const entry = { content: imageUrl, time: messageTime, type: "image", self: true };
+                    const currentItem = items[currentFilter].list.find(item => item.id === currentItemId);
+                    if (currentItem) {
+                        const entryKey = (currentFilter === "contacts") ? "messages" : "comments";
+                        currentItem[entryKey].push(entry);
+                    }
+                });
+            }
+            
+            quickRepliesModal.classList.remove('show');
+        });
+
         quickRepliesContainer.appendChild(newReply);
     }
 
     // Create new qr item
     function createReplyModal() {
-        // Abrir modal de crear nueva respuesta rápida
         openCreateQuickReply.addEventListener('click', () => {
+            // Reset form when opening
+            newQrTextArea.value = '';
+            stagedQuickReplyImages = [];
+            renderQuickReplyImagePreviews();
             createQuickReplyModal.classList.add('show');
         });
-        // Cerrar modal de crear nueva respuesta rápida
+
         cancelCreateQuickReply.addEventListener('click', () => {
             createQuickReplyModal.classList.remove('show');
         });
-        // btn crear qr
-        createReplyBtn.addEventListener('click', () => {
-            // Mostramos modal de crear nuevo mensaje
-            createQuickReplyModal.classList.remove('show');
 
-            const textContent = newQrTextArea.value;
+        createReplyBtn.addEventListener('click', async () => {
+            const textContent = newQrTextArea.value.trim();
+            if (!textContent && stagedQuickReplyImages.length === 0) {
+                alert("La respuesta rápida no puede estar vacía.");
+                return;
+            }
 
-            // creamos el mensaje en el DOM
-            createQuickReply(textContent);
-            // Pusheamos a la variable local
-            quickReps.push(textContent);
-            //Enviamos esa nueva qr a el backend
+            // Convert staged blobs to Base64
+            const base64Promises = stagedQuickReplyImages.map(fileData => {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => resolve(reader.result);
+                    reader.onerror = reject;
+                    reader.readAsDataURL(fileData.blob);
+                });
+            });
+
+            const base64Images = await Promise.all(base64Promises);
+
+            const newReplyObject = {
+                id: `temp-${Date.now()}`, // Assign a temporary ID
+                text: textContent,
+                images: base64Images
+            };
+
+            quickReps.push(newReplyObject);
             updateQuickReps(quickReps);
-        })
+
+            // Visually update the list in the main modal
+            createQuickReply(newReplyObject);
+            
+            createQuickReplyModal.classList.remove('show');
+        });
+
         createQuickReplyModal.addEventListener('click', (e) => {
             if (e.target === createQuickReplyModal) {
                 createQuickReplyModal.classList.remove('show');
@@ -1128,20 +1270,43 @@ document.addEventListener('DOMContentLoaded', () => {
                 createQuickReplyModal.classList.remove('show');
             }
         });
+
+        // --- Event listeners for QR image attachment ---
+        qrAttachButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            qrImageFileInput.click();
+        });
+
+        qrImageFileInput.addEventListener('change', (event) => {
+            handleAndStageQRFiles(event.target.files);
+            event.target.value = ''; // Allow selecting the same file again
+        });
+
+        qrStagedImagesGrid.addEventListener('click', (event) => {
+            const removeBtn = event.target.closest('.image-preview-remove-btn');
+            if (removeBtn) {
+                const parentPreview = removeBtn.parentElement;
+                const fileIdToRemove = parentPreview.dataset.id;
+                stagedQuickReplyImages = stagedQuickReplyImages.filter(file => file.id !== fileIdToRemove);
+                renderQuickReplyImagePreviews();
+            }
+        });
     }
 
     function repliesModalConfiguration() {
-        // Abrir modal de respuestas rápidas desde el boton de abajo
         openQuickRepliesConfig.addEventListener('click', () => {
             quickRepliesModal.classList.add('show');
-            quickRepliesContainer.innerHTML = ''    // Limpiamos
+            quickRepliesContainer.innerHTML = '';
 
-            // iteramos las respuestas rapidas disponibles y las mostramos
-            quickReps.forEach(res => {
-                createQuickReply(res); // Volvemos a generar
-            })
+            quickReps.forEach(reply => {
+                // Ensure reply is an object, for backward compatibility
+                const replyObject = typeof reply === 'string' 
+                    ? { id: `temp-compat-${Math.random()}`, text: reply, images: [] } 
+                    : reply;
+                createQuickReply(replyObject);
+            });
         });
-        // Cerrar modal de respuestas rápidas
+
         closeQuickReplies.addEventListener('click', () => {
             quickRepliesModal.classList.remove('show');
         });
