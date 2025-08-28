@@ -2,10 +2,9 @@ import { currentFilter, currentItemId } from "./script.js"; // VariablesMore act
 import { filterItems, isLoading, setIsLoading } from "./script.js"; // Functions
 import { createMessage } from './ui.js'; // Function create message
 
-// export const socket = io("https://panasresponde.work", {
-//     path: "/ruta/secreta/secretisima/socket.io"
-// });
-const socket = io()
+const socket = io(window.APP_CONFIG.socketConfig.url, {
+    ...window.APP_CONFIG.socketConfig.options,
+});
 
 // const ITEMS_PER_PAGE = 20;
 
@@ -135,12 +134,14 @@ export function setViewedImgFalse(itemId, platform) {
     socket.emit('setViewedImgFalse', { itemId, platform });
 }
 
+//Set tags for contact
 export function setTagBtnStatus(itemId, data) {
     socket.emit('setTagBtnStatus', itemId, data);
 }
 
+// Mark chat as read
 export function readChat(itemId, filter) {
-    socket.emit('updateRead', { itemId, filter });
+    socket.emit('readChat', { itemId, filter });
 }
 
 // Send the deleted item to the backend
@@ -238,14 +239,14 @@ socket.on('newMessage', (data) => {
         itemId = `${data.userId}-${data.postId}`; //comment id
         //ITEM COMMENT
         newItem = {
-            id: itemId,
+            id: itemId, // new property
             userId: data.userId,
             postId: data.postId,
             name: data.name,
             platform: data.platform,
             botEnabled: data.botEnabled,
             permalink: data.permalink,
-            read: data.read, // New comments reads are false by default
+            read: data.read,
             [listKey]: [] // Dynamically set the property (messages or comments)
         };
 
@@ -258,7 +259,7 @@ socket.on('newMessage', (data) => {
             platform: data.platform,
             botEnabled: data.botEnabled,
             imgViewed: data.imgViewed,
-            read: data.read, // New chats reads are false by default
+            read: data.read,
             tag: [],
             [listKey]: [] // Dynamically set the property
         };
