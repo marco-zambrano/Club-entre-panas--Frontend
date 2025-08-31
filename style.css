@@ -1124,11 +1124,30 @@ input:checked + .slider:before {
     white-space: pre-wrap;
     overflow-wrap: break-word;
 }
+
+.quick-reply-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-left: 10px;
+}
+
+.quick-reply-actions .fas {
+    transition: color 0.2s ease-in-out;
+}
+
+/* edit icon */
+.fa-edit {
+    color: #57c9ff;
+}
+.fa-edit:hover {
+    color: #47a9de;
+}
+
 /* trash icon */
 .fa-trash {
     color: rgb(255, 41, 41);
     cursor: pointer;
-    margin-left: 5px;
     transition: all ease .3s;
 }
 .fa-trash:hover {

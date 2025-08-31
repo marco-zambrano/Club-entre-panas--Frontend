@@ -1065,6 +1065,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Functions to handle QR image staging ---
 
+    /**
+     * Renderiza las miniaturas de las imágenes preparadas para respuestas rápidas.
+     */
     function renderQuickReplyImagePreviews() {
         qrStagedImagesGrid.innerHTML = ''; // Clear old previews
         if (stagedQuickReplyImages.length > 0) {
@@ -1092,6 +1095,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    /**
+     * Maneja y procesa los archivos seleccionados para respuestas rápidas.
+     * @param {FileList} files Los archivos seleccionados.
+     */
     function handleAndStageQRFiles(files) {
         const filesToProcess = Array.from(files);
         if (stagedQuickReplyImages.length + filesToProcess.length > MAX_IMAGES) {
@@ -1117,7 +1124,24 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- QR creation and usage logic ---
+    /**
+     * Refresca la lista de respuestas rápidas en la UI abriéndolas de nuevo una por una.
+     */
+    function refreshQuickRepliesList() {
+        const quickRepliesContainer = document.querySelector('.quick-replies-list');
+        quickRepliesContainer.innerHTML = '';
+        quickReps.forEach(reply => {
+            const replyObject = typeof reply === 'string' 
+                ? { id: `temp-compat-${Math.random()}`, text: reply, images: [] } 
+                : reply;
+            createQuickReply(replyObject);
+        });
+    }
 
+    /** Añade las respuestas rápidas individualmente a la UI.
+     * Además, añade los event listeners apropiados para manejar la edición, eliminación y el envío de la respuesta rápida cuando se hace clic en ella.
+     * @param {Object} reply Un objeto que representa la respuesta rápida, con propiedades id, text e images.
+     */
     function createQuickReply(reply) { // reply is now an object { id, text, images }
         const newReply = document.createElement('div');
         newReply.classList.add('quick-reply-item');
@@ -1152,7 +1176,17 @@ document.addEventListener('DOMContentLoaded', () => {
             mainContentWrapper.appendChild(imagesContainer);
         }
 
-        // --- Trash Icon (Right Column) ---
+        // --- Action Icons (Right Column) ---
+        const actionsContainer = document.createElement('div');
+        actionsContainer.className = 'quick-reply-actions';
+
+        const editIcon = document.createElement('i');
+        editIcon.classList.add('fas', 'fa-edit');
+        editIcon.addEventListener('click', (e) => {
+            e.stopPropagation();
+            setupEditModal(reply);
+        });
+
         const trashIcon = document.createElement('i');
         trashIcon.classList.add('fas', 'fa-trash');
         trashIcon.addEventListener('click', (e) => {
@@ -1163,13 +1197,17 @@ document.addEventListener('DOMContentLoaded', () => {
             updateQuickReps(quickReps);
         });
 
+        actionsContainer.appendChild(editIcon);
+        actionsContainer.appendChild(trashIcon);
+
         // Append left column and right column to the main item
         newReply.appendChild(mainContentWrapper);
-        newReply.appendChild(trashIcon);
+        newReply.appendChild(actionsContainer);
 
         // Add click listener to the whole item
         newReply.addEventListener('click', (e) => {
-            if (e.target.classList.contains('fa-trash')) return;
+            // Prevent sending if the click was on an icon
+            if (e.target.classList.contains('fas')) return;
 
             const clickedId = e.currentTarget.dataset.id;
             const replyToSend = quickReps.find(r => r.id == clickedId);
@@ -1212,15 +1250,73 @@ document.addEventListener('DOMContentLoaded', () => {
         quickRepliesContainer.appendChild(newReply);
     }
 
-    // Create new qr item
+    /** 
+     * Configura el modal para crear una nueva respuesta rápida.
+     * Limpia los campos y prepara el modal para la creación.
+     * Es preparatorio para la función createReplyModal.
+     */
+    function setupCreateModal() {
+        const createQuickReplyModal = document.getElementById('createQuickReplyModal');
+        const createReplyBtn = document.querySelector('.save-create-quick-reply');
+        const newQrTextArea = document.querySelector('.quick-reply-textarea');
+
+        delete createQuickReplyModal.dataset.editingId;
+        createQuickReplyModal.querySelector('h3').textContent = 'Nueva respuesta rápida';
+        createReplyBtn.textContent = 'Crear';
+        
+        newQrTextArea.value = '';
+        stagedQuickReplyImages = [];
+        renderQuickReplyImagePreviews();
+        createQuickReplyModal.classList.add('show');
+    }
+
+    /**
+     * Configura el modal para editar una respuesta rápida existente.
+     * Rellena los campos con los datos actuales de la respuesta rápida.
+     * @param {Object} reply El objeto de respuesta rápida a editar.
+     * Es preparatorio para la función createReplyModal.
+     */
+    async function setupEditModal(reply) {
+        const createQuickReplyModal = document.getElementById('createQuickReplyModal');
+        const createReplyBtn = document.querySelector('.save-create-quick-reply');
+        const newQrTextArea = document.querySelector('.quick-reply-textarea');
+
+        createQuickReplyModal.dataset.editingId = reply.id;
+        createQuickReplyModal.querySelector('h3').textContent = 'Modificar respuesta rápida';
+        createReplyBtn.textContent = 'Guardar';
+
+        newQrTextArea.value = reply.text || '';
+        
+        stagedQuickReplyImages = [];
+        if (reply.images && reply.images.length > 0) {
+            const imagePromises = reply.images.map(url => 
+                fetch(url)
+                    .then(res => res.blob())
+                    .then(blob => ({
+                        id: `staged-qr-${Date.now()}-${Math.random()}`,
+                        blob: blob
+                    }))
+            );
+            stagedQuickReplyImages = await Promise.all(imagePromises);
+        }
+        
+        renderQuickReplyImagePreviews();
+        createQuickReplyModal.classList.add('show');
+    }
+
+    /**
+     * Configura el menú para poder crear o editar respuestas rápidas.
+     * Incluye validaciones, conversión de imágenes a base64 y actualización del estado local.
+     * También gestiona la apertura y cierre del modal, así como la interacción con los elementos de la interfaz.
+     */
     function createReplyModal() {
-        openCreateQuickReply.addEventListener('click', () => {
-            // Reset form when opening
-            newQrTextArea.value = '';
-            stagedQuickReplyImages = [];
-            renderQuickReplyImagePreviews();
-            createQuickReplyModal.classList.add('show');
-        });
+        const createQuickReplyModal = document.getElementById('createQuickReplyModal');
+        const openCreateQuickReply = document.getElementById('openCreateQuickReply');
+        const cancelCreateQuickReply = document.getElementById('cancelCreateQuickReply');
+        const createReplyBtn = document.querySelector('.save-create-quick-reply');
+        const newQrTextArea = document.querySelector('.quick-reply-textarea');
+
+        openCreateQuickReply.addEventListener('click', setupCreateModal);
 
         cancelCreateQuickReply.addEventListener('click', () => {
             createQuickReplyModal.classList.remove('show');
@@ -1233,7 +1329,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // Convert staged blobs to Base64
             const base64Promises = stagedQuickReplyImages.map(fileData => {
                 return new Promise((resolve, reject) => {
                     const reader = new FileReader();
@@ -1242,21 +1337,27 @@ document.addEventListener('DOMContentLoaded', () => {
                     reader.readAsDataURL(fileData.blob);
                 });
             });
-
             const base64Images = await Promise.all(base64Promises);
 
-            const newReplyObject = {
-                id: `temp-${Date.now()}`, // Assign a temporary ID
-                text: textContent,
-                images: base64Images
-            };
+            const editingId = createQuickReplyModal.dataset.editingId;
 
-            quickReps.push(newReplyObject);
+            if (editingId) { // --- EDIT MODE ---
+                const replyToUpdate = quickReps.find(r => r.id == editingId);
+                if (replyToUpdate) {
+                    replyToUpdate.text = textContent;
+                    replyToUpdate.images = base64Images;
+                }
+            } else { // --- CREATE MODE ---
+                const newReplyObject = {
+                    id: `temp-${Date.now()}`,
+                    text: textContent,
+                    images: base64Images
+                };
+                quickReps.push(newReplyObject);
+            }
+
             updateQuickReps(quickReps);
-
-            // Visually update the list in the main modal
-            createQuickReply(newReplyObject);
-            
+            refreshQuickRepliesList();
             createQuickReplyModal.classList.remove('show');
         });
 
@@ -1293,18 +1394,17 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    /**
+     * Configura el modal entero de respuestas rápidas para poder abrir y cerrar, junto con todo lo demás necesario.
+     */
     function repliesModalConfiguration() {
+        const quickRepliesModal = document.getElementById('quickRepliesModal');
+        const openQuickRepliesConfig = document.getElementById('openQuickRepliesConfig');
+        const closeQuickReplies = document.getElementById('closeQuickReplies');
+
         openQuickRepliesConfig.addEventListener('click', () => {
             quickRepliesModal.classList.add('show');
-            quickRepliesContainer.innerHTML = '';
-
-            quickReps.forEach(reply => {
-                // Ensure reply is an object, for backward compatibility
-                const replyObject = typeof reply === 'string' 
-                    ? { id: `temp-compat-${Math.random()}`, text: reply, images: [] } 
-                    : reply;
-                createQuickReply(replyObject);
-            });
+            refreshQuickRepliesList();
         });
 
         closeQuickReplies.addEventListener('click', () => {

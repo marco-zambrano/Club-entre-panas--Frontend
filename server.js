@@ -217,7 +217,7 @@ io.on('connection', (socket) => {
                     if (image.startsWith('data:image')) {
                         //Simulating upload...
                         console.log('Simulating Base64 image upload...');
-                        return `https://mock.cloudflare.com/img-${Date.now()}-${index}.jpg`;
+                        return `https://clubentrepanas.com/cdn/shop/files/7_6e6ad01b-c3fd-4b20-b086-e4486894a966.webp?v=1740356328&width=1100`;
                     }
                     // If it's already a URL, keep it as is
                     return image;
