@@ -1,6 +1,6 @@
 import { items } from './socket.js'; // variables
 import { updateBotStatus, getItemHistory, getItems, setViewedImgFalse, setTagBtnStatus, reportErrorToBackend, readChat } from './socket.js'; // functions
-import { updateItemsList, createMessage, tagColors } from './ui.js';
+import { updateItemsList, createMessage, tagColors, scrollToBottom } from './ui.js';
 
 export let currentItemId = null; // Id of the item actived
 export let currentFilter = null; // define (Chat or Comment)
@@ -30,6 +30,7 @@ export function filterItems() {
 
     const searchTerm = removeAccents(document.getElementById('search-input').value.toLowerCase().trim());
 
+    //FILTER THEM BY THE ACTIVATED PLATFORM TOGGLE
     const filteredItems = items[currentFilter].list.filter(item => {
         const platformToggle = document.querySelector(`.platform-toggle[data-platform="${item.platform}"]`);
         const matchesPlatform = platformToggle && platformToggle.checked;
@@ -125,9 +126,16 @@ export function initilizeBotToggle() {
         }
 
         //DEFINE NEW HANDLER FUNC WHEN TOGGLE CHANGES
+        //DEFINE NEW HANDLER FUNC WHEN TOGGLE CHANGES
         const toggleHandler = (e) => {
             const isChecked = e.target.checked;
             handleInputVisibility(isChecked, currentItem.id);
+            // Se añade un pequeño retraso para dar tiempo al navegador a renderizar los cambios
+            // (como mostrar/ocultar el input) antes de hacer scroll.
+            // Esto es especialmente útil en móviles.
+            setTimeout(() => {
+                scrollToBottom();
+            }, 10); // 100ms de retraso
         };
 
         //SAVE THOSE REFERENCES FOR FUTURE CLEANING
