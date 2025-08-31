@@ -1123,6 +1123,14 @@ input:checked + .slider:before {
     flex-grow: 1;
     white-space: pre-wrap;
     overflow-wrap: break-word;
+
+    /* Limitar el texto a 2 líneas */
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    line-clamp: 2;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .quick-reply-actions {
