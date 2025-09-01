@@ -101,7 +101,7 @@ function generateNewContact() {
         botEnabled: true,
         imgViewed: true,
         tag: [],
-        read: false, // New chats are unread by default
+        read: Math.random() < 0.6 ? "unread" : "shutdown", // 60% unread, 40% shutdown
         message: {
             id: Math.random().toString(36).substring(2, 15),
             content: generateRandomMessage(),
@@ -122,7 +122,7 @@ function generateNewComment() {
         platform: generateRandomPlatform('comment'),
         botEnabled: Math.random() > 0.5 ? true : false,
         permalink: 'https://www.linkfalso.com/sj1n1324nj2n', // new property,
-        read: false, // New comments are unread by default
+        read: "unread", // New comments are unread by default
         comment: {
             id: Math.random().toString(36).substring(2, 15),
             content: generateRandomComment(),

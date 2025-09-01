@@ -289,7 +289,7 @@ socket.on('newMessage', (data) => {
             createMessage(data[dataKey].content, data[dataKey].time, senderString, data[dataKey].type);
 
             if(newEntry.self === false) { // If the message is from the contact, mark it as read
-                item.read = true; // Mark the item as read
+                item.read = "read"; // Mark the item as read
             }
         }
     }

@@ -60,7 +60,7 @@ export function filterItems() {
         const unreadFilterBtn = document.querySelector('.unread-filter-btn');
         // Si el filtro de no leídos está activo, se aplica la lógica.
         if (unreadFilterBtn.classList.contains('unread')) {
-            const isUnread = item.read === false;
+            const isUnread = item.read === "unread" || item.read === "shutdown";
             const isCurrentItem = item.id === currentItemId;
             // Se muestra si no está leído O si es el elemento actual. Si no, se oculta.
             return isUnread || isCurrentItem;
@@ -263,12 +263,14 @@ export function openItem(itemId) {
         return;
     }
 
-    if (currentItem.read === false) {
-        currentItem.read = true;
+    if (currentItem.read === "unread" || currentItem.read === "shutdown") {
+        console.log(`Marking as read for current read status "${currentItem.read}"`);
+        currentItem.read = "read";
         readChat(currentItemId, currentFilter);
         const contactElement = document.querySelector(`.contact[data-item-id="${currentItemId}"]`);
         if (contactElement) {
             contactElement.classList.remove('unread');
+            contactElement.classList.remove('shutdown');
         }
         const unreadFilterBtn = document.querySelector('.unread-filter-btn');
         if (unreadFilterBtn.classList.contains('unread')) {
