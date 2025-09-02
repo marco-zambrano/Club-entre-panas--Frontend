@@ -47,7 +47,17 @@ body.lightbox-open {
     flex-grow: 1; /* Permitir que los grupos de filtros crezcan */
 }
 
-.platform-filters,
+.platform-filters {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.social-platform-filters {
+    display: none;
+}
+
 .tag-filters {
     display: flex;
     gap: 20px;
@@ -165,7 +175,6 @@ input:checked + .slider:before {
 .item-filter {
     display: flex;
     gap: 10px;
-    margin-left: 20px;
 }
 .item-filter button {
     padding: 8px 15px;
