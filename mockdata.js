@@ -48,7 +48,7 @@ const items = {
                 platform: "instagram",
                 botEnabled: false,
                 imgViewed: true,
-                tag: ['RP'],
+                tag: ['RP', 'Terminado'],
                 read: "read",
                 messages: [
                     { id: "m3e2a9f6b0c1", content: "are you there?", type: "text", time: 1672587600000, self: true },
@@ -183,7 +183,7 @@ const items = {
                 platform: "facebook",
                 botEnabled: false,
                 imgViewed: true,
-                tag: [],
+                tag: ['Contraentrega', 'Terminado'],
                 read: "read",
                 messages: [
                     { id: "m7a2c0e1f3b6", content: "gracias por responder", type: "audio", time: 1672623600000, self: false },
@@ -221,7 +221,7 @@ const items = {
                 platform: "facebook",
                 botEnabled: true,
                 imgViewed: true,
-                tag: [],
+                tag: ['Delivery', 'Terminado'],
                 read: "read",
                 messages: [
                     { id: "m9c2b1f0e3a7", content: "recibí el producto", type: "text", time: 1672634400000, self: false },
@@ -259,7 +259,7 @@ const items = {
                 platform: "facebook",
                 botEnabled: true,
                 imgViewed: true,
-                tag: [],
+                tag: ['Contraentrega', 'Servientrega'],
                 read: "read",
                 messages: [
                     { id: "m8b0d2e1f9a3", content: "gracias por la información", type: "text", time: 1672645200000, self: false },

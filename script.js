@@ -43,18 +43,21 @@ export function filterItems() {
 
         // Manejar las etiquetas de los contactos
         if (currentFilter === 'contacts') {
-            const selectedTag = document.querySelector('.tag-toggle:checked').dataset.tag;
+            // 1. Obtener todos los toggles activos y mapearlos a sus nombres de etiqueta.
+            const selectedTags = Array.from(document.querySelectorAll('.tag-toggle:checked')).map(toggle => toggle.dataset.tag);
 
-            if (selectedTag !== 'all') {
+            // 2. Si hay etiquetas seleccionadas, aplicar el filtro.
+            if (selectedTags.length > 0) {
                 const itemTags = Array.isArray(item.tag) ? item.tag : [item.tag];
-                const hasNoTags = itemTags.length === 0;
-
-                if (selectedTag === 'default') {
-                    if (!hasNoTags) return false;
-                } else {
-                    if (!itemTags.includes(selectedTag)) return false;
+                
+                // 3. Verificar que CADA etiqueta seleccionada exista en las etiquetas del item.
+                const matchesAllTags = selectedTags.every(selectedTag => itemTags.includes(selectedTag));
+                
+                if (!matchesAllTags) {
+                    return false; // Si no cumple con todas, se oculta.
                 }
             }
+            // Si no hay etiquetas seleccionadas (selectedTags.length === 0), no se aplica ningún filtro de etiquetas y el item pasa.
         }
 
         const unreadFilterBtn = document.querySelector('.unread-filter-btn');
@@ -215,11 +218,8 @@ const handleTagBtn = currentItem => {
         setTagBtnStatus(currentItem.id, currentItem.tag);
         updateTagDisplay(currentItem);
 
-        // Re-filter if a tag filter is active
-        const selectedTagFilter = document.querySelector('.tag-toggle:checked').dataset.tag;
-        if (selectedTagFilter !== 'all') {
-            filterItems();
-        }
+        // Re-filter items to apply the tag changes
+        filterItems();
     };
 
     document.querySelectorAll(".tag-btn").forEach(btn => {
