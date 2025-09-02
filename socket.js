@@ -296,3 +296,12 @@ socket.on('newMessage', (data) => {
     
     filterItems(); // Filter the items and show them in front
 });
+
+socket.on('updateReadStatus', (data) => { // data: {itemId, filter, read}
+    const item = items['contacts'].list.find(item => item.id === data.id);
+    if (item) {
+        item.read = data.read;
+        filterItems();
+    }
+    //console.log(items['contacts'].list);
+});

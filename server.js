@@ -344,6 +344,18 @@ io.on('connection', (socket) => {
     }, 6000);
 
 
+
+
+    const shutdownRead = setTimeout(() => {
+        var data = {
+            id: items.contacts.list[0].id,
+            read: "shutdown"
+        }
+    
+        io.emit('updateReadStatus', data);
+
+        console.log("Read status updated to shutdown for contact:", data.id)
+    }, 7000);
     // setInterval(() => {
     //     const comment = {
     //         userId: "9e2b0a1c3f7d",

@@ -264,7 +264,6 @@ export function openItem(itemId) {
     }
 
     if (currentItem.read === "unread" || currentItem.read === "shutdown") {
-        console.log(`Marking as read for current read status "${currentItem.read}"`);
         currentItem.read = "read";
         readChat(currentItemId, currentFilter);
         const contactElement = document.querySelector(`.contact[data-item-id="${currentItemId}"]`);
