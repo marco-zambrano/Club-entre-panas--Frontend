@@ -1,5 +1,5 @@
 import { currentItemId, currentFilter } from "./script.js"; // Variables
-import { openItem, setCurrentFilter, filterItems, initilizeBotToggle } from "./script.js"; // Functions
+import { openItem, setCurrentFilter, filterItems, initilizeBotToggle, handleNameUpdate } from "./script.js"; // Functions
 import { sendManMessage, items, quickReps, getQuickReps, updateQuickReps, sendBotConf, getCustomPrompt, botPrompts, tokenUsage, reportErrorToBackend, sendDebugMessage, deleteItem } from './socket.js';
 
 // DOM Elements
@@ -1472,6 +1472,85 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     cancelDeleteBtn.addEventListener('click', hideDeleteConfirmation);
+
+    // --- Name-editing logic ---
+    const editNameBtn = document.getElementById('edit-name-btn');
+    const confirmNameBtn = document.getElementById('confirm-name-btn');
+    const chatTitle = document.querySelector('.chat-title');
+    const chatInfoContainer = document.querySelector('.chat-info-container');
+
+    const toggleNameEditMode = (isEditing) => {
+        const existingInput = chatInfoContainer.querySelector('.name-edit-input');
+
+        if (isEditing) {
+            // Don't do anything if we are already in edit mode
+            if (existingInput) return;
+
+            chatTitle.style.display = 'none';
+            editNameBtn.style.display = 'none';
+
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.className = 'name-edit-input';
+            input.value = chatTitle.textContent;
+            
+            // Insert input right after the h2 title
+            chatTitle.after(input);
+            input.focus();
+            input.select();
+
+            confirmNameBtn.style.display = 'inline-block';
+
+            const confirmEdit = () => {
+                const newName = input.value.trim();
+                if (newName && newName !== chatTitle.textContent) {
+                    handleNameUpdate(newName);
+                    chatTitle.textContent = newName;
+                }
+                toggleNameEditMode(false);
+            };
+
+            const cancelEdit = () => {
+                toggleNameEditMode(false);
+            };
+
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    confirmEdit();
+                } else if (e.key === 'Escape') {
+                    cancelEdit();
+                }
+            });
+
+            // Assign events to buttons
+            confirmNameBtn.onclick = confirmEdit;
+            // Add a listener to cancel if clicking outside
+            setTimeout(() => {
+                document.addEventListener('click', function onDocClick(e) {
+                    if (!e.target.closest('.chat-info-container')) {
+                        cancelEdit();
+                        this.removeEventListener('click', onDocClick);
+                    }
+                });
+            }, 0);
+
+        } else {
+            if (existingInput) {
+                existingInput.remove();
+            }
+            chatTitle.style.display = 'block';
+            confirmNameBtn.style.display = 'none';
+            // Show edit button only if it's a contact
+            if (currentFilter === 'contacts') {
+                editNameBtn.style.display = 'inline-block';
+            }
+        }
+    };
+
+    editNameBtn.addEventListener('click', (e) => {
+        e.stopPropagation(); // Prevent the document click listener from firing immediately
+        toggleNameEditMode(true)
+    });
 })
 
 

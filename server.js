@@ -297,6 +297,11 @@ io.on('connection', (socket) => {
         console.log(`Read chat true for itemId: ${itemId}, itemType: ${filter}`);
     });
 
+    socket.on('updateContactName', (data) => {
+        console.log(`Se ha actualizado el nombre del contacto: ID=${data.itemId}, Nuevo Nombre=${data.newName}`);
+        // Aquí iría la lógica para actualizar la base de datos en un futuro.
+    });
+
 
     //TIME TESTING
     // NEW MESSAGES EVERY 7 SECS

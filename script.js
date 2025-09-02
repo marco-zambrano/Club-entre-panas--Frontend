@@ -1,5 +1,5 @@
 import { items } from './socket.js'; // variables
-import { updateBotStatus, getItemHistory, getItems, setViewedImgFalse, setTagBtnStatus, reportErrorToBackend, readChat } from './socket.js'; // functions
+import { updateBotStatus, getItemHistory, getItems, setViewedImgFalse, setTagBtnStatus, reportErrorToBackend, readChat, updateContactName } from './socket.js'; // functions
 import { updateItemsList, createMessage, tagColors, scrollToBottom } from './ui.js';
 
 export let currentItemId = null; // Id of the item actived
@@ -242,15 +242,48 @@ function updateTagDisplay(item) {
     });
 }
 
+export function handleNameUpdate(newName) {
+    if (!currentItemId || !newName) {
+        return;
+    }
+
+    const item = items.contacts.list.find(contact => contact.id === currentItemId);
+    if (item) {
+        item.name = newName;
+        updateContactName(currentItemId, newName);
+
+        // Update name in the contacts list on the left
+        const contactListElement = document.querySelector(`.contact[data-item-id="${currentItemId}"] .contact-name`);
+        if (contactListElement) {
+            contactListElement.textContent = newName;
+        }
+    }
+}
+
 //TO OPEN A NEW ITEM
 export function openItem(itemId) {
     currentItemId = itemId;
+
+    // --- Reset Name Edit UI on item change ---
+    const chatTitle = document.querySelector('.chat-title');
+    const editBtn = document.getElementById('edit-name-btn');
+    const confirmBtn = document.getElementById('confirm-name-btn');
+    const existingInput = chatTitle.parentElement.querySelector('.name-edit-input');
+
+    if (existingInput) {
+        existingInput.remove();
+    }
+    if(confirmBtn) confirmBtn.style.display = 'none';
+    chatTitle.style.display = 'block';
+    // --- End Reset ---
 
     // Si itemId es null o no se encuentra, limpiar el área de chat
     const currentItem = itemId ? items[currentFilter].list.find(item => item.id === itemId) : null;
 
     if (!currentItem) {
-        document.querySelector('.chat-title').textContent = 'Selecciona un contacto o comentario';
+        chatTitle.textContent = 'Selecciona un contacto o comentario';
+        if(editBtn) editBtn.style.display = 'none';
+
         const messagesContainer = document.querySelector('.messages');
         if (messagesContainer) {
             messagesContainer.innerHTML = '';
@@ -286,7 +319,14 @@ export function openItem(itemId) {
         setViewedImgFalse(currentItemId, currentItem.platform); // Send the status to the backend
     }
 
-    document.querySelector('.chat-title').textContent = currentItem.name;
+    chatTitle.textContent = currentItem.name;
+    // Show/hide edit button based on filter type
+    if (currentFilter === 'contacts') {
+        if(editBtn) editBtn.style.display = 'inline-block';
+    } else {
+        if(editBtn) editBtn.style.display = 'none';
+    }
+
     document.querySelector('.post-link').href = currentItem.permalink; // set the permalink in the comment
 
     //CLEAN MESSAGE CONTAINER BEFORE ADDING NEW MESSAGES

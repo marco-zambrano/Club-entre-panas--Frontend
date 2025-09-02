@@ -144,6 +144,11 @@ export function readChat(itemId, filter) {
     socket.emit('readChat', { itemId, filter });
 }
 
+// Send the new contact name to the backend
+export function updateContactName(itemId, newName) {
+    socket.emit('updateContactName', { itemId, newName });
+}
+
 // Send the deleted item to the backend
 export function deleteItem(itemId, filter) {
     socket.emit('deleteItem', {itemId, filter});
