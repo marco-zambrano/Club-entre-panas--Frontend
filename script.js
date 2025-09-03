@@ -286,6 +286,7 @@ export function openItem(itemId) {
     const chatTitle = document.querySelector('.chat-title');
     const editBtn = document.getElementById('edit-name-btn');
     const confirmBtn = document.getElementById('confirm-name-btn');
+    const whatsAppBtn = document.getElementById('whatsapp-link');
     const existingInput = chatTitle.parentElement.querySelector('.name-edit-input');
 
     if (existingInput) {
@@ -301,6 +302,7 @@ export function openItem(itemId) {
     if (!currentItem) {
         chatTitle.textContent = 'Selecciona un contacto o comentario';
         if(editBtn) editBtn.style.display = 'none';
+        if(whatsAppBtn) whatsAppBtn.style.display = 'none';
 
         const messagesContainer = document.querySelector('.messages');
         if (messagesContainer) {
@@ -313,6 +315,15 @@ export function openItem(itemId) {
         }
         return;
     }
+
+    // --- Lógica para el enlace de WhatsApp ---
+    if (currentItem.platform === 'whatsapp' && currentFilter === 'contacts') {
+        whatsAppBtn.href = `https://wa.me/${currentItem.id}`;
+        whatsAppBtn.style.display = 'inline-block';
+    } else {
+        whatsAppBtn.style.display = 'none';
+    }
+    // --- Fin de la lógica ---
 
     if (currentItem.read === "unread" || currentItem.read === "shutdown") {
         currentItem.read = "read";

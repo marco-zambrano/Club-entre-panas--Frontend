@@ -147,9 +147,9 @@ const items = {
                 ]
             },
             {
-                id: "d3b0f1a6e9c2",
+                id: "593939459773",
                 name: "Emilio Narváez",
-                platform: "facebook",
+                platform: "whatsapp",
                 botEnabled: true,
                 imgViewed: true,
                 tag: ['Terminado'],
