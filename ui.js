@@ -1216,10 +1216,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (!replyToSend) return;
 
-            // Send text if it exists
-            if (replyToSend.text) {
-                sendTextMessage(replyToSend.text);
-            }
 
             // Sequentially send each image
             if (replyToSend.images && replyToSend.images.length > 0) {
@@ -1228,7 +1224,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     console.error("No se pudo determinar la plataforma del destinatario.");
                     return;
                 }
-                replyToSend.images.forEach(imageUrl => {
+                for (const imageUrl of replyToSend.images) {
                     const messageTime = Date.now();
                     // 1. Send to backend
                     sendManMessage(currentItemId, "image", imageUrl, currentFilter, recipientPlatform);
@@ -1243,8 +1239,13 @@ document.addEventListener('DOMContentLoaded', () => {
                         const entryKey = (currentFilter === "contacts") ? "messages" : "comments";
                         currentItem[entryKey].push(entry);
                     }
-                });
+                }
             }
+            // Send text if it exists
+            if (replyToSend.text) {
+                sendTextMessage(replyToSend.text);
+            }
+
             
             quickRepliesModal.classList.remove('show');
         });
