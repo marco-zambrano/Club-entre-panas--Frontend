@@ -24,9 +24,28 @@ export var items = {
 
 export let quickReps = [];
 
-//SEND ERRORS TO BACKEND
-export function reportErrorToBackend(error) {
-    socket.emit('reportError', error);
+// SEND ERRORS TO BACKEND
+export function reportErrorToBackend(err) {
+    let errorObject;
+
+    // If it's an instance of Error, we can extract useful properties
+    if (err instanceof Error) {
+        errorObject = {
+            message: err.message,
+            name: err.name, // Type of error. Ej. TypeError, ReferenceError, etc.
+            stack: err.stack, // Stack trace for debugging
+        };
+    } else {
+        // If it's not an Error instance, we can still send a generic message
+        errorObject = {
+            message: String(err),
+            name: "UnknownError",
+            stack: "No stack trace available.",
+        };
+    }
+
+    // Send the error object to the backend via WebSocket
+    socket.emit("reportError", errorObject);
 }
 
 // FOR DEBUGGING PURPOSES
@@ -36,7 +55,7 @@ export function sendDebugMessage(message) {
 
 // GET ITEMS FROM THE BACKEND
 export function getItems(filter) { //must be "contacts" or "comments" PLURAL
-    sendDebugMessage(`GETTING ITEMS WITH PRELOADED LENGTH: ${items[filter].list.length}`)
+    //sendDebugMessage(`GETTING ITEMS WITH PRELOADED LENGTH: ${items[filter].list.length}`)
     socket.emit('getItems', {
         filter: filter,
         count: items[filter].list.length // amount of items already loaded.

@@ -152,7 +152,7 @@ export function createMessage(content, time, sender, type) {
  * Se llama cada vez que el array de imágenes en staging cambia.
  */
 function renderImagePreviews() {
-    sendDebugMessage("Rendering image previews, count: " + stagedImageFiles.length);
+    //sendDebugMessage("Rendering image previews, count: " + stagedImageFiles.length);
     // Se obtiene la referencia al contenedor de la cuadrícula.
     const grid = document.getElementById('staged-images-grid');
     grid.innerHTML = ''; // Limpiar previsualizaciones antiguas para renderizar desde cero.
@@ -201,7 +201,7 @@ function renderImagePreviews() {
  * @param {FileList | File[]} files - La lista de archivos a procesar.
  */
 function handleAndStageFiles(files) {
-    sendDebugMessage("handleAndStageFiles called with files: " + files.length);
+    //sendDebugMessage("handleAndStageFiles called with files: " + files.length);
     const filesToProcess = Array.from(files);
 
     // Se comprueba que no se exceda el límite de imágenes permitidas.
@@ -246,7 +246,7 @@ function handleAndStageFiles(files) {
  * @returns {Promise<Blob>} Una promesa que se resuelve con el Blob de la imagen procesada.
  */
 function resizeAndCompressImage(file, maxWidth = 1280, maxHeight = 1280, targetSizeBytes = 500000) {
-    sendDebugMessage("resizeAndCompressImage called for file: " + file.name);
+    //sendDebugMessage("resizeAndCompressImage called for file: " + file.name);
     return new Promise((resolve, reject) => {
         if (!file.type.startsWith('image/')) {
             return reject(new Error('El archivo no es una imagen.'));
@@ -360,7 +360,7 @@ function resizeAndCompressImage(file, maxWidth = 1280, maxHeight = 1280, targetS
  * @param {Blob} imageBlob - El blob de la imagen a enviar.
  */
 function sendProcessedImage(imageBlob) {
-    sendDebugMessage("sendProcessedImage called.");
+    //sendDebugMessage("sendProcessedImage called.");
     const reader = new FileReader();
     reader.onload = (e) => {
         const base64Image = e.target.result;
@@ -373,7 +373,7 @@ function sendProcessedImage(imageBlob) {
 
         // Se emite el evento de WebSocket con la imagen en Base64.
         sendManMessage(currentItemId, "image", base64Image, currentFilter, recipientPlatform);
-        sendDebugMessage("Image sent to backend.");
+        //sendDebugMessage("Image sent to backend.");
         
         // Se crea el mensaje visualmente en el chat local de forma optimista.
         createMessage(base64Image, messageTime, 'bot', 'image');
@@ -886,7 +886,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // 2. Enviar todas las imágenes en un bucle.
         imagesToSend.forEach(fileData => {
-            sendDebugMessage("Sending image with ID: " + fileData.id);
+            //sendDebugMessage("Sending image with ID: " + fileData.id);
             sendProcessedImage(fileData.blob);
         });
     }
