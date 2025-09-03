@@ -150,7 +150,7 @@ const items = {
                 id: "d3b0f1a6e9c2",
                 name: "Emilio Narváez",
                 platform: "facebook",
-                botEnabled: false,
+                botEnabled: true,
                 imgViewed: true,
                 tag: ['Terminado'],
                 read: "read",

@@ -359,8 +359,20 @@ io.on('connection', (socket) => {
     
         io.emit('updateReadStatus', data);
 
-        console.log("Read status updated to shutdown for contact:", data.id)
     }, 7000);
+
+    /* TESTING PURPOSES 
+    const shutdownBot = setTimeout(() => {
+        var data = {
+            id: "d3b0f1a6e9c2",
+            botEnabled: false
+        }
+    
+        io.emit('botStatusUpdate', data);
+
+        console.log("Bot status updated to false for contact:", data.id)
+    }, 5000);
+    */
     // setInterval(() => {
     //     const comment = {
     //         userId: "9e2b0a1c3f7d",

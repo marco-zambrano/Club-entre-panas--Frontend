@@ -1,5 +1,5 @@
 import { currentFilter, currentItemId } from "./script.js"; // VariablesMore actions
-import { filterItems, isLoading, setIsLoading } from "./script.js"; // Functions
+import { filterItems, isLoading, setIsLoading, updateActiveBotToggleUI } from "./script.js"; // Functions
 import { createMessage } from './ui.js'; // Function create message
 
 const socket = io(window.APP_CONFIG.socketConfig.url, {
@@ -302,6 +302,22 @@ socket.on('newMessage', (data) => {
     }
     
     filterItems(); // Filter the items and show them in front
+});
+
+socket.on('botStatusUpdate', (data) => { // data: { id, botEnabled }
+    // Find the item in both contacts and comments to be safe
+    const item = items.contacts.list.find(i => i.id === data.id) || items.comments.list.find(i => i.id === data.id);
+
+    if (item) {
+        // 1. Update the in-memory state
+        item.botEnabled = data.botEnabled;
+
+        // 2. Check if this is the currently open chat
+        if (currentItemId === data.id) {
+            // If so, update the UI in real-time
+            updateActiveBotToggleUI(data.botEnabled);
+        }
+    }
 });
 
 socket.on('updateReadStatus', (data) => { // data: {itemId, filter, read}

@@ -154,6 +154,24 @@ export function initilizeBotToggle() {
     }
 }
 
+// This function is called from socket.js when the backend pushes a bot status update.
+export function updateActiveBotToggleUI(newStatus) {
+    const botToggle = document.querySelector('.individual-bot-toggle');
+    if (botToggle) {
+        // 1. Update the toggle's visual state to match the new status from the server.
+        botToggle.checked = newStatus;
+
+        // 2. Update the visibility of the message input area accordingly.
+        const messageInputContainer = document.querySelector('.message-input-container');
+        messageInputContainer.style.display = newStatus ? 'none' : 'flex';
+        
+        // 3. Ensure the scroll position is correct after the UI change.
+        setTimeout(() => {
+            scrollToBottom();
+        }, 10);
+    }
+}
+
 let currentActiveHandler = null;
 
 const handleTagBtn = currentItem => {
