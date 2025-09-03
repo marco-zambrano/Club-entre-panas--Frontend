@@ -1430,6 +1430,15 @@ document.addEventListener('DOMContentLoaded', () => {
     repliesModalConfiguration();
     createReplyModal();
 
+    // Listen for the custom event dispatched when quick replies are updated from the server
+    document.addEventListener('quickRepsUpdated', () => {
+        const quickRepliesModal = document.getElementById('quickRepliesModal');
+        // If the modal is currently open, refresh the list to show the changes immediately.
+        if (quickRepliesModal && quickRepliesModal.classList.contains('show')) {
+            refreshQuickRepliesList();
+        }
+    });
+
 
     // --------------- Delete confirmation modal logic ----------------
     const deleteConfirmationModal = document.getElementById('deleteConfirmationModal');

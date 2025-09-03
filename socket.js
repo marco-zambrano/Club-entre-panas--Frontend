@@ -77,8 +77,10 @@ export function getItemHistory(itemId, filter) {
 export function getQuickReps(){
     socket.emit("getQuickReps"); //only for when the user just logs in
 }
-socket.on('quickReps', (qckRps) => { //WHEN THE SERVER SENDS THE SAVED QUICK REPLIES, UPDATE THE LOCAL ARRAY // recibimos [{id: , text:}]
+socket.on('quickReps', (qckRps) => { //WHEN THE SERVER SENDS THE SAVED QUICK REPLIES, UPDATE THE LOCAL ARRAY
     quickReps = [...qckRps];
+    // Dispatch a custom event to notify other parts of the app (like ui.js) that the quick replies have been updated.
+    document.dispatchEvent(new CustomEvent('quickRepsUpdated'));
 })
 export function updateQuickReps(arr){ // Actualizar QRs, tanto si eliminas o agregas una, si eliminas, el type es delete, si agregas, el type es create
     socket.emit("updateQuickReps", arr);
