@@ -1179,7 +1179,7 @@ input:checked + .slider:before {
     display: flex;
     align-items: center;
     gap: 15px;
-    margin-left: 10px;
+    margin-left: 5px;
 }
 
 .quick-reply-actions .fas {
@@ -1188,6 +1188,7 @@ input:checked + .slider:before {
 
 /* edit icon */
 .fa-edit {
+    font-size: 2em;
     color: #57c9ff;
 }
 .fa-edit:hover {
@@ -1196,6 +1197,7 @@ input:checked + .slider:before {
 
 /* trash icon */
 .fa-trash {
+    font-size: 1.5em;
     color: rgb(255, 41, 41);
     cursor: pointer;
     transition: all ease .3s;
