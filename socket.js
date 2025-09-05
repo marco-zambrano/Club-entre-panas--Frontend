@@ -323,27 +323,18 @@ socket.on('newMessage', (data) => {
     filterItems(); // Filter the items and show them in front
 });
 
-socket.on('botStatusUpdate', (data) => { // data: { id, botEnabled }
-    // Find the item in both contacts and comments to be safe
-    const item = items.contacts.list.find(i => i.id === data.id) || items.comments.list.find(i => i.id === data.id);
-
+socket.on('botAndReadStatusUpdate', (data) => { // data: { id, botEnabled, read }
+    // Find the item in contacts
+    const item = items['contacts'].list.find(i => i.id === data.id);
+    // If item is found, update both botEnabled and read status
     if (item) {
-        // 1. Update the in-memory state
         item.botEnabled = data.botEnabled;
+        item.read = data.read;
 
-        // 2. Check if this is the currently open chat
+        // If this is the currently open chat, update the UI in real-time
         if (currentItemId === data.id) {
-            // If so, update the UI in real-time
             updateActiveBotToggleUI(data.botEnabled);
         }
-    }
-});
-
-socket.on('updateReadStatus', (data) => { // data: {itemId, filter, read}
-    const item = items['contacts'].list.find(item => item.id === data.id);
-    if (item) {
-        item.read = data.read;
         filterItems();
     }
-    //console.log(items['contacts'].list);
 });
