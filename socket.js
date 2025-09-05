@@ -34,13 +34,25 @@ export function reportErrorToBackend(err) {
             message: err.message,
             name: err.name, // Type of error. Ej. TypeError, ReferenceError, etc.
             stack: err.stack, // Stack trace for debugging
+            isError: true,
         };
     } else {
+        let message;
+        if (typeof err === "object") {
+            try {
+                message = JSON.stringify(err, null, 2);
+            } catch {
+                message = "[Unserializable object]";
+            }
+        } else {
+            message = String(err);
+        }
         // If it's not an Error instance, we can still send a generic message
         errorObject = {
-            message: String(err),
+            message,
             name: "UnknownError",
             stack: "No stack trace available.",
+            isError: false,
         };
     }
 
