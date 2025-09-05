@@ -718,6 +718,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const contactName = clicked.querySelector('.contact-name').textContent;
         document.querySelector('.chat-title').textContent = contactName;
 
+        // Limpiar el input de búsqueda y ocultar el botón de limpiar
+        const searchInput = document.getElementById('search-input');
+        const clearSearchBtn = document.getElementById('clear-search-btn');
+        if (searchInput.value) {
+            searchInput.value = '';
+            clearSearchBtn.style.display = 'none';
+            filterItems();
+        }
+
         // ocultamos la item list, al darle click al item, en caso que estemos en vista de telefono
         const mediaQuery = window.matchMedia('(max-width: 768px)');
         if (mediaQuery.matches) {
@@ -1560,6 +1569,22 @@ document.addEventListener('DOMContentLoaded', () => {
     editNameBtn.addEventListener('click', (e) => {
         e.stopPropagation(); // Prevent the document click listener from firing immediately
         toggleNameEditMode(true)
+    });
+
+    // --- Logic for the clear search button ---
+    const searchInput = document.getElementById('search-input');
+    const clearSearchBtn = document.getElementById('clear-search-btn');
+
+    searchInput.addEventListener('input', () => {
+        // Show button if there is text, hide otherwise
+        clearSearchBtn.style.display = searchInput.value ? 'block' : 'none';
+    });
+
+    clearSearchBtn.addEventListener('click', () => {
+        searchInput.value = ''; // Clear the input
+        clearSearchBtn.style.display = 'none'; // Hide the button
+        filterItems(); // Re-run the filter to show all items
+        searchInput.focus(); // Put focus back on the input
     });
 })
 
