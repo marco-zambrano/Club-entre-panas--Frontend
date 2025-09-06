@@ -1093,8 +1093,14 @@ document.addEventListener('DOMContentLoaded', () => {
             previewElement.dataset.id = fileData.id;
 
             const img = document.createElement('img');
-            img.src = URL.createObjectURL(fileData.blob);
-            img.onload = () => URL.revokeObjectURL(img.src);
+            // Si viene de un archivo local, usa blob. Si viene de R2, usa url.
+            img.src = fileData.blob 
+                ? URL.createObjectURL(fileData.blob) 
+                : fileData.url;
+
+            if (fileData.blob) {
+                img.onload = () => URL.revokeObjectURL(img.src);
+            }
 
             const removeBtn = document.createElement('button');
             removeBtn.className = 'image-preview-remove-btn';
@@ -1301,14 +1307,10 @@ document.addEventListener('DOMContentLoaded', () => {
         
         stagedQuickReplyImages = [];
         if (reply.images && reply.images.length > 0) {
-            const imagePromises = reply.images.map(url => 
-                fetch(url)
-                    .then(res => res.blob())
-                    .then(blob => ({
-                        id: `staged-qr-${Date.now()}-${Math.random()}`,
-                        blob: blob
-                    }))
-            );
+            const imagePromises = reply.images.map(url => ({
+                id: `staged-qr-${Date.now()}-${Math.random()}`,
+                url: url
+            }));
             stagedQuickReplyImages = await Promise.all(imagePromises);
         }
         
@@ -1342,12 +1344,18 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const base64Promises = stagedQuickReplyImages.map(fileData => {
-                return new Promise((resolve, reject) => {
-                    const reader = new FileReader();
-                    reader.onloadend = () => resolve(reader.result);
-                    reader.onerror = reject;
-                    reader.readAsDataURL(fileData.blob);
-                });
+                if (fileData.blob) {
+                    // Caso: imagen nueva subida por el usuario
+                    return new Promise((resolve, reject) => {
+                        const reader = new FileReader();
+                        reader.onloadend = () => resolve(reader.result);
+                        reader.onerror = reject;
+                        reader.readAsDataURL(fileData.blob);
+                    });
+                } else {
+                    // Caso: imagen ya existente en R2 → guardamos la URL directamente
+                    return Promise.resolve(fileData.url);
+                }
             });
             const base64Images = await Promise.all(base64Promises);
 
